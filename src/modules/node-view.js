@@ -20,7 +20,7 @@
       "dragstop":      "dragStop"
     },
     initialize: function() {
-      // Position
+      // Initial position
       this.$el.offset({
         left: this.model.get("x"),
         top: this.model.get("y")

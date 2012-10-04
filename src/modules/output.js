@@ -1,6 +1,10 @@
 ( function(Output) {
  
   Output.Model = Backbone.Model.extend({
+    defaults: {
+      label: "output",
+      type: "all"
+    },
     initialize: function() {
     }
   });

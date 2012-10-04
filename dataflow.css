@@ -1,3 +1,18 @@
+.graph {
+  position: relative;
+}
+.svg-edges {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+.nodes {
+  position: absolute;
+  top: 0;
+  left: 0;  
+  z-index: 1;
+}
 .node {
   position: absolute;
   display: inline-block;
@@ -35,7 +50,7 @@
       border: 1px black solid;
       padding: 3px;
     }
-    .port .end {
+    .port .plug {
       width: 10px;
       height: 10px;
       display: inline-block;

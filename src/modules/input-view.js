@@ -1,7 +1,7 @@
 ( function(Input) {
 
   var template = 
-    '<span class="end"></span>'+
+    '<span class="plug"></span>'+
     '<span class="hole"></span>'+
     '<span class="label"><%= label %></span>';
  
@@ -10,7 +10,7 @@
     tagName: "li",
     className: "port in",
     initialize: function() {
-
+      this.$el.addClass(this.model.get("type"));
     },
     render: function(){
       this.$el.html(this.template(this.model.toJSON()));

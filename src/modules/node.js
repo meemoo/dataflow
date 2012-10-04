@@ -15,10 +15,14 @@
       this.outputs = new Output.Collection(this.outputs);
     },
     inputs:[
-      {label:"input"}
+      {
+        label: "input"
+      }
     ],
     outputs:[
-      {label:"output"}
+      {
+        label:"output"
+      }
     ]
   });
 
