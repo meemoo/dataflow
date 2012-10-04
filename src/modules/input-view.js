@@ -5,7 +5,7 @@
   Input.Views.Main = Backbone.View.extend({
     template: _.template(template),
     tagName: "li",
-    className: "input",
+    className: "port in",
     initialize: function() {
 
     },

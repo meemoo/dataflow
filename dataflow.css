@@ -1,0 +1,28 @@
+.node {
+  display: inline-block;
+  width: 200px;
+  height: 200px;
+  border: 1px black solid;
+  margin: 1px;
+}
+  .node h1 {
+    font-size: 20px;
+  }
+
+.ins {
+  text-align: left;
+  margin-bottom: 10px;
+}
+.outs {
+  text-align: right;
+}
+.ports ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+  .ports ul li {
+    border: 1px black solid;
+    margin: 1px;
+    padding: 5px;
+  }

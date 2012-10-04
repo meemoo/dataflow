@@ -5,7 +5,7 @@
   Output.Views.Main = Backbone.View.extend({
     template: _.template(template),
     tagName: "li",
-    className: "output",
+    className: "port out",
     initialize: function() {
     },
     render: function(){

@@ -2,8 +2,8 @@
 
   var template = 
     '<h1><%= id %></h1>'+
-    '<div class="ins" />'+
-    '<div class="outs" />';
+    '<div class="ports ins" />'+
+    '<div class="ports outs" />';
 
   // Dependencies
   var Input = Dataflow.module("input");
