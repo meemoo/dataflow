@@ -25,6 +25,8 @@
       });
       this.model.outputs.view.render();
       this.model.outputs.view.renderAllItems();
+
+      this.$el.draggable();
     },
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));

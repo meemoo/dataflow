@@ -1,9 +1,10 @@
 .node {
   display: inline-block;
   width: 200px;
-  height: 200px;
   border: 1px black solid;
   margin: 1px;
+  padding: 3px;
+  background-color: rgba(255,255,255, 0.9);
 }
   .node h1 {
     font-size: 20px;
@@ -22,7 +23,7 @@
   padding: 0;
 }
   .ports ul li {
-    border: 1px black solid;
-    margin: 1px;
-    padding: 5px;
+    border: 1px gray solid;
+    margin: 0;
+    padding: 3px;
   }
