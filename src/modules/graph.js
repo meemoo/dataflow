@@ -10,12 +10,14 @@
         nodes: new Node.Collection(this.get("nodes")),
         edges: new Edge.Collection(this.get("edges"))
       });
-    },
-    addNode: function(node){
-      this.get("nodes").add(node);
-    },
-    addEdge: function(edge){
-      this.get("edges").add(edge);
+      // this.get("nodes").graph = this;
+      // this.get("edges").graph = this;
+      this.get("nodes").on("all", function(){
+        this.trigger("change");
+      }, this);
+      this.get("edges").on("all", function(){
+        this.trigger("change");
+      }, this);
     }
   });
 

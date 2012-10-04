@@ -2,6 +2,9 @@
 
   var template = 
     '<h1><%= id %></h1>'+
+    '<div class="controls">'+
+      '<button class="delete">delete</button>'+
+    '</div>'+
     '<div class="ports ins" />'+
     '<div class="ports outs" />';
 
@@ -12,7 +15,17 @@
   Node.Views.Main = Backbone.View.extend({
     template: _.template(template),
     className: "node",
+    events: {
+      "click .delete": "deleteMe",
+      "dragstop":      "dragStop"
+    },
     initialize: function() {
+      // Position
+      this.$el.offset({
+        left: this.model.get("x"),
+        top: this.model.get("y")
+      });
+
       // Initialize i/o views
       this.model.inputs.view = new Input.Views.Collection({
         collection: this.model.inputs
@@ -35,6 +48,15 @@
       this.$(".outs").html(this.model.outputs.view.el);
 
       return this;
+    },
+    dragStop: function(){
+      this.model.set({
+        x: parseInt(this.el.style.left, 10),
+        y: parseInt(this.el.style.top, 10)
+      });
+    },
+    deleteMe: function(){
+      this.model.collection.remove(this.model);
     }
   });
 

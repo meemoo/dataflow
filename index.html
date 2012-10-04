@@ -40,11 +40,18 @@
     <input id="nodeid" type="text" placeholder="node id" value="3" />
     <input id="addnode" type="submit" value="add node" />
   </form>
+  <textarea id="code" style="width: 230px; height: 475px;"></textarea>
   <script>
     $(function($) {
 
       // Load test graph
-      Dataflow.loadGraph({nodes:[{"id":1},{"id":2}],edges:[{"source":1, "target":2}]});
+      Dataflow.loadGraph({"nodes":[{"id":1,"x":250,"y":100},{"id":2,"x":500,"y":100}],"edges":[{"source":1,"target":2}]});
+
+      // On change update code view
+      Dataflow.graph.on("change", function(){
+        $("#code").val( JSON.stringify(Dataflow.graph.toJSON(), null, "  ") );
+      });
+      Dataflow.graph.trigger("change");
 
       // Add nodes to test graph
       var Node = Dataflow.module("node");

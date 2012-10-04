@@ -5,6 +5,10 @@
   var Output = Dataflow.module("output");
 
   Node.Model = Backbone.Model.extend({
+    defaults: {
+      x: 200,
+      y: 100
+    },
     initialize: function() {
       // Add i/o collections
       this.inputs = new Input.Collection(this.inputs);

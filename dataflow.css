@@ -1,4 +1,5 @@
 .node {
+  position: absolute;
   display: inline-block;
   width: 200px;
   border: 1px black solid;
@@ -22,8 +23,21 @@
   margin: 0;
   padding: 0;
 }
-  .ports ul li {
+  .ports .port {
     border: 1px gray solid;
     margin: 0;
     padding: 3px;
   }
+    .port .hole {
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      border: 1px black solid;
+      padding: 3px;
+    }
+    .port .end {
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      padding: 3px;
+    }
