@@ -14,26 +14,30 @@
     className: "node",
     initialize: function() {
       // Initialize i/o views
-      this.model.inputs.each(function(input){
-        input.view = new Input.Views.Main({model:input});
-      }, this);
-      this.model.outputs.each(function(output){
-        output.view = new Output.Views.Main({model:output});
-      }, this);
+      this.model.inputs.view = new Input.Views.Collection({
+        collection: this.model.inputs
+      });
+      this.model.inputs.view.render();
+      this.model.inputs.view.renderAllItems();
+      //
+      this.model.outputs.view = new Output.Views.Collection({
+        collection: this.model.outputs
+      });
+      this.model.outputs.view.render();
+      this.model.outputs.view.renderAllItems();
     },
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
 
-      // Render i/o views
-      this.model.inputs.each(function(input){
-        this.$(".ins").append(input.view.render().el);
-      }, this);
-      this.model.outputs.each(function(output){
-        this.$(".outs").append(output.view.render().el);
-      }, this);
+      this.$(".ins").html(this.model.inputs.view.el);
+      this.$(".outs").html(this.model.outputs.view.el);
 
       return this;
     }
   });
+
+  Node.Views.Collection = Backbone.CollectionView.extend({
+    itemView: Node.Views.Main
+  }); 
 
 }(Dataflow.module("node")) );

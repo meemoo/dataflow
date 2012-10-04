@@ -14,45 +14,25 @@
       var edges = this.model.get("edges");
 
       // Initialize nodes and edges
-      nodes.each(function(node){
-        node.view = new Node.Views.Main({model:node});
-      }, this);
-      edges.each(function(edge){
-        edge.view = new Edge.Views.Main({model:edge});
-      }, this);
-
-      // Listen for changes
-      nodes.on("add", this.addNode, this);
-      nodes.on("remove", this.removeNode, this);
-      edges.on("add", this.addEdge, this);
-      edges.on("remove", this.removeEdge, this);
+      nodes.view = new Node.Views.Collection({
+        collection: nodes
+      });
+      nodes.view.render();
+      nodes.view.renderAllItems();
+      //
+      edges.view = new Edge.Views.Collection({
+        collection: edges
+      });
+      edges.view.render();
+      edges.view.renderAllItems();
     },
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
 
-      // Render nodes and edges
-      this.model.get("nodes").each(function(node){
-        this.$(".nodes").append(node.view.render().el);
-      }, this);
-      this.model.get("edges").each(function(edge){
-        this.$(".edges").append(edge.view.render().el);
-      }, this);
+      this.$(".nodes").html(this.model.get("nodes").view.el);
+      this.$(".edges").html(this.model.get("edges").view.el);
 
       return this;
-    },
-    addNode: function(node){
-      var view = node.view = new Node.Views.Main({model:node});
-      this.$(".nodes").append(view.render().el);
-    },
-    removeNode: function(node){
-      node.view.$el.remove();
-    },
-    addEdge: function(edge){
-      var view = edge.view = new Edge.Views.Main({model:edge});
-      this.$(".edges").append(view.render().el);
-    },
-    removeEdge: function(edge){
-      edge.view.$el.remove();
     }
   });
 

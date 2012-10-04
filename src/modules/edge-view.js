@@ -6,4 +6,8 @@
     }
   });
 
+  Edge.Views.Collection = Backbone.CollectionView.extend({
+    itemView: Edge.Views.Main
+  }); 
+
 }(Dataflow.module("edge")) );
