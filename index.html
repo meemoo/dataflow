@@ -11,7 +11,7 @@
   <div id="app">
     <!-- ALL YOUR CONTENT HERE -->
   </div>
-   
+
   <!-- Third-Party Libraries (Order matters) -->
   <script src="libs/jquery.js"></script>
   <script src="libs/underscore.js"></script>
@@ -33,5 +33,31 @@
   <script src="src/modules/input-view.js"></script>
   <script src="src/modules/output-view.js"></script>
   <script src="src/modules/edge-view.js"></script>
+
+  <!-- Testing -->
+  <form id="add">
+    <input id="nodeid" type="text" placeholder="node id" value="3" />
+    <input id="addnode" type="submit" value="add node" />
+  </form>
+  <script>
+    $(function($) {
+
+      // Load test graph
+      Dataflow.loadGraph({nodes:[{"id":1},{"id":2}],edges:[{"source":1, "target":2}]});
+
+      // Add nodes to test graph
+      var Node = Dataflow.module("node");
+      $("#add").submit(function(){
+        var id = $('#nodeid').val();
+        var newNode = new Node.Model({
+          "id": id
+        });
+        Dataflow.graph.get('nodes').add(newNode);
+        $('#nodeid').val(id+"a");
+        return false;
+      });
+    });
+  </script>
+
 </body>
 </html>

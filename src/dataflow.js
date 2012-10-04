@@ -45,7 +45,4 @@ jQuery(function($) {
   Dataflow.router = new DataflowRouter();
   Backbone.history.start();
 
-  // Test
-  Dataflow.loadGraph({nodes:[{"id":1},{"id":2},{"id":3}],edges:[{"source":1, "target":2}]});
-
 });
