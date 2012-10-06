@@ -28,17 +28,21 @@
       // Graph container
       this.$el.html(this.template(this.model.toJSON()));
 
+      // Render nodes
       var nodes = this.model.get("nodes");
       nodes.view.render();
       nodes.view.renderAllItems();
-      this.$(".nodes").html(this.model.get("nodes").view.el);
+      this.$(".nodes").html(nodes.view.el);
+      // Render edges
       var edges = this.model.get("edges");
       edges.view.render();
       edges.view.renderAllItems();
-      // var graphSVGElement = this.$('.svg-edges')[0];
-      // edges.each(function(edge){
-      //   graphSVGElement.appendChild(edge.view.el);
-      // });
+
+      // Do this without jQuery because SVG
+      var graphSVGElement = this.$('.svg-edges')[0];
+      _.each(edges.view.viewsByCid, function(edgeView){
+        graphSVGElement.appendChild(edgeView.el);
+      }, this);
 
       return this;
     }

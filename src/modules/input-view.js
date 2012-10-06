@@ -14,6 +14,9 @@
     },
     render: function(){
       this.$el.html(this.template(this.model.toJSON()));
+    },
+    holePosition: function () {
+      return this.$(".hole").offset();
     }
   });
 

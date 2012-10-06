@@ -12,29 +12,20 @@
       }
     }
     return svg;
-  }
+  };
  
   Edge.Views.Main = Backbone.View.extend({
     tagName: "div",
     className: "edge",
     positions: null,
     initialize: function() {
-      this.positions = {fromX: 0, fromY: 0, toX: 0, toY: 0};
-    },
-    render: function(){
+      this.positions = {from:{}, to:{}};
       // Made SVG elements
       this.el = makeSVG("path", {});
-      var self = this;
-      _.defer(function(){
-        $('.svg-edges')[0].appendChild(self.el);
-      })
-      
-      // Add to DOM      
-      // this.el.appendChild(this.elementWire);
-      // This is the only view that doesn't follow the Backbone convention, for the sake of the SVG
-      // TODO make it graph-specific
-      // var graphSVGElement = $('.svg-edges')[0];
-      // graphSVGElement.appendChild(this.el);
+    },
+    render: function(){
+      // this.positions.from = this.model.source.view.holePosition();
+      // this.positions.to = this.model.target.view.holePosition();
     }
   });
 

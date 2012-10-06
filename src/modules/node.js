@@ -12,7 +12,13 @@
     initialize: function() {
       // Add i/o collections
       this.inputs = new Input.Collection(this.inputs);
+      this.inputs.each(function(input){
+        input.node = this;
+      }, this);
       this.outputs = new Output.Collection(this.outputs);
+      this.outputs.each(function(output){
+        output.node = this;
+      }, this);
     },
     inputs:[
       {

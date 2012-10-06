@@ -9,11 +9,14 @@
     template: _.template(template),
     tagName: "li",
     className: "port out",
-    initialize: function() {
+    initialize: function () {
       this.$el.addClass(this.model.get("type"));
     },
-    render: function(){
+    render: function () {
       this.$el.html(this.template(this.model.toJSON()));
+    },
+    holePosition: function () {
+      return this.$(".hole").offset();
     }
   });
 
