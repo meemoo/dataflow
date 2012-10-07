@@ -32,20 +32,22 @@
       });
       this.model.inputs.view.render();
       this.model.inputs.view.renderAllItems();
+      this.inputs = this.model.inputs.view;
       //
       this.model.outputs.view = new Output.Views.Collection({
         collection: this.model.outputs
       });
       this.model.outputs.view.render();
       this.model.outputs.view.renderAllItems();
+      this.outputs = this.model.outputs.view;
 
       this.$el.draggable();
     },
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
 
-      this.$(".ins").html(this.model.inputs.view.el);
-      this.$(".outs").html(this.model.outputs.view.el);
+      this.$(".ins").html(this.inputs.el);
+      this.$(".outs").html(this.outputs.el);
 
       return this;
     },

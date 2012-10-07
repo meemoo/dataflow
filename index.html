@@ -40,12 +40,15 @@
     <input id="nodeid" type="text" placeholder="node id" value="3" />
     <input id="addnode" type="submit" value="add node" />
   </form>
-  <textarea id="code" style="width: 230px; height: 475px;"></textarea>
+  <form id="source">
+    <textarea id="code" style="width: 230px; height: 450px;"></textarea><br/>
+    <input id="apply" type="submit" value="apply changes" />
+  </form>
   <script>
     $(function($) {
 
       // Load test graph
-      Dataflow.loadGraph({"nodes":[{"id":2,"label":"node two","x":500,"y":100},{"id":1,"label":"node one","x":250,"y":100}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}}]});
+      Dataflow.loadGraph({"nodes":[{"id":2,"label":"node two","x":620,"y":100},{"id":1,"label":"node one","x":290,"y":100}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}}]});
 
       // On change update code view
       Dataflow.graph.on("change", function(){
@@ -64,6 +67,21 @@
         $('#nodeid').val(id+"a");
         return false;
       });
+
+      // Apply source to test graph
+      $("#source").submit(function(){
+        try {
+          var graph = JSON.parse( $("#code").val() );
+          Dataflow.loadGraph(graph);
+          Dataflow.graph.on("change", function(){
+            $("#code").val( JSON.stringify(Dataflow.graph.toJSON(), null, "  ") );
+          });
+        } catch(error){
+          alert("Invalid JSON");
+        }
+        return false;
+      });
+
     });
   </script>
 
