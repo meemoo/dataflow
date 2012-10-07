@@ -45,7 +45,7 @@
     $(function($) {
 
       // Load test graph
-      Dataflow.loadGraph({"nodes":[{"id":1,"x":250,"y":100},{"id":2,"x":500,"y":100}],"edges":[{"source":1,"target":2}]});
+      Dataflow.loadGraph({"nodes":[{"id":2,"label":"node two","x":500,"y":100},{"id":1,"label":"node one","x":250,"y":100}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}}]});
 
       // On change update code view
       Dataflow.graph.on("change", function(){

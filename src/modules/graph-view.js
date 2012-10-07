@@ -1,7 +1,7 @@
 (function(Graph) {
  
   var template = 
-    '<div class="edges"><svg class="svg-edges"></svg></div>'+
+    '<div class="edges"><svg class="svg-edges" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" style="width:1000px; height:1000px;"></svg></div>'+
     '<div class="nodes" />';
 
   // Dependencies

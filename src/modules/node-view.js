@@ -1,7 +1,7 @@
 ( function(Node) {
 
   var template = 
-    '<h1><%= id %></h1>'+
+    '<h1><%= id %>: <%= label %></h1>'+
     '<div class="controls">'+
       '<button class="delete">delete</button>'+
     '</div>'+
@@ -54,6 +54,8 @@
         x: parseInt(this.el.style.left, 10),
         y: parseInt(this.el.style.top, 10)
       });
+      this.model.collection.sort();
+      this.model.trigger("move");
     },
     deleteMe: function(){
       this.model.collection.remove(this.model);

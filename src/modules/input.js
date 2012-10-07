@@ -2,7 +2,7 @@
  
   Input.Model = Backbone.Model.extend({
     defaults: {
-      label: "output",
+      id: "output",
       type: "all"
     },
     initialize: function() {

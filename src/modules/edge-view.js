@@ -13,19 +13,23 @@
     }
     return svg;
   };
- 
+  
   Edge.Views.Main = Backbone.View.extend({
     tagName: "div",
     className: "edge",
     positions: null,
     initialize: function() {
-      this.positions = {from:{}, to:{}};
       // Made SVG elements
       this.el = makeSVG("path", {});
+      this.model.source.node.on("move", this.render, this);
+      this.model.target.node.on("move", this.render, this);
     },
     render: function(){
-      // this.positions.from = this.model.source.view.holePosition();
-      // this.positions.to = this.model.target.view.holePosition();
+      this.positions = {};
+      this.positions.from = this.model.source.view.holePosition();
+      this.positions.to = this.model.target.view.holePosition();
+      var d = "M " + this.positions.from.left + " " + this.positions.from.top + " L " + this.positions.to.left + " " + this.positions.to.top;
+      this.el.setAttribute("d", d);
     }
   });
 

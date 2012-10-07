@@ -1,7 +1,7 @@
 ( function(Output) {
  
   var template = 
-    '<span class="label"><%= label %></span>'+
+    '<span class="label"><%= id %></span>'+
     '<span class="hole"></span>'+
     '<span class="plug"></span>';
 

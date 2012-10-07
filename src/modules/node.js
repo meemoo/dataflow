@@ -1,3 +1,7 @@
+/*
+*   NOTE: this has nothing to do with server-side Node.js (so far at least)
+*/
+
 ( function(Node) {
  
   // Dependencies
@@ -6,6 +10,7 @@
 
   Node.Model = Backbone.Model.extend({
     defaults: {
+      label: "",
       x: 200,
       y: 100
     },
@@ -22,18 +27,21 @@
     },
     inputs:[
       {
-        label: "input"
+        id: "input"
       }
     ],
     outputs:[
       {
-        label:"output"
+        id:"output"
       }
     ]
   });
 
   Node.Collection = Backbone.Collection.extend({
-    model: Node.Model
+    model: Node.Model,
+    comparator: function(node) {
+      return node.get("x");
+    }
   });
 
 }(Dataflow.module("node")) );

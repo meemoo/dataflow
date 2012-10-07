@@ -166,10 +166,13 @@
       if (!this.itemView) {
         throw 'Backbone.CollectionView needs an itemView property set. Alternatively override the getItemView method';
       }
-      return new this.itemView({
+      // !!!!!!!!!!!! added for Dataflow project !!!!!!!!!!!!
+      var view = new this.itemView({
         model: model,
         collection: this.collection
       });
+      model.view = view;
+      return view;
     };
 
     CollectionView.prototype.addModelView = function(model) {
