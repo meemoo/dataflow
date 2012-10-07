@@ -23,7 +23,9 @@
       this.model.source.node.on("move", this.render, this);
       this.model.target.node.on("move", this.render, this);
       // Made SVG elements
-      this.el = makeSVG("path", {});
+      this.el = makeSVG("path", {
+        // "filter": "url(#drop-shadow)"
+      });
     },
     render: function(){
       this.positions = {};
@@ -35,11 +37,22 @@
         " L " + (this.positions.to.left-40) + " " + this.positions.to.top +
         " L " + this.positions.to.left + " " + this.positions.to.top;
       this.el.setAttribute("d", d);
+      // Bounding box
+      this.model.collection.view.sizeSvg();
     }
   });
 
   Edge.Views.Collection = Backbone.CollectionView.extend({
-    itemView: Edge.Views.Main
+    itemView: Edge.Views.Main,
+    sizeSvg: function(){
+      // TODO timeout to not do this with many edge resizes at once
+      try{
+        var svg = this.collection.graph.view.$('.svg-edges')[0];
+        var rect = svg.getBBox();
+        svg.setAttribute("width", Math.round(rect.x+rect.width+50));
+        svg.setAttribute("height", Math.round(rect.y+rect.height+50));
+      } catch (error) {}
+    }
   }); 
 
 }(Dataflow.module("edge")) );
