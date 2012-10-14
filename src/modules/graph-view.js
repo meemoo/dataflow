@@ -3,12 +3,12 @@
   var template = 
     '<div class="edges">'+
       '<svg class="svg-edges" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="1000" height="1000">'+
-        '<defs>'+
-          '<filter id="drop-shadow" >'+
-            '<feOffset in="SourceAlpha" result="the-shadow" dx="1" dy="1"/>'+
-            '<feBlend in="SourceGraphic" in2="the-shadow" mode="normal" />'+
-          '</filter>'+
-        '</defs>'+
+        // '<defs>'+  
+        //   '<filter id="drop-shadow" >'+ // FIXME Crops the edge when there is no slope
+        //     '<feOffset in="SourceAlpha" result="the-shadow" dx="1" dy="1"/>'+
+        //     '<feBlend in="SourceGraphic" in2="the-shadow" mode="normal" />'+
+        //   '</filter>'+
+        // '</defs>'+
       '</svg>'+
     '</div>'+
     '<div class="nodes" />';

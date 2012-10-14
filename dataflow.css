@@ -28,6 +28,9 @@
   padding: 3px;
   background-color: rgba(255,255,255, 0.9);
 }
+  .node.helper {
+    border-style: dotted;
+  }
   .node h1 {
     font-size: 20px;
   }

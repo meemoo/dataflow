@@ -41,7 +41,15 @@
       this.model.outputs.view.renderAllItems();
       this.outputs = this.model.outputs.view;
 
-      this.$el.draggable();
+      var self = this;
+      this.$el.draggable({
+        helper: function(){
+          var node = self.$el;
+          var width = node.width();
+          var height = node.height();
+          return $('<div class="node helper" style="width:'+width+'px; height:'+height+'px">');
+        }
+      });
     },
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -51,10 +59,16 @@
 
       return this;
     },
-    dragStop: function(){
+    dragStop: function(event, ui){
+      var x = parseInt(ui.position.left, 10)
+      var y = parseInt(ui.position.top, 10)
+      this.$el.css({
+        left: x,
+        top: y
+      });
       this.model.set({
-        x: parseInt(this.el.style.left, 10),
-        y: parseInt(this.el.style.top, 10)
+        x: x,
+        y: y
       });
       this.model.collection.sort();
       this.model.trigger("move");
