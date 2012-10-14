@@ -1,0 +1,35 @@
+{
+  "name": "dataflow",
+  "title": "dataflow.js",
+  "description": "jQueryUI-based data flow graph editor",
+  "version": "0.0.1",
+  "homepage": "https://github.com/meemoo/dataflow",
+  "author": {
+    "name": "Forrest Oliphant",
+    "email": "forrest@sembiki.com",
+    "url": "http://meemoo.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/meemoo/dataflow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/meemoo/dataflow/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/meemoo/dataflow/blob/master/LICENSE-MIT"
+    },
+    {
+      "type": "GPL",
+      "url": "https://github.com/meemoo/dataflow/blob/master/LICENSE-GPL"
+    }
+  ],
+  "dependencies": {
+    "jquery": ">= 1.8.2",
+    "backbone": ">= 0.9.2",
+    "underscore": ">= 1.4.1"
+  },
+  "keywords": []
+}
