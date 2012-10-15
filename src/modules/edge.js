@@ -7,6 +7,9 @@
       var nodes = this.collection.graph.nodes;
       this.source = nodes.get(this.get("source").node).outputs.get(this.get("source").port);
       this.target = nodes.get(this.get("target").node).inputs.get(this.get("target").port);
+    },
+    isConnectedToNode: function(node) {
+      return ( this.source.node === node || this.target.node === node );
     }
   });
 

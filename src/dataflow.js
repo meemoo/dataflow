@@ -20,6 +20,9 @@ var Dataflow = {
     };
   }()),
   loadGraph: function(source) {
+    if (this.graph) {
+      this.graph.remove();
+    }
     var Graph = this.module("graph");
     var newGraph = new Graph.Model(source);
     newGraph.view = new Graph.Views.Main({model: newGraph});

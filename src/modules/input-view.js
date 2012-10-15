@@ -11,6 +11,8 @@
     className: "port in",
     initialize: function() {
       this.$el.addClass(this.model.get("type"));
+      // this.$(".plug").draggable();
+      // this.$(".hole").draggable();
     },
     render: function(){
       this.$el.html(this.template(this.model.toJSON()));

@@ -19,6 +19,7 @@
     className: "edge",
     positions: null,
     initialize: function() {
+      this.positions = {};
       // Render on source/target view move
       this.model.source.node.on("move", this.render, this);
       this.model.target.node.on("move", this.render, this);
@@ -26,9 +27,9 @@
       this.el = makeSVG("path", {
         // "filter": "url(#drop-shadow)"
       });
+      this.$el = $(this.el);
     },
     render: function(){
-      this.positions = {};
       this.positions.from = this.model.source.view.holePosition();
       this.positions.to = this.model.target.view.holePosition();
       this.el.setAttribute("d", this.edgePath(this.positions));
@@ -36,10 +37,13 @@
       this.model.collection.view.sizeSvg();
     },
     edgePath: function(positions){
-      return "M " + this.positions.from.left + " " + this.positions.from.top + 
-        " L " + (this.positions.from.left+40) + " " + this.positions.from.top +
-        " L " + (this.positions.to.left-40) + " " + this.positions.to.top +
-        " L " + this.positions.to.left + " " + this.positions.to.top;
+      return "M " + positions.from.left + " " + positions.from.top + 
+        " L " + (positions.from.left+40) + " " + positions.from.top +
+        " L " + (positions.to.left-40) + " " + positions.to.top +
+        " L " + positions.to.left + " " + positions.to.top;
+    },
+    remove: function(){
+      this.$el.remove();
     }
   });
 

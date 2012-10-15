@@ -24,12 +24,11 @@
   display: inline-block;
   width: 200px;
   border: 1px black solid;
-  margin: 1px;
-  padding: 3px;
-  background-color: rgba(255,255,255, 0.9);
+  background-color: rgba(255, 255, 255, 0.7);
 }
   .node.helper {
     border-style: dotted;
+    background-color: rgba(255, 255, 255, 0.5);
   }
   .node h1 {
     font-size: 20px;
@@ -38,14 +37,12 @@
 .ins {
   text-align: left;
   margin-bottom: 10px;
-  margin-left: -45px;
 }
   .in .label {
     margin-left: 10px;
   }
 .outs {
   text-align: right;
-  margin-right: -45px;
 }
   .out .label {
     margin-right: 10px;
@@ -58,7 +55,7 @@
   .ports .port {
     border: 1px gray solid;
     margin: 0;
-    padding: 3px;
+    padding: 0;
   }
     .port .hole {
       width: 10px;
@@ -71,5 +68,6 @@
       width: 10px;
       height: 10px;
       display: inline-block;
+      border: 1px black solid;
       padding: 3px;
     }

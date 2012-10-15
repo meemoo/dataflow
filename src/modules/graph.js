@@ -22,8 +22,16 @@
       nodes.on("all", function(){
         this.trigger("change");
       }, this);
+      nodes.on("remove", function(node){
+        node.remove();
+      }, this);
       edges.on("all", function(){
         this.trigger("change");
+      }, this);
+    },
+    remove: function(){
+      this.nodes.each(function(node){
+        node.remove();
       }, this);
     }
   });

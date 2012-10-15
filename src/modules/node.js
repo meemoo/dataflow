@@ -27,6 +27,22 @@
         output.node = this;
       }, this);
     },
+    remove: function(){
+      // Node removed from graph's nodes collection
+      this.collection.graph.edges.each(function(edge){
+        // Remove connected edges
+        if (edge.isConnectedToNode(this)){
+          edge.collection.remove(edge);
+        }
+      }, this);
+      this.unload();
+    },
+    unload: function(){
+      // Stop any processes that need to be stopped
+    },
+    toString: function(){
+      return this.id + ": " + this.get("label");
+    },
     inputs:[
       {
         id: "input"
@@ -42,6 +58,7 @@
   Node.Collection = Backbone.Collection.extend({
     model: Node.Model,
     comparator: function(node) {
+      // Sort nodes by x position
       return node.get("x");
     }
   });

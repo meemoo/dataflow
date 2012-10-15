@@ -21,7 +21,7 @@
     },
     initialize: function() {
       // Initial position
-      this.$el.offset({
+      this.$el.css({
         left: this.model.get("x"),
         top: this.model.get("y")
       });
@@ -60,8 +60,8 @@
       return this;
     },
     dragStop: function(event, ui){
-      var x = parseInt(ui.position.left, 10)
-      var y = parseInt(ui.position.top, 10)
+      var x = parseInt(ui.position.left, 10);
+      var y = parseInt(ui.position.top, 10);
       this.$el.css({
         left: x,
         top: y
