@@ -15,6 +15,7 @@
       y: 100
     },
     initialize: function() {
+      this.graph = this.get("graph");
       // Add i/o collections
       this.inputs = new Input.Collection(this.inputs);
       this.inputs.node = this;
@@ -42,6 +43,14 @@
     },
     toString: function(){
       return this.id + ": " + this.get("label");
+    },
+    toJSON: function(){
+      return {
+        id: this.get("id"),
+        label: this.get("label"),
+        x: this.get("x"),
+        y: this.get("y")
+      };
     },
     inputs:[
       {

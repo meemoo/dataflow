@@ -6,14 +6,28 @@
 
   Graph.Model = Backbone.Model.extend({
     initialize: function() {
+      var i;
       // Set up nodes (convert nodes object array to backbone model collection)
       var nodes = this.nodes = new Node.Collection();
       nodes.graph = this;
-      nodes.add(this.get("nodes"));
+      var nodesArray = this.get("nodes");
+      for(i=0; i<nodesArray.length; i++) {
+        var node = nodesArray[i];
+        node.graph = this;
+        node = new Node.Model(node);
+        nodes.add(node);
+      }
       // Set up edges
       var edges = this.edges = new Edge.Collection();
       edges.graph = this;
-      edges.add(this.get("edges"));
+      var edgesArray = this.get("edges");
+      for(i=0; i<edgesArray.length; i++) {
+        var edge = edgesArray[i];
+        edge.graph = this;
+        edge.id = edge.source.node+":"+edge.source.port+"->"+edge.target.node+":"+edge.target.port;
+        edge = new Edge.Model(edge);
+        edges.add(edge);
+      }
       // Attach them
       this.set({
         nodes: nodes,

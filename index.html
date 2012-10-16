@@ -50,14 +50,17 @@
   <script>
     $(function($) {
 
-      // Load test graph
-      Dataflow.loadGraph({"nodes":[{"id":2,"label":"node two","x":620,"y":100},{"id":1,"label":"node one","x":290,"y":100}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}}]});
+      function loadGraph(graph){
+        Dataflow.loadGraph(graph);
+        // On change update code view
+        Dataflow.graph.on("change", function(){
+          $("#code").val( JSON.stringify(Dataflow.graph.toJSON(), null, "  ") );
+        });
+        Dataflow.graph.trigger("change");
+      };
 
-      // On change update code view
-      Dataflow.graph.on("change", function(){
-        $("#code").val( JSON.stringify(Dataflow.graph.toJSON(), null, "  ") );
-      });
-      Dataflow.graph.trigger("change");
+      // Load test graph
+      loadGraph({"nodes":[{"id":2,"label":"node two","x":620,"y":100},{"id":1,"label":"node one","x":290,"y":100}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}}]});
 
       // Add nodes to test graph
       var Node = Dataflow.module("node");
@@ -66,6 +69,7 @@
         var newNode = new Node.Model({
           "id": id
         });
+        newNode.graph = Dataflow.graph;
         Dataflow.graph.get('nodes').add(newNode);
         $('#nodeid').val(id+"a");
         return false;
@@ -75,10 +79,7 @@
       $("#source").submit(function(){
         try {
           var graph = JSON.parse( $("#code").val() );
-          Dataflow.loadGraph(graph);
-          Dataflow.graph.on("change", function(){
-            $("#code").val( JSON.stringify(Dataflow.graph.toJSON(), null, "  ") );
-          });
+          loadGraph(graph);
         } catch(error){
           alert("Invalid JSON");
         }

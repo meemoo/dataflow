@@ -70,7 +70,7 @@
         x: x,
         y: y
       });
-      this.model.collection.sort();
+      this.model.collection.sort({silent: true});
       this.model.trigger("move");
     },
     deleteMe: function(){

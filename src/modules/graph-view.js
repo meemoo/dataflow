@@ -47,12 +47,9 @@
       var edges = this.model.get("edges");
       edges.view.render();
       edges.view.renderAllItems();
-      // Do this without jQuery because SVG
-      var graphSVGElement = this.$('.svg-edges')[0];
-      _.each(edges.view.viewsByCid, function(edgeView){
-        graphSVGElement.appendChild(edgeView.el);
-      }, this);
-      // HACK to get them to show on load
+      // Edge SVG path is appended in edge view initialize
+
+      // HACK to get them to show correctly on load
       var self = this;
       _.defer(function(){
         self.rerenderEdges();
