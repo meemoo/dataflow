@@ -30,12 +30,18 @@
     },
     remove: function(){
       // Node removed from graph's nodes collection
-      this.collection.graph.edges.each(function(edge){
-        // Remove connected edges
+      var relatedEdges = [];
+      this.graph.edges.each(function(edge){
+        // Find connected edges
         if (edge.isConnectedToNode(this)){
-          edge.collection.remove(edge);
+          relatedEdges.push(edge);
         }
       }, this);
+      for (var i=0; i<relatedEdges.length; i++) {
+        // Remove connected edges
+        var edge = relatedEdges[i];
+        edge.collection.remove(edge);
+      }
       this.unload();
     },
     unload: function(){

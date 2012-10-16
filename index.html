@@ -67,9 +67,9 @@
       $("#add").submit(function(){
         var id = $('#nodeid').val();
         var newNode = new Node.Model({
-          "id": id
+          id: id,
+          graph: Dataflow.graph
         });
-        newNode.graph = Dataflow.graph;
         Dataflow.graph.get('nodes').add(newNode);
         $('#nodeid').val(id+"a");
         return false;
