@@ -65,19 +65,19 @@
       // Log changes
       Dataflow.on("node:add", function(graph, node){
         $("#loglist").append("<li>node added: " + node.toString() + "</li>");
-        $("#log").prop({ scrollTop: $("#log").prop("scrollHeight")+5000 });
+        $("#log").scrollTop( $("#log").prop("scrollHeight") );
       });
       Dataflow.on("node:remove", function(graph, node){
         $("#loglist").append("<li>node removed: " + node.toString() + "</li>");
-        $("#log").prop({ scrollTop: $("#log").prop("scrollHeight")+5000 });
+        $("#log").scrollTop( $("#log").prop("scrollHeight") );
       });
       Dataflow.on("edge:add", function(graph, edge){
         $("#loglist").append("<li>edge added: " + edge.toString() + "</li>");
-        $("#log").prop({ scrollTop: $("#log").prop("scrollHeight")+5000 });
+        $("#log").scrollTop( $("#log").prop("scrollHeight") );
       });
       Dataflow.on("edge:remove", function(graph, edge){
         $("#loglist").append("<li>edge removed: " + edge.toString() + "</li>");
-        $("#log").prop({ scrollTop: $("#log").prop("scrollHeight")+5000 });
+        $("#log").scrollTop( $("#log").prop("scrollHeight") );
       });
 
       // Load test graph
