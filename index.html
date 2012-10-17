@@ -47,8 +47,8 @@
     <textarea id="code" style="width: 230px; height: 400px;"></textarea><br/>
     <input id="apply" type="submit" value="apply changes" />
   </form>
-  <div id="log">
-    log: <br />
+  <div id="log" style="width:400px; height: 250px; overflow: auto;">
+    <ol id="loglist" />
   </div>
   <script>
     $(function($) {
@@ -64,16 +64,20 @@
       });
       // Log changes
       Dataflow.on("node:add", function(graph, node){
-        $("#log").append("node added: " + node.toString() + "<br />");
+        $("#loglist").append("<li>node added: " + node.toString() + "</li>");
+        $("#log").attr({ scrollTop: $("#log").prop("scrollHeight")+5000 });
       });
       Dataflow.on("node:remove", function(graph, node){
-        $("#log").append("node removed: " + node.toString() + "<br />");
+        $("#loglist").append("<li>node removed: " + node.toString() + "</li>");
+        $("#log").attr({ scrollTop: $("#log").prop("scrollHeight")+5000 });
       });
       Dataflow.on("edge:add", function(graph, edge){
-        $("#log").append("edge added: " + edge.toString() + "<br />");
+        $("#loglist").append("<li>edge added: " + edge.toString() + "</li>");
+        $("#log").attr({ scrollTop: $("#log").prop("scrollHeight")+5000 });
       });
       Dataflow.on("edge:remove", function(graph, edge){
-        $("#log").append("edge removed: " + edge.toString() + "<br />");
+        $("#loglist").append("<li>edge removed: " + edge.toString() + "</li>");
+        $("#log").attr({ scrollTop: $("#log").prop("scrollHeight")+5000 });
       });
 
       // Load test graph
