@@ -15,6 +15,7 @@
       "dragstart .hole":  "newEdgeStart",
       "drag      .hole":  "newEdgeDrag",
       "dragstop  .hole":  "newEdgeStop",
+      "click     .plug":  "highlightEdge",
       "dragstart .plug":  "changeEdgeStart",
       "drag      .plug":  "changeEdgeDrag",
       "dragstop  .plug":  "changeEdgeStop",
@@ -26,30 +27,27 @@
       var self = this;
       this.$(".plug").draggable({
         helper: function(){
-          return self.dragHelper();
+          return $('<span class="plug in helper" />');
         },
         disabled: true
       });
       this.$(".hole").draggable({
         helper: function(){
-          return self.dragHelper();
+          return $('<span class="plug out helper" />')
+            .data({port: self.model});
         }
       });
       this.$el.droppable({
-        accept: ".plug.out, .hole.out",
+        accept: ".plug.in, .hole.out",
         activeClassType: "droppable-hover"
       });
-    },
-    dragHelper: function(){
-      return $('<span class="plug out helper" />')
-        .data({port: this.model});
     },
     render: function(){
     },
     newEdgeStart: function(event, ui){
       // Don't drag node
       event.stopPropagation();
-      this.previewEdge = new Edge.Model({
+      this.previewEdgeNew = new Edge.Model({
         target: {
           node: this.model.node.id,
           port: this.model.id
@@ -57,38 +55,80 @@
         graph: this.model.node.graph,
         preview: true
       });
-      this.previewEdgeView = new Edge.Views.Main({
-        model: this.previewEdge
+      this.previewEdgeNewView = new Edge.Views.Main({
+        model: this.previewEdgeNew
       });
       var graphSVGElement = this.model.node.graph.view.$('.svg-edges')[0];
-      graphSVGElement.appendChild(this.previewEdgeView.el);
+      graphSVGElement.appendChild(this.previewEdgeNewView.el);
     },
     newEdgeDrag: function(event, ui){
       // Don't drag node
       event.stopPropagation();
       this.model.node.graph.edges.view.sizeSvg();
-      this.previewEdgeView.render(ui.offset);
+      this.previewEdgeNewView.render(ui.offset);
     },
     newEdgeStop: function(event, ui){
       // Don't drag node
       event.stopPropagation();
 
       // Clean up preview edge
-      this.previewEdgeView.remove();
-      delete this.previewEdge;
-      delete this.previewEdgeView;
+      this.previewEdgeNewView.remove();
+      delete this.previewEdgeNew;
+      delete this.previewEdgeNewView;
+    },
+    highlightEdge: function() {
+      if (this.isConnected){
+      }
     },
     changeEdgeStart: function(event, ui){
       // Don't drag node
       event.stopPropagation();
+
+      if (this.isConnected){
+        var changeEdge = this.model.node.graph.edges.find(function(edge){
+          return edge.target === this.model;
+        }, this);
+        if (changeEdge){
+          this.changeEdge = changeEdge;
+          ui.helper.data({
+            port: changeEdge.source
+          });
+          this.previewEdgeChange = new Edge.Model({
+            source: changeEdge.get("source"),
+            graph: this.model.node.graph,
+            preview: true
+          });
+          this.previewEdgeChangeView = new Edge.Views.Main({
+            model: this.previewEdgeChange
+          });
+          var graphSVGElement = this.model.node.graph.view.$('.svg-edges')[0];
+          graphSVGElement.appendChild(this.previewEdgeChangeView.el);
+        }
+      }
     },
     changeEdgeDrag: function(event, ui){
       // Don't drag node
       event.stopPropagation();
+      
+      if (this.previewEdgeChange) {
+        this.model.node.graph.edges.view.sizeSvg();
+        this.previewEdgeChangeView.render(ui.offset);
+      }
     },
     changeEdgeStop: function(event, ui){
       // Don't drag node
       event.stopPropagation();
+
+      // Clean up preview edge
+      if (this.previewEdgeChange) {
+        this.previewEdgeChangeView.remove();
+        if (this.changeEdge) {
+          this.changeEdge.collection.remove(this.changeEdge);
+          this.changeEdge = null;
+        }
+        delete this.previewEdgeChange;
+        delete this.previewEdgeChangeView;
+      }
     },
     connectEdge: function(event, ui) {
       // Dropped to this el
@@ -109,18 +149,22 @@
     holePosition: function(){
       return this.$(".hole").offset();
     },
+    isConnected: false,
     plugSetActive: function(){
       this.$(".plug").draggable("enable");
       this.$(".plug").addClass("active");
+      this.isConnected = true;
     },
     plugCheckActive: function(){
       var isConnected = this.model.node.graph.edges.some(function(edge){
-        var port = edge.get("target");
-        return (port.node === this.model.node.id && port.port === this.model.id);
+        // var port = edge.get("target");
+        // return (port.node === this.model.node.id && port.port === this.model.id);
+        return (edge.target === this.model);
       }, this);
       if (!isConnected) {
         this.$(".plug").draggable("disable");
         this.$(".plug").removeClass("active");
+        this.isConnected = false;
       }
     }
   });

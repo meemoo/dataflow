@@ -71,6 +71,7 @@
       height: 20px;
       display: inline-block;
     }
-      .port .plug.active {
+      .port .plug.active,
+      .port .plug.helper {
         background-color: #AAA;
       }
