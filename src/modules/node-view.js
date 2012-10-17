@@ -71,7 +71,7 @@
         y: y
       });
       this.model.collection.sort({silent: true});
-      this.model.trigger("move");
+      this.model.trigger("move", this.model);
     },
     deleteMe: function(){
       this.model.collection.remove(this.model);

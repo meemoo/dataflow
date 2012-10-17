@@ -37,6 +37,7 @@
         this.trigger("change");
       }, this);
       nodes.on("remove", function(node){
+        // Remove related edges and unload running processes if defined
         node.remove();
       }, this);
       edges.on("all", function(){
@@ -44,9 +45,13 @@
       }, this);
     },
     remove: function(){
+      var nodesArray = [];
       this.nodes.each(function(node){
-        node.remove();
+        nodesArray.push(node);
       }, this);
+      for (var i=0; i<nodesArray.length; i++) {
+        this.nodes.remove(nodesArray[i]);
+      }
     }
   });
 

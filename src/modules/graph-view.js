@@ -2,7 +2,7 @@
  
   var template = 
     '<div class="edges">'+
-      '<svg class="svg-edges" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="1000" height="1000">'+
+      '<svg class="svg-edges" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="800" height="800">'+
         // '<defs>'+  
         //   '<filter id="drop-shadow" >'+ // FIXME Crops the edge when there is no slope
         //     '<feOffset in="SourceAlpha" result="the-shadow" dx="1" dy="1"/>'+
@@ -49,7 +49,7 @@
       edges.view.renderAllItems();
       // Edge SVG path is appended in edge view initialize
 
-      // HACK to get them to show correctly on load
+      // HACK to get them to show correct positions on load
       var self = this;
       _.defer(function(){
         self.rerenderEdges();
