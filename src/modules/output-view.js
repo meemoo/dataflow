@@ -94,7 +94,7 @@
       // Dropped to this el
       var otherPort = ui.helper.data("port");
       this.model.node.graph.edges.add({
-        id: this.model.node.id+":"+this.model.id+"->"+otherPort.node.id+":"+otherPort.id,
+        id: this.model.node.id+":"+this.model.id+"→"+otherPort.node.id+":"+otherPort.id,
         graph: this.model.node.graph,
         source: {
           node: this.model.node.id,

@@ -29,7 +29,7 @@
       return ( this.source.node === node || this.target.node === node );
     },
     toString: function(){
-      return this.get("source").node+":"+this.get("source").port+"->"+this.get("target").node+":"+this.get("target").port;
+      return this.get("source").node+":"+this.get("source").port+"→"+this.get("target").node+":"+this.get("target").port;
     },
     toJSON: function(){
       return {

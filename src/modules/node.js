@@ -48,7 +48,7 @@
       // Stop any processes that need to be stopped
     },
     toString: function(){
-      return this.id + ": " + this.get("label");
+      return this.id;
     },
     toJSON: function(){
       return {

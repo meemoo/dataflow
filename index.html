@@ -44,9 +44,12 @@
     <input id="addnode" type="submit" value="add node" />
   </form>
   <form id="source">
-    <textarea id="code" style="width: 230px; height: 450px;"></textarea><br/>
+    <textarea id="code" style="width: 230px; height: 400px;"></textarea><br/>
     <input id="apply" type="submit" value="apply changes" />
   </form>
+  <div id="log">
+    log: <br />
+  </div>
   <script>
     $(function($) {
 
@@ -55,6 +58,18 @@
         // On change update code view
         Dataflow.graph.on("change", function(){
           $("#code").val( JSON.stringify(Dataflow.graph.toJSON(), null, "  ") );
+        });
+        Dataflow.graph.nodes.on("add", function(node){
+          $("#log").append("node added: " + node.toString() + "<br />");
+        });
+        Dataflow.graph.nodes.on("remove", function(node){
+          $("#log").append("node removed: " + node.toString() + "<br />");
+        });
+        Dataflow.graph.edges.on("add", function(edge){
+          $("#log").append("edge added: " + edge.toString() + "<br />");
+        });
+        Dataflow.graph.edges.on("remove", function(edge){
+          $("#log").append("edge removed: " + edge.toString() + "<br />");
         });
         Dataflow.graph.trigger("change");
       };
