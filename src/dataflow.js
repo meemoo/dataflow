@@ -5,8 +5,7 @@
     // Create this closure to contain the cached modules
     modules: {},
     module: function(name) {
-      // Create a new module reference scaffold or load an
-      // existing module.
+      // Create a new module reference scaffold or load an existing module.
       // If this module has already been created, return it.
       if (this.modules[name]) {
         return this.modules[name];
