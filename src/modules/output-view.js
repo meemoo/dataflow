@@ -66,6 +66,7 @@
     newEdgeDrag: function(event, ui){
       // Don't drag node
       event.stopPropagation();
+      this.model.node.graph.edges.view.sizeSvg();
       this.previewEdgeView.render(ui.offset);
     },
     newEdgeStop: function(event, ui){

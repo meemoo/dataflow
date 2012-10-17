@@ -43,10 +43,10 @@
       });
       this.$el = $(this.el);
       // Add el to SVG
-      if (this.model.collection) {
+      if (this.model.graph) {
         var self = this;
         _.defer(function(){
-          self.model.collection.graph.view.$('.svg-edges')[0].appendChild(self.el);
+          self.model.graph.view.$('.svg-edges')[0].appendChild(self.el);
         }, this);
       }
     },
@@ -72,8 +72,8 @@
     },
     edgePath: function(positions){
       return "M " + positions.from.left + " " + positions.from.top + 
-        " L " + (positions.from.left+40) + " " + positions.from.top +
-        " L " + (positions.to.left-40) + " " + positions.to.top +
+        " L " + (positions.from.left+50) + " " + positions.from.top +
+        " L " + (positions.to.left-50) + " " + positions.to.top +
         " L " + positions.to.left + " " + positions.to.top;
     },
     remove: function(){
