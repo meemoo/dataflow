@@ -25,6 +25,8 @@
 
       // For debugging
       this.graph = newGraph;
+
+      return newGraph;
     }
   });
 

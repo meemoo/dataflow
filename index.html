@@ -54,25 +54,27 @@
     $(function($) {
 
       function loadGraph(graph){
-        Dataflow.loadGraph(graph);
-        // On change update code view
-        Dataflow.graph.on("change", function(){
-          $("#code").val( JSON.stringify(Dataflow.graph.toJSON(), null, "  ") );
-        });
-        Dataflow.graph.nodes.on("add", function(node){
-          $("#log").append("node added: " + node.toString() + "<br />");
-        });
-        Dataflow.graph.nodes.on("remove", function(node){
-          $("#log").append("node removed: " + node.toString() + "<br />");
-        });
-        Dataflow.graph.edges.on("add", function(edge){
-          $("#log").append("edge added: " + edge.toString() + "<br />");
-        });
-        Dataflow.graph.edges.on("remove", function(edge){
-          $("#log").append("edge removed: " + edge.toString() + "<br />");
-        });
-        Dataflow.graph.trigger("change");
+        var g = Dataflow.loadGraph(graph);
+        g.trigger("change");
       };
+
+      // On change update code view
+      Dataflow.on("change", function(graph){
+        $("#code").val( JSON.stringify(graph.toJSON(), null, "  ") );
+      });
+      // Log changes
+      Dataflow.on("node:add", function(graph, node){
+        $("#log").append("node added: " + node.toString() + "<br />");
+      });
+      Dataflow.on("node:remove", function(graph, node){
+        $("#log").append("node removed: " + node.toString() + "<br />");
+      });
+      Dataflow.on("edge:add", function(graph, edge){
+        $("#log").append("edge added: " + edge.toString() + "<br />");
+      });
+      Dataflow.on("edge:remove", function(graph, edge){
+        $("#log").append("edge removed: " + edge.toString() + "<br />");
+      });
 
       // Load test graph
       loadGraph({"nodes":[{"id":2,"label":"node two","x":620,"y":100},{"id":1,"label":"node one","x":290,"y":100}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}}]});
