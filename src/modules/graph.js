@@ -19,9 +19,9 @@
         Dataflow.trigger("node:add", this, node);
       }, this);
       nodes.on("remove", function(node){
-        Dataflow.trigger("node:remove", this, node);
         // Remove related edges and unload running processes if defined
         node.remove();
+        Dataflow.trigger("node:remove", this, node);
       }, this);
       // Convert nodes array to backbone collection
       var nodesArray = this.get("nodes");
