@@ -6,6 +6,7 @@
       type: "all"
     },
     initialize: function() {
+      this.node = this.get("node");
     }
   });
 

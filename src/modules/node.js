@@ -11,31 +11,43 @@
   Node.Model = Backbone.Model.extend({
     defaults: {
       label: "",
+      type: "test",
       x: 200,
       y: 100
     },
     initialize: function() {
       this.graph = this.get("graph");
-      // Add i/o collections
-      this.inputs = new Input.Collection(this.inputs);
+      this.type = this.get("type");
+
+      // Convert inputs array to backbone collection
+      var inputArray = this.inputs;
+      this.inputs = new Input.Collection();
       this.inputs.node = this;
-      this.inputs.each(function(input){
+      for(var i=0; i<inputArray.length; i++) {
+        var input = inputArray[i];
         input.node = this;
-      }, this);
-      this.outputs = new Output.Collection(this.outputs);
+        input = new Input.Model(input);
+        this.inputs.add(input);
+      }
+
+      // Convert outputs array to backbone collection
+      var outputArray = this.outputs;
+      this.outputs = new Input.Collection();
       this.outputs.node = this;
-      this.outputs.each(function(output){
+      for(i=0; i<outputArray.length; i++) {
+        var output = outputArray[i];
         output.node = this;
-      }, this);
+        output = new Input.Model(output);
+        this.outputs.add(output);
+      }
+
     },
     remove: function(){
       // Node removed from graph's nodes collection
-      var relatedEdges = [];
-      this.graph.edges.each(function(edge){
+      // Remove related edges
+      var relatedEdges = this.graph.edges.filter(function(edge){
         // Find connected edges
-        if (edge.isConnectedToNode(this)){
-          relatedEdges.push(edge);
-        }
+        return edge.isConnectedToNode(this);
       }, this);
       for (var i=0; i<relatedEdges.length; i++) {
         // Remove connected edges
@@ -54,6 +66,7 @@
       return {
         id: this.get("id"),
         label: this.get("label"),
+        type: this.get("type"),
         x: this.get("x"),
         y: this.get("y")
       };

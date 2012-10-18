@@ -2,7 +2,7 @@
 
 (function(){
   var App = Backbone.Model.extend({
-    // Create this closure to contain the cached modules
+    // Create the object to contain the modules
     modules: {},
     module: function(name) {
       // Create a new module reference scaffold or load an existing module.
@@ -13,6 +13,17 @@
       // Create a module and save it under this name
       return this.modules[name] = { Views: {} };
     },
+    // // Create the object to contain the nodes
+    // nodes: {},
+    // node: function(name) {
+    //   // Create a new node reference scaffold or load an existing node.
+    //   // If this node has already been created, return it.
+    //   if (this.nodes[name]) {
+    //     return this.nodes[name];
+    //   }
+    //   // Create a node and save it under this name
+    //   return this.nodes[name] = { Views: {} };
+    // },
     loadGraph: function(source) {
       if (this.graph) {
         this.graph.remove();

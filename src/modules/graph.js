@@ -66,12 +66,8 @@
       }, this);
     },
     remove: function(){
-      var nodesArray = [];
-      this.nodes.each(function(node){
-        nodesArray.push(node);
-      }, this);
-      for (var i=0; i<nodesArray.length; i++) {
-        this.nodes.remove(nodesArray[i]);
+      while(this.nodes.length > 0){
+        this.nodes.remove(this.nodes.at(0));
       }
     }
   });

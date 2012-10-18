@@ -63,8 +63,8 @@
     newEdgeDrag: function(event, ui){
       // Don't drag node
       event.stopPropagation();
-      this.model.node.graph.edges.view.sizeSvg();
       this.previewEdgeView.render(ui.offset);
+      this.model.node.graph.edges.view.sizeSvg();
     },
     newEdgeStop: function(event, ui){
       // Don't drag node
@@ -106,8 +106,8 @@
       event.stopPropagation();
 
       if (this.previewEdgeChange) {
-        this.model.node.graph.edges.view.sizeSvg();
         this.previewEdgeChangeView.render(ui.offset);
+        this.model.node.graph.edges.view.sizeSvg();
       }
     },
     changeEdgeStop: function(event, ui){
@@ -118,7 +118,7 @@
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.remove();
         if (this.changeEdge) {
-          if (ui.helper.data("connected")){
+          if (ui.helper.data("removeChangeEdge")){
             this.changeEdge.collection.remove(this.changeEdge);
           }
           this.changeEdge = null;
@@ -144,7 +144,7 @@
         }
       });
       // Tells changeEdgeStop to remove to old edge
-      ui.helper.data("connected", (oldLength < this.model.node.graph.edges.length));
+      ui.helper.data("removeChangeEdge", (oldLength < this.model.node.graph.edges.length));
     },
     holePosition: function () {
       return this.$(".hole").offset();
@@ -156,8 +156,6 @@
     },
     plugCheckActive: function(){
       var isConnected = this.model.node.graph.edges.some(function(edge){
-        // var port = edge.get("source");
-        // return (port.node === this.model.node.id && port.port === this.model.id);
         return (edge.source === this.model);
       }, this);
       if (!isConnected) {
