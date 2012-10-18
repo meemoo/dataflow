@@ -123,7 +123,9 @@
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.remove();
         if (this.changeEdge) {
-          this.changeEdge.collection.remove(this.changeEdge);
+          if (ui.helper.data("connected")){
+            this.changeEdge.collection.remove(this.changeEdge);
+          }
           this.changeEdge = null;
         }
         delete this.previewEdgeChange;
@@ -133,6 +135,7 @@
     connectEdge: function(event, ui) {
       // Dropped to this el
       var otherPort = ui.helper.data("port");
+      var oldLength = this.model.node.graph.edges.length;
       this.model.node.graph.edges.add({
         id: otherPort.node.id+":"+otherPort.id+"→"+this.model.node.id+":"+this.model.id,
         graph: this.model.node.graph,
@@ -145,6 +148,8 @@
           port: this.model.id
         }
       });
+      // Tells changeEdgeStop to remove to old edge
+      ui.helper.data("connected", (oldLength < this.model.node.graph.edges.length));
     },
     holePosition: function(){
       return this.$(".hole").offset();
