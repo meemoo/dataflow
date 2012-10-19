@@ -5,6 +5,7 @@
     '<div class="controls">'+
       '<button class="delete">delete</button>'+
     '</div>'+
+    // '<button class="edit">edit</button>'+
     '<div class="ports ins" />'+
     '<div class="ports outs" />';
 
@@ -33,7 +34,7 @@
       this.model.inputs.view.render();
       this.model.inputs.view.renderAllItems();
       this.inputs = this.model.inputs.view;
-      //
+      // Outs
       this.model.outputs.view = new Output.Views.Collection({
         collection: this.model.outputs
       });

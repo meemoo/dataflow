@@ -125,6 +125,8 @@
         if (this.changeEdge) {
           if (ui.helper.data("removeChangeEdge")){
             this.changeEdge.collection.remove(this.changeEdge);
+          } else {
+            //TODO delete edge confirm
           }
           this.changeEdge = null;
         }

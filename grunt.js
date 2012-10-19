@@ -13,14 +13,32 @@ module.exports = function(grunt) {
     },
     concat: {
       dist: {
-        src: ['<banner:meta.banner>', '<file_strip_banner:src/<%= pkg.name %>.js>'],
-        dest: 'dist/<%= pkg.name %>.js'
+        src: [
+          '<banner:meta.banner>', 
+          // Main
+          'src/dataflow.js',
+          // Modules
+          // Models
+          "src/modules/graph.js", 
+          "src/modules/node.js", 
+          "src/modules/input.js", 
+          "src/modules/output.js", 
+          "src/modules/edge.js", 
+          // Views
+          "src/modules/graph-view.js", 
+          "src/modules/node-view.js", 
+          "src/modules/input-view.js", 
+          "src/modules/output-view.js", 
+          "src/modules/edge-view.js"
+          // Nodes
+        ],
+        dest: 'build/<%= pkg.name %>.js'
       }
     },
     min: {
       dist: {
         src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
-        dest: 'dist/<%= pkg.name %>.min.js'
+        dest: 'build/<%= pkg.name %>.min.js'
       }
     },
     qunit: {
@@ -61,7 +79,8 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'lint qunit concat min');
+  // grunt.registerTask('default', 'lint qunit concat min');
+  grunt.registerTask('default', 'lint concat min');
 
   grunt.registerTask('dev', 'server watch');
 

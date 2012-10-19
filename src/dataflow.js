@@ -13,17 +13,17 @@
       // Create a module and save it under this name
       return this.modules[name] = { Views: {} };
     },
-    // // Create the object to contain the nodes
-    // nodes: {},
-    // node: function(name) {
-    //   // Create a new node reference scaffold or load an existing node.
-    //   // If this node has already been created, return it.
-    //   if (this.nodes[name]) {
-    //     return this.nodes[name];
-    //   }
-    //   // Create a node and save it under this name
-    //   return this.nodes[name] = { Views: {} };
-    // },
+    // Create the object to contain the nodes
+    nodes: {},
+    node: function(name) {
+      // Create a new node reference scaffold or load an existing node.
+      // If this node has already been created, return it.
+      if (this.nodes[name]) {
+        return this.nodes[name];
+      }
+      // Create a node and save it under this name
+      return this.nodes[name] = { Views: {} };
+    },
     loadGraph: function(source) {
       if (this.graph) {
         this.graph.remove();
