@@ -48,7 +48,7 @@
     <input id="nodeid" type="text" placeholder="node id" value="3" />
     <input id="addnode" type="submit" value="add node" />
   </form>
-  <form id="source">
+  <form id="source" style="width: 230px;">
     <textarea id="code" style="width: 230px; height: 400px;"></textarea><br/>
     <input id="apply" type="submit" value="apply changes" />
   </form>
@@ -109,7 +109,7 @@
         var newNode = new TestNode.Model({
           id: id,
           type: "test",
-          graph: Dataflow.graph
+          parentGraph: Dataflow.graph
         });
         Dataflow.graph.get('nodes').add(newNode);
         $('#nodeid').val(id+1);

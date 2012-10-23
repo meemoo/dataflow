@@ -75,3 +75,7 @@
       .port .plug.helper {
         background-color: #AAA;
       }
+      
+.helper{
+  z-index: 9999;
+}

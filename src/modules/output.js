@@ -6,7 +6,7 @@
       type: "all"
     },
     initialize: function() {
-      this.node = this.get("node");
+      this.parentNode = this.get("parentNode");
     }
   });
 

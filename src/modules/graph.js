@@ -10,7 +10,7 @@
 
       // Set up nodes 
       var nodes = this.nodes = new Node.Collection();
-      nodes.graph = this;
+      nodes.parentGraph = this;
       // Node events
       nodes.on("all", function(){
         this.trigger("change");
@@ -27,7 +27,7 @@
       var nodesArray = this.get("nodes");
       for(i=0; i<nodesArray.length; i++) {
         var node = nodesArray[i];
-        node.graph = this;
+        node.parentGraph = this;
         if (node.type && Dataflow.nodes[node.type]) {
           node = new Dataflow.nodes[node.type].Model(node);
           nodes.add(node);
@@ -38,7 +38,7 @@
 
       // Set up edges
       var edges = this.edges = new Edge.Collection();
-      edges.graph = this;
+      edges.parentGraph = this;
       // Edge events
       edges.on("all", function(){
         this.trigger("change");
@@ -53,7 +53,7 @@
       var edgesArray = this.get("edges");
       for(i=0; i<edgesArray.length; i++) {
         var edge = edgesArray[i];
-        edge.graph = this;
+        edge.parentGraph = this;
         edge.id = edge.source.node+":"+edge.source.port+"→"+edge.target.node+":"+edge.target.port;
         // Check that nodes and ports exist
         var sourceNode = nodes.get(edge.source.node);

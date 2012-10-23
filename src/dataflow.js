@@ -10,7 +10,7 @@
       if (this.modules[name]) {
         return this.modules[name];
       }
-      // Create a module and save it under this name
+      // Create a module scaffold and save it under this name
       return this.modules[name] = { Views: {} };
     },
     // Create the object to contain the nodes
@@ -21,7 +21,7 @@
       if (this.nodes[name]) {
         return this.nodes[name];
       }
-      // Create a node and save it under this name
+      // Create a node scaffold and save it under this name
       return this.nodes[name] = {};
     },
     loadGraph: function(source) {

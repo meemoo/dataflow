@@ -8,7 +8,7 @@
       var preview = this.get("preview");
       if (preview) {
         // Preview edge
-        nodes = this.get("graph").nodes;
+        nodes = this.get("parentGraph").nodes;
         var source = this.get("source");
         var target = this.get("target");
         if (source) {
@@ -18,8 +18,8 @@
         }
       } else {
         // Real edge
-        this.graph = this.get("graph");
-        nodes = this.graph.nodes;
+        this.parentGraph = this.get("parentGraph");
+        nodes = this.parentGraph.nodes;
         try{
           this.source = nodes.get(this.get("source").node).outputs.get(this.get("source").port);
           this.target = nodes.get(this.get("target").node).inputs.get(this.get("target").port);
@@ -29,7 +29,7 @@
       }
     },
     isConnectedToNode: function(node) {
-      return ( this.source.node === node || this.target.node === node );
+      return ( this.source.parentNode === node || this.target.parentNode === node );
     },
     toString: function(){
       return this.get("source").node+":"+this.get("source").port+"→"+this.get("target").node+":"+this.get("target").port;

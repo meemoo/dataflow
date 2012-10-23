@@ -16,16 +16,16 @@
       y: 100
     },
     initialize: function() {
-      this.graph = this.get("graph");
+      this.parentGraph = this.get("parentGraph");
       this.type = this.get("type");
 
       // Convert inputs array to backbone collection
       var inputArray = this.inputs;
       this.inputs = new Input.Collection();
-      this.inputs.node = this;
+      this.inputs.parentNode = this;
       for(var i=0; i<inputArray.length; i++) {
         var input = inputArray[i];
-        input.node = this;
+        input.parentNode = this;
         input = new Input.Model(input);
         this.inputs.add(input);
       }
@@ -33,10 +33,10 @@
       // Convert outputs array to backbone collection
       var outputArray = this.outputs;
       this.outputs = new Input.Collection();
-      this.outputs.node = this;
+      this.outputs.parentNode = this;
       for(i=0; i<outputArray.length; i++) {
         var output = outputArray[i];
-        output.node = this;
+        output.parentNode = this;
         output = new Input.Model(output);
         this.outputs.add(output);
       }
@@ -45,7 +45,7 @@
     remove: function(){
       // Node removed from graph's nodes collection
       // Remove related edges
-      var relatedEdges = this.graph.edges.filter(function(edge){
+      var relatedEdges = this.parentGraph.edges.filter(function(edge){
         // Find connected edges
         return edge.isConnectedToNode(this);
       }, this);
