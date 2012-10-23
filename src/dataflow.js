@@ -38,7 +38,7 @@
 
       return newGraph;
     },
-    debug: true,
+    debug: false,
     log: function(message) {
       this.trigger("log", message, arguments);
       if (this.debug) {

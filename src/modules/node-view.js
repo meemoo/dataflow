@@ -4,8 +4,9 @@
     '<h1><%= id %>: <%= label %></h1>'+
     '<div class="controls">'+
       '<button class="delete">delete</button>'+
+      '<button class="done">done</button>'+
     '</div>'+
-    // '<button class="edit">edit</button>'+
+    '<button class="edit">edit</button>'+
     '<div class="ports ins" />'+
     '<div class="ports outs" />';
 
@@ -18,7 +19,9 @@
     className: "node",
     events: {
       "click .delete": "deleteMe",
-      "dragstop":      "dragStop"
+      "dragstop":      "dragStop",
+      "click .edit":   "showControls",
+      "click .done":   "hideControls"
     },
     initialize: function() {
       // Initial position
@@ -58,6 +61,9 @@
       this.$(".ins").html(this.inputs.el);
       this.$(".outs").html(this.outputs.el);
 
+      // Hide controls
+      this.$(".controls").hide();
+
       return this;
     },
     dragStop: function(event, ui){
@@ -73,6 +79,14 @@
       });
       this.model.collection.sort({silent: true});
       this.model.trigger("move", this.model);
+    },
+    showControls: function(){
+      this.$(".edit").hide();
+      this.$(".controls").show();
+    },
+    hideControls: function(){
+      this.$(".controls").hide();
+      this.$(".edit").show();
     },
     deleteMe: function(){
       this.model.collection.remove(this.model);

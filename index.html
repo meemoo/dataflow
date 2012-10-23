@@ -67,6 +67,8 @@
         $("#code").val( JSON.stringify(graph.toJSON(), null, "  ") );
       });
 
+      // Log to console
+      Dataflow.debug = true;
       // Log message and scroll
       function log(message){
         $("#loglist").append("<li>" + message + "</li>");
@@ -99,6 +101,10 @@
       var Node = Dataflow.module("node");
       $("#add").submit(function(){
         var id = parseInt($('#nodeid').val(), 10);
+        if (id!==id) {
+          //NaN
+          return false;
+        }
         var newNode = new Node.Model({
           id: id,
           graph: Dataflow.graph

@@ -32,7 +32,7 @@
           node = new Dataflow.nodes[node.type].Model(node);
           nodes.add(node);
         } else {
-          Dataflow.log("node not found", node);
+          Dataflow.log("node "+node.id+" not added: node type ("+node.type+") not found", node);
         }
       }
 
@@ -62,7 +62,7 @@
           edge = new Edge.Model(edge);
           edges.add(edge);
         } else {
-          Dataflow.log("node or port not found for edge", edge);
+          Dataflow.log("edge "+edge.id+" not added: node or port not found", edge);
         }
       }
       // Attach collections to graph
