@@ -43,12 +43,17 @@
       });
       this.$el = $(this.el);
       // Add el to SVG
+      var self = this;
       if (this.model.parentGraph) {
-        var self = this;
         _.defer(function(){
           self.model.parentGraph.view.$('.svg-edges')[0].appendChild(self.el);
         }, this);
       }
+
+      // Click handler
+      this.el.addEventListener("click", function(event){
+        self.showEdit(event);
+      });
     },
     render: function(previewPosition){
       var source = this.model.source;
@@ -97,10 +102,28 @@
       }
       // Remove element
       this.$el.remove();
-    }//,
-    // showEdit: function(){
-    //   Dataflow.log(this.model);
-    // }
+    },
+    showEdit: function(event){
+      // Hide others
+      $(".modal-bg").remove();
+
+      // Show box 
+      var modalBox = $('<div class="modal-bg" style="width:'+$(window).width()+'px; height:'+$(window).height()+'px;" />')
+        .click(function(){
+          $(".modal-bg").remove();
+        });
+      var editBox = $('<div class="edge-edit-box" style="left:'+event.pageX+'px; top:'+event.pageY+'px;" />');
+      editBox.append(this.model.id+"<br />");
+      var self = this;
+      var deleteButton = $('<button>delete</button>')
+        .click(function(){
+          self.model.collection.remove(self.model);
+          $(".modal-bg").remove();
+        });
+      editBox.append(deleteButton);
+      modalBox.append(editBox);
+      this.model.parentGraph.view.$el.append(modalBox);
+    }
   });
 
   Edge.Views.Collection = Backbone.CollectionView.extend({

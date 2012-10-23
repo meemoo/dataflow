@@ -8,8 +8,26 @@
 </head>
 
 <body>
+  <!-- Testing -->
+  <div id="testing" style="position:absolute; top:0; left:0">
+    <div style="font-size:small; margin-bottom:1em;">
+      <a href="https://github.com/meemoo/dataflow">meemoo/dataflow project page</a>
+    </div>
+    <form id="add">
+      <input id="nodeid" type="text" placeholder="node id" value="3" />
+      <input id="addnode" type="submit" value="add node" />
+    </form>
+    <form id="source" style="width: 230px;">
+      <textarea id="code" style="width: 230px; height: 400px;"></textarea><br/>
+      <input id="apply" type="submit" value="apply changes" />
+    </form>
+    <div id="log" style="width:400px; height: 250px; overflow: auto;">
+      <ol id="loglist" />
+    </div>
+  </div>
+
+  <!-- Hello Dataflow -->
   <div id="app">
-    <!-- hello Dataflow -->
   </div>
 
   <!-- Third-Party Libraries -->
@@ -41,20 +59,6 @@
   <script src="src/nodes/test.js"></script>
 
   <!-- Testing -->
-  <div style="font-size:small; margin-bottom:1em;">
-    <a href="https://github.com/meemoo/dataflow">meemoo/dataflow project page</a>
-  </div>
-  <form id="add">
-    <input id="nodeid" type="text" placeholder="node id" value="3" />
-    <input id="addnode" type="submit" value="add node" />
-  </form>
-  <form id="source" style="width: 230px;">
-    <textarea id="code" style="width: 230px; height: 400px;"></textarea><br/>
-    <input id="apply" type="submit" value="apply changes" />
-  </form>
-  <div id="log" style="width:400px; height: 250px; overflow: auto;">
-    <ol id="loglist" />
-  </div>
   <script>
     $(function($) {
 
@@ -78,7 +82,7 @@
 
       // Log
       Dataflow.on("log", function(message){
-        log(message);
+        log("log: " + message);
       });
 
       // Log graph changes
