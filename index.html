@@ -38,6 +38,7 @@
   <!-- Nodes (some basics to extend) -->
   <script src="src/nodes/base.js"></script>
   <script src="src/nodes/base-resizable.js"></script>
+  <script src="src/nodes/test.js"></script>
 
   <!-- Testing -->
   <div style="font-size:small; margin-bottom:1em;">
@@ -95,18 +96,19 @@
       });
 
       // Load test graph
-      loadGraph({"nodes":[{"id":2,"type":"base-resizable","label":"node two","x":620,"y":100},{"id":1,"type":"base","label":"node one","x":290,"y":100}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}}]});
+      loadGraph({"nodes":[{"id":2,"type":"test","label":"node two","x":620,"y":100},{"id":1,"type":"test","label":"node one","x":290,"y":100}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}}]});
 
       // Add nodes to test graph
-      var Node = Dataflow.module("node");
+      var TestNode = Dataflow.node("test");
       $("#add").submit(function(){
         var id = parseInt($('#nodeid').val(), 10);
         if (id!==id) {
           //NaN
           return false;
         }
-        var newNode = new Node.Model({
+        var newNode = new TestNode.Model({
           id: id,
+          type: "test",
           graph: Dataflow.graph
         });
         Dataflow.graph.get('nodes').add(newNode);

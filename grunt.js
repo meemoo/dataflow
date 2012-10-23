@@ -32,9 +32,10 @@ module.exports = function(grunt) {
           // Nodes
           "src/nodes/base.js",
           "src/nodes/base-resizable.js",
-          "src/nodes/subgraph.js",
-          "src/nodes/input.js", 
-          "src/nodes/output.js"
+          "src/nodes/test.js"
+          // "src/nodes/subgraph.js",
+          // "src/nodes/input.js", 
+          // "src/nodes/output.js"
         ],
         dest: 'build/<%= pkg.name %>.js'
       }
