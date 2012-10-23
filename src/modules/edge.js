@@ -13,16 +13,19 @@
         var target = this.get("target");
         if (source) {
           this.source = nodes.get(this.get("source").node).outputs.get(this.get("source").port);
-        }
-        if (target) {
+        } else if (target) {
           this.target = nodes.get(this.get("target").node).inputs.get(this.get("target").port);
         }
       } else {
         // Real edge
         this.graph = this.get("graph");
         nodes = this.graph.nodes;
-        this.source = nodes.get(this.get("source").node).outputs.get(this.get("source").port);
-        this.target = nodes.get(this.get("target").node).inputs.get(this.get("target").port);
+        try{
+          this.source = nodes.get(this.get("source").node).outputs.get(this.get("source").port);
+          this.target = nodes.get(this.get("target").node).inputs.get(this.get("target").port);
+        }catch(e){
+          Dataflow.log("node or port not found for edge", this);
+        }
       }
     },
     isConnectedToNode: function(node) {

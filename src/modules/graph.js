@@ -28,8 +28,12 @@
       for(i=0; i<nodesArray.length; i++) {
         var node = nodesArray[i];
         node.graph = this;
-        node = new Node.Model(node);
-        nodes.add(node);
+        if (node.type && Dataflow.nodes[node.type]) {
+          node = new Dataflow.nodes[node.type].Model(node);
+          nodes.add(node);
+        } else {
+          Dataflow.log("node not found", node);
+        }
       }
 
       // Set up edges
@@ -51,8 +55,15 @@
         var edge = edgesArray[i];
         edge.graph = this;
         edge.id = edge.source.node+":"+edge.source.port+"→"+edge.target.node+":"+edge.target.port;
-        edge = new Edge.Model(edge);
-        edges.add(edge);
+        // Check that nodes and ports exist
+        var sourceNode = nodes.get(edge.source.node);
+        var targetNode = nodes.get(edge.target.node);
+        if (sourceNode && targetNode && sourceNode.outputs.get(edge.source.port) && targetNode.inputs.get(edge.target.port)) {
+          edge = new Edge.Model(edge);
+          edges.add(edge);
+        } else {
+          Dataflow.log("node or port not found for edge", edge);
+        }
       }
       // Attach collections to graph
       this.set({

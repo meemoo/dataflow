@@ -17,7 +17,6 @@ module.exports = function(grunt) {
           '<banner:meta.banner>', 
           // Main
           'src/dataflow.js',
-          // Modules
           // Models
           "src/modules/graph.js", 
           "src/modules/node.js", 
@@ -29,8 +28,13 @@ module.exports = function(grunt) {
           "src/modules/node-view.js", 
           "src/modules/input-view.js", 
           "src/modules/output-view.js", 
-          "src/modules/edge-view.js"
+          "src/modules/edge-view.js",
           // Nodes
+          "src/nodes/base.js",
+          "src/nodes/base-resizable.js",
+          "src/nodes/subgraph.js",
+          "src/nodes/input.js", 
+          "src/nodes/output.js"
         ],
         dest: 'build/<%= pkg.name %>.js'
       }

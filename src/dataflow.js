@@ -22,7 +22,7 @@
         return this.nodes[name];
       }
       // Create a node and save it under this name
-      return this.nodes[name] = { Views: {} };
+      return this.nodes[name] = {};
     },
     loadGraph: function(source) {
       if (this.graph) {
@@ -37,6 +37,13 @@
       this.graph = newGraph;
 
       return newGraph;
+    },
+    debug: true,
+    log: function(message) {
+      this.trigger("log", message, arguments);
+      if (this.debug) {
+        console.log("Dataflow: ", arguments);
+      }
     }
   });
 
@@ -44,7 +51,7 @@
   window.Dataflow = new App();
 }());
 
-// All code has been downloaded and evaluated and is ready to be initialized.
+// All code has been downloaded and evaluated and app is ready to be initialized.
 jQuery(function($) {
 
   // Router

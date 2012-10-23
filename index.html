@@ -9,20 +9,20 @@
 
 <body>
   <div id="app">
-    <!-- ALL YOUR CONTENT HERE -->
+    <!-- hello Dataflow -->
   </div>
 
-  <!-- Third-Party Libraries (Order matters) -->
+  <!-- Third-Party Libraries -->
   <script src="libs/jquery.js"></script>
   <script src="libs/jquery-ui.js"></script>
   <script src="libs/underscore.js"></script>
   <script src="libs/backbone.js"></script>
   <script src="libs/backbone.collectionview.js"></script>
 
-  <!-- Application core (Order matters) -->
+  <!-- Dataflow core -->
   <script src="src/dataflow.js"></script>
 
-  <!-- Modules (Order does not matter) -->
+  <!-- Dataflow Modules -->
   <script src="src/modules/graph.js"></script>
   <script src="src/modules/node.js"></script>
   <script src="src/modules/input.js"></script>
@@ -34,6 +34,10 @@
   <script src="src/modules/input-view.js"></script>
   <script src="src/modules/output-view.js"></script>
   <script src="src/modules/edge-view.js"></script>
+
+  <!-- Nodes (some basics to extend) -->
+  <script src="src/nodes/base.js"></script>
+  <script src="src/nodes/base-resizable.js"></script>
 
   <!-- Testing -->
   <div style="font-size:small; margin-bottom:1em;">
@@ -62,26 +66,34 @@
       Dataflow.on("change", function(graph){
         $("#code").val( JSON.stringify(graph.toJSON(), null, "  ") );
       });
-      // Log changes
-      Dataflow.on("node:add", function(graph, node){
-        $("#loglist").append("<li>node added: " + node.toString() + "</li>");
+
+      // Log message and scroll
+      function log(message){
+        $("#loglist").append("<li>" + message + "</li>");
         $("#log").scrollTop( $("#log").prop("scrollHeight") );
+      }
+
+      // Log
+      Dataflow.on("log", function(message){
+        log(message);
+      });
+
+      // Log graph changes
+      Dataflow.on("node:add", function(graph, node){
+        log("node added: " + node.toString());
       });
       Dataflow.on("node:remove", function(graph, node){
-        $("#loglist").append("<li>node removed: " + node.toString() + "</li>");
-        $("#log").scrollTop( $("#log").prop("scrollHeight") );
+        log("node removed: " + node.toString());
       });
       Dataflow.on("edge:add", function(graph, edge){
-        $("#loglist").append("<li>edge added: " + edge.toString() + "</li>");
-        $("#log").scrollTop( $("#log").prop("scrollHeight") );
+        log("edge added: " + edge.toString());
       });
       Dataflow.on("edge:remove", function(graph, edge){
-        $("#loglist").append("<li>edge removed: " + edge.toString() + "</li>");
-        $("#log").scrollTop( $("#log").prop("scrollHeight") );
+        log("edge removed: " + edge.toString());
       });
 
       // Load test graph
-      loadGraph({"nodes":[{"id":2,"label":"node two","x":620,"y":100},{"id":1,"label":"node one","x":290,"y":100}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}}]});
+      loadGraph({"nodes":[{"id":2,"type":"base-resizable","label":"node two","x":620,"y":100},{"id":1,"type":"base","label":"node one","x":290,"y":100}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}}]});
 
       // Add nodes to test graph
       var Node = Dataflow.module("node");
