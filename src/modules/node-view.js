@@ -8,7 +8,8 @@
     '</div>'+
     '<button class="edit">edit</button>'+
     '<div class="ports ins" />'+
-    '<div class="ports outs" />';
+    '<div class="ports outs" />'+
+    '<div class="inner" />';
 
   // Dependencies
   var Input = Dataflow.module("input");
@@ -24,11 +25,7 @@
       "click .done":   "hideControls"
     },
     initialize: function() {
-      // Initial position
-      this.$el.css({
-        left: this.model.get("x"),
-        top: this.model.get("y")
-      });
+      this.$el.html(this.template(this.model.toJSON()));
 
       // Initialize i/o views
       this.model.inputs.view = new Input.Views.Collection({
@@ -47,6 +44,7 @@
 
       var self = this;
       this.$el.draggable({
+        handle: "h1",
         helper: function(){
           var node = self.$el;
           var width = node.width();
@@ -56,7 +54,11 @@
       });
     },
     render: function() {
-      this.$el.html(this.template(this.model.toJSON()));
+      // Initial position
+      this.$el.css({
+        left: this.model.get("x"),
+        top: this.model.get("y")
+      });
 
       this.$(".ins").html(this.inputs.el);
       this.$(".outs").html(this.outputs.el);
@@ -92,9 +94,5 @@
       this.model.collection.remove(this.model);
     }
   });
-
-  Node.Views.Collection = Backbone.CollectionView.extend({
-    itemView: Node.Views.Main
-  }); 
 
 }(Dataflow.module("node")) );

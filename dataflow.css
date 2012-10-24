@@ -1,11 +1,18 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
 .graph {
   position: relative;
 }
-.svg-edges {
+.edges {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 10px;
+  left: 10px;
   z-index: -1;
+}
+.svg-edges {
 }
   svg path {
     fill: none;
@@ -46,11 +53,12 @@
   }
   .node h1 {
     font-size: 20px;
+    margin: 0;
+    padding: 0;
   }
 
 .ins {
   text-align: left;
-  margin-bottom: 10px;
 }
   .in .label {
     margin-left: .5em;

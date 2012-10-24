@@ -72,14 +72,16 @@
       };
     },
     inputs:[
-      {
-        id: "input"
-      }
+      // {
+      //   id: "input",
+      //   type: "all"
+      // }
     ],
     outputs:[
-      {
-        id:"output"
-      }
+      // {
+      //   id:"output",
+      //   type: "all"
+      // }
     ]
   });
 

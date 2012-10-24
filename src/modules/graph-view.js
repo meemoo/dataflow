@@ -21,34 +21,24 @@
     template: _.template(template),
     className: "graph",
     initialize: function() {
+      // Graph container
+      this.$el.html(this.template(this.model.toJSON()));
+
       var nodes = this.model.get("nodes");
       var edges = this.model.get("edges");
 
       // Initialize nodes
-      this.nodes = nodes.view = new Node.Views.Collection({
-        collection: nodes
-      });
+      this.nodes = nodes.view = {};
+      this.model.nodes.each(this.addNode, this);
+      this.model.nodes.on("add", this.addNode, this);
+      this.model.nodes.on("remove", this.removeNode, this);
       // Initialize edges
-      this.edges = edges.view = new Edge.Views.Collection({
-        collection: edges
-      });
+      this.edges = edges.view = {};
+      this.model.edges.each(this.addEdge, this);
+      this.model.edges.on("add", this.addEdge, this);
+      this.model.edges.on("remove", this.removeEdge, this);
     },
     render: function() {
-      // Graph container
-      this.$el.html(this.template(this.model.toJSON()));
-
-      // Render nodes
-      var nodes = this.model.get("nodes");
-      nodes.view.render();
-      nodes.view.renderAllItems();
-      this.$(".nodes").html(nodes.view.el);
-
-      // Render edges
-      var edges = this.model.get("edges");
-      edges.view.render();
-      edges.view.renderAllItems();
-      // Edge SVG path is appended in edge view initialize
-
       // HACK to get them to show correct positions on load
       var self = this;
       _.defer(function(){
@@ -57,10 +47,53 @@
 
       return this;
     },
+    addNode: function(node){
+      // Initialize
+      var CustomType = Dataflow.nodes[node.type];
+      if (CustomType && CustomType.View) {
+        node.view = new CustomType.View({model:node});
+      } else {
+        var BaseNode = Dataflow.node("base");
+        node.view = new BaseNode.View({model:node});
+      }
+      // Save to local collection
+      this.nodes[node.id] = node.view;
+      // Render
+      node.view.render();
+      this.$(".nodes").append(node.view.el);
+    },
+    removeNode: function(node){
+      node.view.remove();
+      this.nodes[node.id] = null;
+      delete this.nodes[node.id];
+    },
+    addEdge: function(edge){
+      // Initialize
+      edge.view = new Edge.Views.Main({model:edge});
+      // Save to local collection
+      this.edges[edge.id] = edge.view;
+      // Render
+      edge.view.render();
+      this.$('.svg-edges')[0].appendChild(edge.view.el);
+    },
+    removeEdge: function(edge){
+      edge.view.remove();
+      this.edges[edge.id] = null;
+      delete this.edges[edge.id];
+    },
     rerenderEdges: function(){
-      _.each(this.edges.viewsByCid, function(edgeView){
+      _.each(this.edges, function(edgeView){
         edgeView.render();
       }, this);
+    },
+    sizeSVG: function(){
+      // TODO timeout to not do this with many edge resizes at once
+      try{
+        var svg = this.$('.svg-edges')[0];
+        var rect = svg.getBBox();
+        svg.setAttribute("width", Math.round(rect.x+rect.width+50));
+        svg.setAttribute("height", Math.round(rect.y+rect.height+50));
+      } catch (error) {}
     }
   });
 

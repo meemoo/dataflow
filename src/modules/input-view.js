@@ -65,7 +65,7 @@
       // Don't drag node
       event.stopPropagation();
       this.previewEdgeNewView.render(ui.offset);
-      this.model.parentNode.parentGraph.edges.view.sizeSvg();
+      this.model.parentNode.parentGraph.view.sizeSVG();
     },
     newEdgeStop: function(event, ui){
       // Don't drag node
@@ -112,7 +112,7 @@
       
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.render(ui.offset);
-        this.model.parentNode.parentGraph.edges.view.sizeSvg();
+        this.model.parentNode.parentGraph.view.sizeSVG();
       }
     },
     changeEdgeStop: function(event, ui){

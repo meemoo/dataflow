@@ -78,7 +78,7 @@
     },
     remove: function(){
       while(this.nodes.length > 0){
-        this.nodes.remove(this.nodes.at(0));
+        this.nodes.remove(this.nodes.at(this.nodes.length-1));
       }
     }
   });

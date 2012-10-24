@@ -42,15 +42,9 @@
         "class": "path"
       });
       this.$el = $(this.el);
-      // Add el to SVG
-      var self = this;
-      if (this.model.parentGraph) {
-        _.defer(function(){
-          self.model.parentGraph.view.$('.svg-edges')[0].appendChild(self.el);
-        }, this);
-      }
 
       // Click handler
+      var self = this;
       this.el.addEventListener("click", function(event){
         self.showEdit(event);
       });
@@ -73,8 +67,8 @@
       }
       this.el.setAttribute("d", this.edgePath(this.positions));
       // Bounding box
-      if (this.model.collection) {
-        this.model.collection.view.sizeSvg();
+      if (this.model.parentGraph && this.model.parentGraph.view){
+        this.model.parentGraph.view.sizeSVG();
       }
     },
     edgePath: function(positions){
@@ -108,7 +102,7 @@
       $(".modal-bg").remove();
 
       // Show box 
-      var modalBox = $('<div class="modal-bg" style="width:'+$(window).width()+'px; height:'+$(window).height()+'px;" />')
+      var modalBox = $('<div class="modal-bg" style="width:'+$(document).width()+'px; height:'+$(document).height()+'px;" />')
         .click(function(){
           $(".modal-bg").remove();
         });
@@ -125,18 +119,5 @@
       this.model.parentGraph.view.$el.append(modalBox);
     }
   });
-
-  Edge.Views.Collection = Backbone.CollectionView.extend({
-    itemView: Edge.Views.Main,
-    sizeSvg: function(){
-      // TODO timeout to not do this with many edge resizes at once
-      try{
-        var svg = this.collection.parentGraph.view.$('.svg-edges')[0];
-        var rect = svg.getBBox();
-        svg.setAttribute("width", Math.round(rect.x+rect.width+50));
-        svg.setAttribute("height", Math.round(rect.y+rect.height+50));
-      } catch (error) {}
-    }
-  }); 
 
 }(Dataflow.module("edge")) );
