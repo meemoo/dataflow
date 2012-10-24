@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.1 - 2012-10-23
+/*! dataflow.js - v0.0.1 - 2012-10-24
 * https://github.com/meemoo/dataflow
 * Copyright (c) 2012 Forrest Oliphant; Licensed MIT, GPL */
 
@@ -152,7 +152,7 @@ jQuery(function($) {
     },
     remove: function(){
       while(this.nodes.length > 0){
-        this.nodes.remove(this.nodes.at(0));
+        this.nodes.remove(this.nodes.at(this.nodes.length-1));
       }
     }
   });
@@ -233,14 +233,16 @@ jQuery(function($) {
       };
     },
     inputs:[
-      {
-        id: "input"
-      }
+      // {
+      //   id: "input",
+      //   type: "all"
+      // }
     ],
     outputs:[
-      {
-        id:"output"
-      }
+      // {
+      //   id:"output",
+      //   type: "all"
+      // }
     ]
   });
 
@@ -363,34 +365,24 @@ jQuery(function($) {
     template: _.template(template),
     className: "graph",
     initialize: function() {
+      // Graph container
+      this.$el.html(this.template(this.model.toJSON()));
+
       var nodes = this.model.get("nodes");
       var edges = this.model.get("edges");
 
       // Initialize nodes
-      this.nodes = nodes.view = new Node.Views.Collection({
-        collection: nodes
-      });
+      this.nodes = nodes.view = {};
+      this.model.nodes.each(this.addNode, this);
+      this.model.nodes.on("add", this.addNode, this);
+      this.model.nodes.on("remove", this.removeNode, this);
       // Initialize edges
-      this.edges = edges.view = new Edge.Views.Collection({
-        collection: edges
-      });
+      this.edges = edges.view = {};
+      this.model.edges.each(this.addEdge, this);
+      this.model.edges.on("add", this.addEdge, this);
+      this.model.edges.on("remove", this.removeEdge, this);
     },
     render: function() {
-      // Graph container
-      this.$el.html(this.template(this.model.toJSON()));
-
-      // Render nodes
-      var nodes = this.model.get("nodes");
-      nodes.view.render();
-      nodes.view.renderAllItems();
-      this.$(".nodes").html(nodes.view.el);
-
-      // Render edges
-      var edges = this.model.get("edges");
-      edges.view.render();
-      edges.view.renderAllItems();
-      // Edge SVG path is appended in edge view initialize
-
       // HACK to get them to show correct positions on load
       var self = this;
       _.defer(function(){
@@ -399,10 +391,53 @@ jQuery(function($) {
 
       return this;
     },
+    addNode: function(node){
+      // Initialize
+      var CustomType = Dataflow.nodes[node.type];
+      if (CustomType && CustomType.View) {
+        node.view = new CustomType.View({model:node});
+      } else {
+        var BaseNode = Dataflow.node("base");
+        node.view = new BaseNode.View({model:node});
+      }
+      // Save to local collection
+      this.nodes[node.id] = node.view;
+      // Render
+      node.view.render();
+      this.$(".nodes").append(node.view.el);
+    },
+    removeNode: function(node){
+      node.view.remove();
+      this.nodes[node.id] = null;
+      delete this.nodes[node.id];
+    },
+    addEdge: function(edge){
+      // Initialize
+      edge.view = new Edge.Views.Main({model:edge});
+      // Save to local collection
+      this.edges[edge.id] = edge.view;
+      // Render
+      edge.view.render();
+      this.$('.svg-edges')[0].appendChild(edge.view.el);
+    },
+    removeEdge: function(edge){
+      edge.view.remove();
+      this.edges[edge.id] = null;
+      delete this.edges[edge.id];
+    },
     rerenderEdges: function(){
-      _.each(this.edges.viewsByCid, function(edgeView){
+      _.each(this.edges, function(edgeView){
         edgeView.render();
       }, this);
+    },
+    sizeSVG: function(){
+      // TODO timeout to not do this with many edge resizes at once
+      try{
+        var svg = this.$('.svg-edges')[0];
+        var rect = svg.getBBox();
+        svg.setAttribute("width", Math.round(rect.x+rect.width+50));
+        svg.setAttribute("height", Math.round(rect.y+rect.height+50));
+      } catch (error) {}
     }
   });
 
@@ -418,7 +453,8 @@ jQuery(function($) {
     '</div>'+
     '<button class="edit">edit</button>'+
     '<div class="ports ins" />'+
-    '<div class="ports outs" />';
+    '<div class="ports outs" />'+
+    '<div class="inner" />';
 
   // Dependencies
   var Input = Dataflow.module("input");
@@ -434,11 +470,7 @@ jQuery(function($) {
       "click .done":   "hideControls"
     },
     initialize: function() {
-      // Initial position
-      this.$el.css({
-        left: this.model.get("x"),
-        top: this.model.get("y")
-      });
+      this.$el.html(this.template(this.model.toJSON()));
 
       // Initialize i/o views
       this.model.inputs.view = new Input.Views.Collection({
@@ -457,6 +489,7 @@ jQuery(function($) {
 
       var self = this;
       this.$el.draggable({
+        handle: "h1",
         helper: function(){
           var node = self.$el;
           var width = node.width();
@@ -466,7 +499,11 @@ jQuery(function($) {
       });
     },
     render: function() {
-      this.$el.html(this.template(this.model.toJSON()));
+      // Initial position
+      this.$el.css({
+        left: this.model.get("x"),
+        top: this.model.get("y")
+      });
 
       this.$(".ins").html(this.inputs.el);
       this.$(".outs").html(this.outputs.el);
@@ -502,10 +539,6 @@ jQuery(function($) {
       this.model.collection.remove(this.model);
     }
   });
-
-  Node.Views.Collection = Backbone.CollectionView.extend({
-    itemView: Node.Views.Main
-  }); 
 
 }(Dataflow.module("node")) );
 
@@ -576,7 +609,7 @@ jQuery(function($) {
       // Don't drag node
       event.stopPropagation();
       this.previewEdgeNewView.render(ui.offset);
-      this.model.parentNode.parentGraph.edges.view.sizeSvg();
+      this.model.parentNode.parentGraph.view.sizeSVG();
     },
     newEdgeStop: function(event, ui){
       // Don't drag node
@@ -623,7 +656,7 @@ jQuery(function($) {
       
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.render(ui.offset);
-        this.model.parentNode.parentGraph.edges.view.sizeSvg();
+        this.model.parentNode.parentGraph.view.sizeSVG();
       }
     },
     changeEdgeStop: function(event, ui){
@@ -758,7 +791,7 @@ jQuery(function($) {
       // Don't drag node
       event.stopPropagation();
       this.previewEdgeView.render(ui.offset);
-      this.model.parentNode.parentGraph.edges.view.sizeSvg();
+      this.model.parentNode.parentGraph.view.sizeSVG();
     },
     newEdgeStop: function(event, ui){
       // Don't drag node
@@ -801,7 +834,7 @@ jQuery(function($) {
 
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.render(ui.offset);
-        this.model.parentNode.parentGraph.edges.view.sizeSvg();
+        this.model.parentNode.parentGraph.view.sizeSVG();
       }
     },
     changeEdgeStop: function(event, ui){
@@ -913,15 +946,9 @@ jQuery(function($) {
         "class": "path"
       });
       this.$el = $(this.el);
-      // Add el to SVG
-      var self = this;
-      if (this.model.parentGraph) {
-        _.defer(function(){
-          self.model.parentGraph.view.$('.svg-edges')[0].appendChild(self.el);
-        }, this);
-      }
 
       // Click handler
+      var self = this;
       this.el.addEventListener("click", function(event){
         self.showEdit(event);
       });
@@ -944,8 +971,8 @@ jQuery(function($) {
       }
       this.el.setAttribute("d", this.edgePath(this.positions));
       // Bounding box
-      if (this.model.collection) {
-        this.model.collection.view.sizeSvg();
+      if (this.model.parentGraph && this.model.parentGraph.view){
+        this.model.parentGraph.view.sizeSVG();
       }
     },
     edgePath: function(positions){
@@ -979,7 +1006,7 @@ jQuery(function($) {
       $(".modal-bg").remove();
 
       // Show box 
-      var modalBox = $('<div class="modal-bg" style="width:'+$(window).width()+'px; height:'+$(window).height()+'px;" />')
+      var modalBox = $('<div class="modal-bg" style="width:'+$(document).width()+'px; height:'+$(document).height()+'px;" />')
         .click(function(){
           $(".modal-bg").remove();
         });
@@ -996,19 +1023,6 @@ jQuery(function($) {
       this.model.parentGraph.view.$el.append(modalBox);
     }
   });
-
-  Edge.Views.Collection = Backbone.CollectionView.extend({
-    itemView: Edge.Views.Main,
-    sizeSvg: function(){
-      // TODO timeout to not do this with many edge resizes at once
-      try{
-        var svg = this.collection.parentGraph.view.$('.svg-edges')[0];
-        var rect = svg.getBBox();
-        svg.setAttribute("width", Math.round(rect.x+rect.width+50));
-        svg.setAttribute("height", Math.round(rect.y+rect.height+50));
-      } catch (error) {}
-    }
-  }); 
 
 }(Dataflow.module("edge")) );
 
@@ -1143,15 +1157,15 @@ jQuery(function($) {
       {
         id: "output",
         type: "all"
-      },
-      {
-        id: "output2",
-        type: "all"
       }
     ]
   });
 
   Test.View = BaseResizable.View.extend({
+    initialize: function(){
+      BaseResizable.View.prototype.initialize.call(this);
+      this.$(".inner").text("the node view .inner div can be used for info, ui, etc...");
+    }
   });
 
 }(Dataflow) );
