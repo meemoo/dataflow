@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.1 - 2012-10-19
+/*! dataflow.js - v0.0.1 - 2012-10-23
 * https://github.com/meemoo/dataflow
 * Copyright (c) 2012 Forrest Oliphant; Licensed MIT, GPL */
 
@@ -14,7 +14,7 @@
       if (this.modules[name]) {
         return this.modules[name];
       }
-      // Create a module and save it under this name
+      // Create a module scaffold and save it under this name
       return this.modules[name] = { Views: {} };
     },
     // Create the object to contain the nodes
@@ -25,8 +25,8 @@
       if (this.nodes[name]) {
         return this.nodes[name];
       }
-      // Create a node and save it under this name
-      return this.nodes[name] = { Views: {} };
+      // Create a node scaffold and save it under this name
+      return this.nodes[name] = {};
     },
     loadGraph: function(source) {
       if (this.graph) {
@@ -41,6 +41,13 @@
       this.graph = newGraph;
 
       return newGraph;
+    },
+    debug: false,
+    log: function(message) {
+      this.trigger("log", message, arguments);
+      if (this.debug) {
+        console.log("Dataflow: ", arguments);
+      }
     }
   });
 
@@ -48,7 +55,7 @@
   window.Dataflow = new App();
 }());
 
-// All code has been downloaded and evaluated and is ready to be initialized.
+// All code has been downloaded and evaluated and app is ready to be initialized.
 jQuery(function($) {
 
   // Router
@@ -77,7 +84,7 @@ jQuery(function($) {
 
       // Set up nodes 
       var nodes = this.nodes = new Node.Collection();
-      nodes.graph = this;
+      nodes.parentGraph = this;
       // Node events
       nodes.on("all", function(){
         this.trigger("change");
@@ -94,14 +101,18 @@ jQuery(function($) {
       var nodesArray = this.get("nodes");
       for(i=0; i<nodesArray.length; i++) {
         var node = nodesArray[i];
-        node.graph = this;
-        node = new Node.Model(node);
-        nodes.add(node);
+        node.parentGraph = this;
+        if (node.type && Dataflow.nodes[node.type]) {
+          node = new Dataflow.nodes[node.type].Model(node);
+          nodes.add(node);
+        } else {
+          Dataflow.log("node "+node.id+" not added: node type ("+node.type+") not found", node);
+        }
       }
 
       // Set up edges
       var edges = this.edges = new Edge.Collection();
-      edges.graph = this;
+      edges.parentGraph = this;
       // Edge events
       edges.on("all", function(){
         this.trigger("change");
@@ -116,10 +127,17 @@ jQuery(function($) {
       var edgesArray = this.get("edges");
       for(i=0; i<edgesArray.length; i++) {
         var edge = edgesArray[i];
-        edge.graph = this;
+        edge.parentGraph = this;
         edge.id = edge.source.node+":"+edge.source.port+"→"+edge.target.node+":"+edge.target.port;
-        edge = new Edge.Model(edge);
-        edges.add(edge);
+        // Check that nodes and ports exist
+        var sourceNode = nodes.get(edge.source.node);
+        var targetNode = nodes.get(edge.target.node);
+        if (sourceNode && targetNode && sourceNode.outputs.get(edge.source.port) && targetNode.inputs.get(edge.target.port)) {
+          edge = new Edge.Model(edge);
+          edges.add(edge);
+        } else {
+          Dataflow.log("edge "+edge.id+" not added: node or port not found", edge);
+        }
       }
       // Attach collections to graph
       this.set({
@@ -159,16 +177,16 @@ jQuery(function($) {
       y: 100
     },
     initialize: function() {
-      this.graph = this.get("graph");
+      this.parentGraph = this.get("parentGraph");
       this.type = this.get("type");
 
       // Convert inputs array to backbone collection
       var inputArray = this.inputs;
       this.inputs = new Input.Collection();
-      this.inputs.node = this;
+      this.inputs.parentNode = this;
       for(var i=0; i<inputArray.length; i++) {
         var input = inputArray[i];
-        input.node = this;
+        input.parentNode = this;
         input = new Input.Model(input);
         this.inputs.add(input);
       }
@@ -176,10 +194,10 @@ jQuery(function($) {
       // Convert outputs array to backbone collection
       var outputArray = this.outputs;
       this.outputs = new Input.Collection();
-      this.outputs.node = this;
+      this.outputs.parentNode = this;
       for(i=0; i<outputArray.length; i++) {
         var output = outputArray[i];
-        output.node = this;
+        output.parentNode = this;
         output = new Input.Model(output);
         this.outputs.add(output);
       }
@@ -188,7 +206,7 @@ jQuery(function($) {
     remove: function(){
       // Node removed from graph's nodes collection
       // Remove related edges
-      var relatedEdges = this.graph.edges.filter(function(edge){
+      var relatedEdges = this.parentGraph.edges.filter(function(edge){
         // Find connected edges
         return edge.isConnectedToNode(this);
       }, this);
@@ -244,7 +262,7 @@ jQuery(function($) {
       type: "all"
     },
     initialize: function() {
-      this.node = this.get("node");
+      this.parentNode = this.get("parentNode");
     }
   });
 
@@ -262,7 +280,7 @@ jQuery(function($) {
       type: "all"
     },
     initialize: function() {
-      this.node = this.get("node");
+      this.parentNode = this.get("parentNode");
     }
   });
 
@@ -282,25 +300,28 @@ jQuery(function($) {
       var preview = this.get("preview");
       if (preview) {
         // Preview edge
-        nodes = this.get("graph").nodes;
+        nodes = this.get("parentGraph").nodes;
         var source = this.get("source");
         var target = this.get("target");
         if (source) {
           this.source = nodes.get(this.get("source").node).outputs.get(this.get("source").port);
-        }
-        if (target) {
+        } else if (target) {
           this.target = nodes.get(this.get("target").node).inputs.get(this.get("target").port);
         }
       } else {
         // Real edge
-        this.graph = this.get("graph");
-        nodes = this.graph.nodes;
-        this.source = nodes.get(this.get("source").node).outputs.get(this.get("source").port);
-        this.target = nodes.get(this.get("target").node).inputs.get(this.get("target").port);
+        this.parentGraph = this.get("parentGraph");
+        nodes = this.parentGraph.nodes;
+        try{
+          this.source = nodes.get(this.get("source").node).outputs.get(this.get("source").port);
+          this.target = nodes.get(this.get("target").node).inputs.get(this.get("target").port);
+        }catch(e){
+          Dataflow.log("node or port not found for edge", this);
+        }
       }
     },
     isConnectedToNode: function(node) {
-      return ( this.source.node === node || this.target.node === node );
+      return ( this.source.parentNode === node || this.target.parentNode === node );
     },
     toString: function(){
       return this.get("source").node+":"+this.get("source").port+"→"+this.get("target").node+":"+this.get("target").port;
@@ -393,8 +414,9 @@ jQuery(function($) {
     '<h1><%= id %>: <%= label %></h1>'+
     '<div class="controls">'+
       '<button class="delete">delete</button>'+
+      '<button class="done">done</button>'+
     '</div>'+
-    // '<button class="edit">edit</button>'+
+    '<button class="edit">edit</button>'+
     '<div class="ports ins" />'+
     '<div class="ports outs" />';
 
@@ -407,7 +429,9 @@ jQuery(function($) {
     className: "node",
     events: {
       "click .delete": "deleteMe",
-      "dragstop":      "dragStop"
+      "dragstop":      "dragStop",
+      "click .edit":   "showControls",
+      "click .done":   "hideControls"
     },
     initialize: function() {
       // Initial position
@@ -447,6 +471,9 @@ jQuery(function($) {
       this.$(".ins").html(this.inputs.el);
       this.$(".outs").html(this.outputs.el);
 
+      // Hide controls
+      this.$(".controls").hide();
+
       return this;
     },
     dragStop: function(event, ui){
@@ -462,6 +489,14 @@ jQuery(function($) {
       });
       this.model.collection.sort({silent: true});
       this.model.trigger("move", this.model);
+    },
+    showControls: function(){
+      this.$(".edit").hide();
+      this.$(".controls").show();
+    },
+    hideControls: function(){
+      this.$(".controls").hide();
+      this.$(".edit").show();
     },
     deleteMe: function(){
       this.model.collection.remove(this.model);
@@ -525,23 +560,23 @@ jQuery(function($) {
       event.stopPropagation();
       this.previewEdgeNew = new Edge.Model({
         target: {
-          node: this.model.node.id,
+          node: this.model.parentNode.id,
           port: this.model.id
         },
-        graph: this.model.node.graph,
+        parentGraph: this.model.parentNode.parentGraph,
         preview: true
       });
       this.previewEdgeNewView = new Edge.Views.Main({
         model: this.previewEdgeNew
       });
-      var graphSVGElement = this.model.node.graph.view.$('.svg-edges')[0];
+      var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
       graphSVGElement.appendChild(this.previewEdgeNewView.el);
     },
     newEdgeDrag: function(event, ui){
       // Don't drag node
       event.stopPropagation();
       this.previewEdgeNewView.render(ui.offset);
-      this.model.node.graph.edges.view.sizeSvg();
+      this.model.parentNode.parentGraph.edges.view.sizeSvg();
     },
     newEdgeStop: function(event, ui){
       // Don't drag node
@@ -561,7 +596,7 @@ jQuery(function($) {
       event.stopPropagation();
 
       if (this.isConnected){
-        var changeEdge = this.model.node.graph.edges.find(function(edge){
+        var changeEdge = this.model.parentNode.parentGraph.edges.find(function(edge){
           return edge.target === this.model;
         }, this);
         if (changeEdge){
@@ -571,13 +606,13 @@ jQuery(function($) {
           });
           this.previewEdgeChange = new Edge.Model({
             source: changeEdge.get("source"),
-            graph: this.model.node.graph,
+            parentGraph: this.model.parentNode.parentGraph,
             preview: true
           });
           this.previewEdgeChangeView = new Edge.Views.Main({
             model: this.previewEdgeChange
           });
-          var graphSVGElement = this.model.node.graph.view.$('.svg-edges')[0];
+          var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
           graphSVGElement.appendChild(this.previewEdgeChangeView.el);
         }
       }
@@ -588,7 +623,7 @@ jQuery(function($) {
       
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.render(ui.offset);
-        this.model.node.graph.edges.view.sizeSvg();
+        this.model.parentNode.parentGraph.edges.view.sizeSvg();
       }
     },
     changeEdgeStop: function(event, ui){
@@ -601,6 +636,8 @@ jQuery(function($) {
         if (this.changeEdge) {
           if (ui.helper.data("removeChangeEdge")){
             this.changeEdge.collection.remove(this.changeEdge);
+          } else {
+            //TODO delete edge confirm
           }
           this.changeEdge = null;
         }
@@ -611,21 +648,21 @@ jQuery(function($) {
     connectEdge: function(event, ui) {
       // Dropped to this el
       var otherPort = ui.helper.data("port");
-      var oldLength = this.model.node.graph.edges.length;
-      this.model.node.graph.edges.add({
-        id: otherPort.node.id+":"+otherPort.id+"→"+this.model.node.id+":"+this.model.id,
-        graph: this.model.node.graph,
+      var oldLength = this.model.parentNode.parentGraph.edges.length;
+      this.model.parentNode.parentGraph.edges.add({
+        id: otherPort.parentNode.id+":"+otherPort.id+"→"+this.model.parentNode.id+":"+this.model.id,
+        parentGraph: this.model.parentNode.parentGraph,
         source: {
-          node: otherPort.node.id,
+          node: otherPort.parentNode.id,
           port: otherPort.id
         },
         target: {
-          node: this.model.node.id,
+          node: this.model.parentNode.id,
           port: this.model.id
         }
       });
       // Tells changeEdgeStop to remove to old edge
-      ui.helper.data("removeChangeEdge", (oldLength < this.model.node.graph.edges.length));
+      ui.helper.data("removeChangeEdge", (oldLength < this.model.parentNode.parentGraph.edges.length));
     },
     holePosition: function(){
       return this.$(".hole").offset();
@@ -637,7 +674,7 @@ jQuery(function($) {
       this.isConnected = true;
     },
     plugCheckActive: function(){
-      var isConnected = this.model.node.graph.edges.some(function(edge){
+      var isConnected = this.model.parentNode.parentGraph.edges.some(function(edge){
         return (edge.target === this.model);
       }, this);
       if (!isConnected) {
@@ -705,23 +742,23 @@ jQuery(function($) {
       event.stopPropagation();
       this.previewEdge = new Edge.Model({
         source: {
-          node: this.model.node.id,
+          node: this.model.parentNode.id,
           port: this.model.id
         },
-        graph: this.model.node.graph,
+        parentGraph: this.model.parentNode.parentGraph,
         preview: true
       });
       this.previewEdgeView = new Edge.Views.Main({
         model: this.previewEdge
       });
-      var graphSVGElement = this.model.node.graph.view.$('.svg-edges')[0];
+      var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
       graphSVGElement.appendChild(this.previewEdgeView.el);
     },
     newEdgeDrag: function(event, ui){
       // Don't drag node
       event.stopPropagation();
       this.previewEdgeView.render(ui.offset);
-      this.model.node.graph.edges.view.sizeSvg();
+      this.model.parentNode.parentGraph.edges.view.sizeSvg();
     },
     newEdgeStop: function(event, ui){
       // Don't drag node
@@ -737,7 +774,7 @@ jQuery(function($) {
       event.stopPropagation();
 
       if (this.isConnected){
-        var changeEdge = this.model.node.graph.edges.find(function(edge){
+        var changeEdge = this.model.parentNode.parentGraph.edges.find(function(edge){
           return edge.source === this.model;
         }, this);
         if (changeEdge){
@@ -747,13 +784,13 @@ jQuery(function($) {
           });
           this.previewEdgeChange = new Edge.Model({
             target: changeEdge.get("target"),
-            graph: this.model.node.graph,
+            parentGraph: this.model.parentNode.parentGraph,
             preview: true
           });
           this.previewEdgeChangeView = new Edge.Views.Main({
             model: this.previewEdgeChange
           });
-          var graphSVGElement = this.model.node.graph.view.$('.svg-edges')[0];
+          var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
           graphSVGElement.appendChild(this.previewEdgeChangeView.el);
         }
       }
@@ -764,7 +801,7 @@ jQuery(function($) {
 
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.render(ui.offset);
-        this.model.node.graph.edges.view.sizeSvg();
+        this.model.parentNode.parentGraph.edges.view.sizeSvg();
       }
     },
     changeEdgeStop: function(event, ui){
@@ -777,6 +814,8 @@ jQuery(function($) {
         if (this.changeEdge) {
           if (ui.helper.data("removeChangeEdge")){
             this.changeEdge.collection.remove(this.changeEdge);
+          } else {
+            //TODO delete edge confirm
           }
           this.changeEdge = null;
         }
@@ -787,21 +826,21 @@ jQuery(function($) {
     connectEdge: function(event, ui) {
       // Dropped to this el
       var otherPort = ui.helper.data("port");
-      var oldLength = this.model.node.graph.edges.length;
-      this.model.node.graph.edges.add({
-        id: this.model.node.id+":"+this.model.id+"→"+otherPort.node.id+":"+otherPort.id,
-        graph: this.model.node.graph,
+      var oldLength = this.model.parentNode.parentGraph.edges.length;
+      this.model.parentNode.parentGraph.edges.add({
+        id: this.model.parentNode.id+":"+this.model.id+"→"+otherPort.parentNode.id+":"+otherPort.id,
+        parentGraph: this.model.parentNode.parentGraph,
         source: {
-          node: this.model.node.id,
+          node: this.model.parentNode.id,
           port: this.model.id
         },
         target: {
-          node: otherPort.node.id,
+          node: otherPort.parentNode.id,
           port: otherPort.id
         }
       });
       // Tells changeEdgeStop to remove to old edge
-      ui.helper.data("removeChangeEdge", (oldLength < this.model.node.graph.edges.length));
+      ui.helper.data("removeChangeEdge", (oldLength < this.model.parentNode.parentGraph.edges.length));
     },
     holePosition: function () {
       return this.$(".hole").offset();
@@ -812,7 +851,7 @@ jQuery(function($) {
       this.isConnected = true;
     },
     plugCheckActive: function(){
-      var isConnected = this.model.node.graph.edges.some(function(edge){
+      var isConnected = this.model.parentNode.parentGraph.edges.some(function(edge){
         return (edge.source === this.model);
       }, this);
       if (!isConnected) {
@@ -857,10 +896,10 @@ jQuery(function($) {
       };
       // Render on source/target view move
       if (this.model.source) {
-        this.model.source.node.on("move", this.render, this);
+        this.model.source.parentNode.on("move", this.render, this);
       }
       if (this.model.target) {
-        this.model.target.node.on("move", this.render, this);
+        this.model.target.parentNode.on("move", this.render, this);
       }
       // Set port plug active
       if (this.model.source) {
@@ -871,27 +910,34 @@ jQuery(function($) {
       }
       // Made SVG elements
       this.el = makeSVG("path", {
-        // "filter": "url(#drop-shadow)"
+        "class": "path"
       });
       this.$el = $(this.el);
       // Add el to SVG
-      if (this.model.graph) {
-        var self = this;
+      var self = this;
+      if (this.model.parentGraph) {
         _.defer(function(){
-          self.model.graph.view.$('.svg-edges')[0].appendChild(self.el);
+          self.model.parentGraph.view.$('.svg-edges')[0].appendChild(self.el);
         }, this);
       }
+
+      // Click handler
+      this.el.addEventListener("click", function(event){
+        self.showEdit(event);
+      });
     },
     render: function(previewPosition){
-      if (this.model.source) {
-        this.positions.from = this.model.source.view.holePosition();
+      var source = this.model.source;
+      var target = this.model.target;
+      if (source) {
+        this.positions.from = source.view.holePosition();
       }
       else {
         // Preview 
         this.positions.from = previewPosition;
       }
-      if (this.model.target) {
-        this.positions.to = this.model.target.view.holePosition();
+      if (target) {
+        this.positions.to = target.view.holePosition();
       } else {
         // Preview
         this.positions.to = previewPosition;
@@ -909,22 +955,45 @@ jQuery(function($) {
         " L " + positions.to.left + " " + positions.to.top;
     },
     remove: function(){
+      var source = this.model.source;
+      var target = this.model.target;
       // Remove listeners
-      if (this.model.source) {
-        this.model.source.node.off("move", this.render, this);
+      if (source) {
+        source.parentNode.off("move", this.render, this);
       }
-      if (this.model.target) {
-        this.model.target.node.off("move", this.render, this);
+      if (target) {
+        target.parentNode.off("move", this.render, this);
       }
       // Check if port plug is still active
-      if (this.model.source) {
-        this.model.source.view.plugCheckActive();
+      if (source) {
+        source.view.plugCheckActive();
       }
-      if (this.model.target) {
-        this.model.target.view.plugCheckActive();
+      if (target) {
+        target.view.plugCheckActive();
       }
       // Remove element
       this.$el.remove();
+    },
+    showEdit: function(event){
+      // Hide others
+      $(".modal-bg").remove();
+
+      // Show box 
+      var modalBox = $('<div class="modal-bg" style="width:'+$(window).width()+'px; height:'+$(window).height()+'px;" />')
+        .click(function(){
+          $(".modal-bg").remove();
+        });
+      var editBox = $('<div class="edge-edit-box" style="left:'+event.pageX+'px; top:'+event.pageY+'px;" />');
+      editBox.append(this.model.id+"<br />");
+      var self = this;
+      var deleteButton = $('<button>delete</button>')
+        .click(function(){
+          self.model.collection.remove(self.model);
+          $(".modal-bg").remove();
+        });
+      editBox.append(deleteButton);
+      modalBox.append(editBox);
+      this.model.parentGraph.view.$el.append(modalBox);
     }
   });
 
@@ -933,7 +1002,7 @@ jQuery(function($) {
     sizeSvg: function(){
       // TODO timeout to not do this with many edge resizes at once
       try{
-        var svg = this.collection.graph.view.$('.svg-edges')[0];
+        var svg = this.collection.parentGraph.view.$('.svg-edges')[0];
         var rect = svg.getBBox();
         svg.setAttribute("width", Math.round(rect.x+rect.width+50));
         svg.setAttribute("height", Math.round(rect.y+rect.height+50));
@@ -942,3 +1011,147 @@ jQuery(function($) {
   }); 
 
 }(Dataflow.module("edge")) );
+
+/*
+*   NOTE: this has nothing to do with server-side Node.js (so far at least)
+*/
+
+( function(Dataflow) {
+ 
+  // Dependencies
+  var Base = Dataflow.node("base");
+  var Node = Dataflow.module("node");
+
+  Base.Model = Node.Model.extend({
+    defaults: {
+      label: "",
+      type: "base",
+      x: 200,
+      y: 100
+    },
+    initialize: function() {
+      Node.Model.prototype.initialize.call(this);
+    },
+    unload: function(){
+      // Stop any processes that need to be stopped
+    },
+    inputs:[
+      // {
+      //   id: "input",
+      //   type: "all"
+      // }
+    ],
+    outputs:[
+    ]
+  });
+
+  Base.View = Node.Views.Main.extend({
+  });
+
+}(Dataflow) );
+
+/*
+*   NOTE: this has nothing to do with server-side Node.js (so far at least)
+*/
+
+( function(Dataflow) {
+ 
+  // Dependencies
+  var BaseResizable = Dataflow.node("base-resizable");
+  var Base = Dataflow.node("base");
+
+  BaseResizable.Model = Base.Model.extend({
+    defaults: {
+      label: "",
+      type: "base-resizable",
+      x: 200,
+      y: 100,
+      w: 200,
+      h: 200
+    },
+    initialize: function() {
+      Base.Model.prototype.initialize.call(this);
+    },
+    unload: function(){
+      // Stop any processes that need to be stopped
+    },
+    toJSON: function(){
+      var json = Base.Model.prototype.toJSON.call(this);
+      json.w = this.get("w");
+      json.h = this.get("h");
+      return json;
+    },
+    inputs:[
+      // {
+      //   id: "input",
+      //   type: "all"
+      // }
+    ],
+    outputs:[
+    ]
+  });
+
+  BaseResizable.View = Base.View.extend({
+    initialize: function() {
+      Base.View.prototype.initialize.call(this);
+      // Initial size
+      this.$el.css({
+        left: this.model.get("w"),
+        top: this.model.get("h")
+      });
+      // Make resizable
+      var self = this;
+      this.$el.resizable({
+        helper: function(){
+          var node = self.$el;
+          var width = node.width();
+          var height = node.height();
+          return $('<div class="node helper" style="width:'+width+'px; height:'+height+'px">');
+        },
+        stop: self.resizeStop
+      });
+    },
+    resizeStop: function(event, ui) {
+      console.log();
+    }
+  });
+
+}(Dataflow) );
+
+/*
+*   NOTE: this has nothing to do with server-side Node.js (so far at least)
+*/
+
+( function(Dataflow) {
+ 
+  // Dependencies
+  var BaseResizable = Dataflow.node("base-resizable");
+  var Test = Dataflow.node("test");
+
+  Test.Model = BaseResizable.Model.extend({
+    inputs:[
+      {
+        id: "input",
+        type: "all"
+      },
+      {
+        id: "input2",
+        type: "all"
+      }
+    ],
+    outputs:[
+      {
+        id: "output",
+        type: "all"
+      },
+      {
+        id: "output2",
+        type: "all"
+      }
+    ]
+  });
+
+  Test.View = BaseResizable.View.extend({
+  });
+
+}(Dataflow) );
