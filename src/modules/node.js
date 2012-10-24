@@ -19,6 +19,13 @@
       this.parentGraph = this.get("parentGraph");
       this.type = this.get("type");
 
+      // Default label to type
+      if (this.get("label")===""){
+        this.set({
+          "label": this.get("type")
+        });
+      }
+
       // Convert inputs array to backbone collection
       var inputArray = this.inputs;
       this.inputs = new Input.Collection();
