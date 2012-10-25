@@ -40,18 +40,17 @@
         height: this.model.get("h")
       });
       // Make resizable
+      var self = this;
       this.$el.resizable({
-        helper: "node helper"
+        helper: "node helper",
+        stop: function(event, ui) {
+          self.resizeStop(event, ui);
+        }
       });
       // The simplest way to extend the events hash
-      this.addEvents({
-        'resizestop': 'resizeStop'
-      });
-      // this.delegateEvents(
-      //   _.extend(_.clone(this.events), {
-      //     'resizestop': 'resizeStop'
-      //   })
-      // );
+      // this.addEvents({
+      //   'resizestop': 'resizeStop'
+      // });
     },
     resizeStop: function(event, ui) {
       this.model.set({
