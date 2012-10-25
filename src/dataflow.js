@@ -49,6 +49,12 @@
 
   // Our global
   window.Dataflow = new App();
+
+  // Backbone hacks
+  // Discussed here http://stackoverflow.com/a/13075845/592125
+  Backbone.View.prototype.addEvents = function(events) {
+    this.delegateEvents( _.extend(_.clone(this.events), events) );
+  };
 }());
 
 // All code has been downloaded and evaluated and app is ready to be initialized.

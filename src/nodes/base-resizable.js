@@ -1,7 +1,3 @@
-/*
-*   NOTE: this has nothing to do with server-side Node.js (so far at least)
-*/
-
 ( function(Dataflow) {
  
   // Dependencies
@@ -30,10 +26,6 @@
       return json;
     },
     inputs:[
-      // {
-      //   id: "input",
-      //   type: "all"
-      // }
     ],
     outputs:[
     ]
@@ -48,13 +40,18 @@
         height: this.model.get("h")
       });
       // Make resizable
-      var self = this;
       this.$el.resizable({
-        helper: "node helper",
-        stop: function(event, ui){
-          self.resizeStop(event, ui);
-        }
+        helper: "node helper"
       });
+      // The simplest way to extend the events hash
+      this.addEvents({
+        'resizestop': 'resizeStop'
+      });
+      // this.delegateEvents(
+      //   _.extend(_.clone(this.events), {
+      //     'resizestop': 'resizeStop'
+      //   })
+      // );
     },
     resizeStop: function(event, ui) {
       this.model.set({

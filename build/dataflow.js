@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.1 - 2012-10-24
+/*! dataflow.js - v0.0.1 - 2012-10-25
 * https://github.com/meemoo/dataflow
 * Copyright (c) 2012 Forrest Oliphant; Licensed MIT, GPL */
 
@@ -53,6 +53,12 @@
 
   // Our global
   window.Dataflow = new App();
+
+  // Backbone hacks
+  // Discussed here http://stackoverflow.com/a/13075845/592125
+  Backbone.View.prototype.addEvents = function(events) {
+    this.delegateEvents( _.extend(_.clone(this.events), events) );
+  };
 }());
 
 // All code has been downloaded and evaluated and app is ready to be initialized.
@@ -179,6 +185,13 @@ jQuery(function($) {
     initialize: function() {
       this.parentGraph = this.get("parentGraph");
       this.type = this.get("type");
+
+      // Default label to type
+      if (this.get("label")===""){
+        this.set({
+          "label": this.get("type")
+        });
+      }
 
       // Convert inputs array to backbone collection
       var inputArray = this.inputs;
@@ -446,7 +459,7 @@ jQuery(function($) {
 ( function(Node) {
 
   var template = 
-    '<h1><%= id %>: <%= label %></h1>'+
+    '<h1 class="title"><%- id %>: <span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
     '<div class="controls">'+
       '<button class="delete">delete</button>'+
       '<button class="done">done</button>'+
@@ -464,13 +477,16 @@ jQuery(function($) {
     template: _.template(template),
     className: "node",
     events: {
-      "click .delete": "deleteMe",
+      "click .delete": "removeModel",
       "dragstop":      "dragStop",
       "click .edit":   "showControls",
       "click .done":   "hideControls"
     },
     initialize: function() {
       this.$el.html(this.template(this.model.toJSON()));
+
+      // Add type class
+      this.$el.addClass(this.model.type);
 
       // Initialize i/o views
       this.model.inputs.view = new Input.Views.Collection({
@@ -510,6 +526,7 @@ jQuery(function($) {
 
       // Hide controls
       this.$(".controls").hide();
+      this.$(".title .label-edit").hide();
 
       return this;
     },
@@ -528,14 +545,28 @@ jQuery(function($) {
       this.model.trigger("move", this.model);
     },
     showControls: function(){
+      // Show label edit
+      this.$(".title .label").hide();
+      this.$(".title .label-edit").show();
+      // Show controls
       this.$(".edit").hide();
       this.$(".controls").show();
     },
     hideControls: function(){
+      // Save new label
+      var newLabel = this.$(".title .label-edit").val();
+      if (this.model.get("label") !== newLabel) {
+        this.model.set("label", newLabel);
+        this.$(".title .label").text(newLabel);
+      }
+      // Hide label edit
+      this.$(".title .label-edit").hide();
+      this.$(".title .label").show();
+      // Hide controls
       this.$(".controls").hide();
       this.$(".edit").show();
     },
-    deleteMe: function(){
+    removeModel: function(){
       this.model.collection.remove(this.model);
     }
   });
@@ -634,6 +665,7 @@ jQuery(function($) {
         }, this);
         if (changeEdge){
           this.changeEdge = changeEdge;
+          this.changeEdge.view.fade();
           ui.helper.data({
             port: changeEdge.source
           });
@@ -667,6 +699,7 @@ jQuery(function($) {
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.remove();
         if (this.changeEdge) {
+          this.changeEdge.view.unfade();
           if (ui.helper.data("removeChangeEdge")){
             this.changeEdge.collection.remove(this.changeEdge);
           } else {
@@ -812,6 +845,7 @@ jQuery(function($) {
         }, this);
         if (changeEdge){
           this.changeEdge = changeEdge;
+          this.changeEdge.view.fade();
           ui.helper.data({
             port: changeEdge.target
           });
@@ -845,6 +879,7 @@ jQuery(function($) {
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.remove();
         if (this.changeEdge) {
+          this.changeEdge.view.unfade();
           if (ui.helper.data("removeChangeEdge")){
             this.changeEdge.collection.remove(this.changeEdge);
           } else {
@@ -943,7 +978,7 @@ jQuery(function($) {
       }
       // Made SVG elements
       this.el = makeSVG("path", {
-        "class": "path"
+        "class": "edge"
       });
       this.$el = $(this.el);
 
@@ -975,6 +1010,18 @@ jQuery(function($) {
         this.model.parentGraph.view.sizeSVG();
       }
     },
+    fade: function(){
+      this.el.classList.add("fade");
+    },
+    unfade: function(){
+      this.el.classList.remove("fade");
+    },
+    highlight: function(){
+      this.el.classList.add("highlight");
+    },
+    unhighlight: function(){
+      this.el.classList.remove("highlight");
+    },
     edgePath: function(positions){
       return "M " + positions.from.left + " " + positions.from.top + 
         " L " + (positions.from.left+50) + " " + positions.from.top +
@@ -1005,30 +1052,39 @@ jQuery(function($) {
       // Hide others
       $(".modal-bg").remove();
 
+      // Highlight
+      this.highlight();
+      this.bringToTop();
+
       // Show box 
+      var self = this;
       var modalBox = $('<div class="modal-bg" style="width:'+$(document).width()+'px; height:'+$(document).height()+'px;" />')
         .click(function(){
           $(".modal-bg").remove();
+          self.unhighlight();
         });
       var editBox = $('<div class="edge-edit-box" style="left:'+event.pageX+'px; top:'+event.pageY+'px;" />');
       editBox.append(this.model.id+"<br />");
-      var self = this;
       var deleteButton = $('<button>delete</button>')
         .click(function(){
-          self.model.collection.remove(self.model);
+          self.removeModel();
           $(".modal-bg").remove();
         });
       editBox.append(deleteButton);
       modalBox.append(editBox);
       this.model.parentGraph.view.$el.append(modalBox);
+    },
+    bringToTop: function(){
+      var parent = this.el.parentNode;
+      parent.removeChild(this.el);
+      parent.appendChild(this.el);
+    },
+    removeModel: function(){
+      this.model.collection.remove(this.model);
     }
   });
 
 }(Dataflow.module("edge")) );
-
-/*
-*   NOTE: this has nothing to do with server-side Node.js (so far at least)
-*/
 
 ( function(Dataflow) {
  
@@ -1064,10 +1120,6 @@ jQuery(function($) {
 
 }(Dataflow) );
 
-/*
-*   NOTE: this has nothing to do with server-side Node.js (so far at least)
-*/
-
 ( function(Dataflow) {
  
   // Dependencies
@@ -1096,10 +1148,6 @@ jQuery(function($) {
       return json;
     },
     inputs:[
-      // {
-      //   id: "input",
-      //   type: "all"
-      // }
     ],
     outputs:[
     ]
@@ -1110,23 +1158,30 @@ jQuery(function($) {
       Base.View.prototype.initialize.call(this);
       // Initial size
       this.$el.css({
-        left: this.model.get("w"),
-        top: this.model.get("h")
+        width: this.model.get("w"),
+        height: this.model.get("h")
       });
       // Make resizable
-      var self = this;
       this.$el.resizable({
-        helper: function(){
-          var node = self.$el;
-          var width = node.width();
-          var height = node.height();
-          return $('<div class="node helper" style="width:'+width+'px; height:'+height+'px">');
-        },
-        stop: self.resizeStop
+        helper: "node helper"
       });
+      // The simplest way to extend the events hash
+      this.addEvents({
+        'resizestop': 'resizeStop'
+      });
+      // this.delegateEvents(
+      //   _.extend(_.clone(this.events), {
+      //     'resizestop': 'resizeStop'
+      //   })
+      // );
     },
     resizeStop: function(event, ui) {
-      console.log();
+      this.model.set({
+        "w": ui.size.width,
+        "h": ui.size.height
+      });
+      // Triggers edge redraw
+      this.model.trigger("move", this.model);
     }
   });
 

@@ -1,7 +1,3 @@
-/*
-*   NOTE: this has nothing to do with server-side Node.js (so far at least)
-*/
-
 ( function(Dataflow) {
  
   // Dependencies

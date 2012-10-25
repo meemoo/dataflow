@@ -76,6 +76,7 @@
       Dataflow.debug = true;
       // Log message and scroll
       function log(message){
+        message = _.escape(message);
         $("#loglist").append("<li>" + message + "</li>");
         $("#log").scrollTop( $("#log").prop("scrollHeight") );
       }
@@ -122,11 +123,15 @@
 
       // Apply source to test graph
       $("#source").submit(function(){
+        var graph;
         try {
-          var graph = JSON.parse( $("#code").val() );
-          loadGraph(graph);
+          graph = JSON.parse( $("#code").val() );
         } catch(error){
-          alert("Invalid JSON");
+          Dataflow.log("Invalid JSON");
+          return false;
+        }
+        if (graph) {
+          loadGraph(graph);
         }
         return false;
       });
