@@ -39,7 +39,7 @@
       }
       // Made SVG elements
       this.el = makeSVG("path", {
-        "class": "path"
+        "class": "edge"
       });
       this.$el = $(this.el);
 
@@ -71,6 +71,18 @@
         this.model.parentGraph.view.sizeSVG();
       }
     },
+    fade: function(){
+      this.el.classList.add("fade");
+    },
+    unfade: function(){
+      this.el.classList.remove("fade");
+    },
+    highlight: function(){
+      this.el.classList.add("highlight");
+    },
+    unhighlight: function(){
+      this.el.classList.remove("highlight");
+    },
     edgePath: function(positions){
       return "M " + positions.from.left + " " + positions.from.top + 
         " L " + (positions.from.left+50) + " " + positions.from.top +
@@ -101,22 +113,35 @@
       // Hide others
       $(".modal-bg").remove();
 
+      // Highlight
+      this.highlight();
+      this.bringToTop();
+
       // Show box 
+      var self = this;
       var modalBox = $('<div class="modal-bg" style="width:'+$(document).width()+'px; height:'+$(document).height()+'px;" />')
         .click(function(){
           $(".modal-bg").remove();
+          self.unhighlight();
         });
       var editBox = $('<div class="edge-edit-box" style="left:'+event.pageX+'px; top:'+event.pageY+'px;" />');
       editBox.append(this.model.id+"<br />");
-      var self = this;
       var deleteButton = $('<button>delete</button>')
         .click(function(){
-          self.model.collection.remove(self.model);
+          self.removeModel();
           $(".modal-bg").remove();
         });
       editBox.append(deleteButton);
       modalBox.append(editBox);
       this.model.parentGraph.view.$el.append(modalBox);
+    },
+    bringToTop: function(){
+      var parent = this.el.parentNode;
+      parent.removeChild(this.el);
+      parent.appendChild(this.el);
+    },
+    removeModel: function(){
+      this.model.collection.remove(this.model);
     }
   });
 

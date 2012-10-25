@@ -85,6 +85,7 @@
         }, this);
         if (changeEdge){
           this.changeEdge = changeEdge;
+          this.changeEdge.view.fade();
           ui.helper.data({
             port: changeEdge.target
           });
@@ -118,6 +119,7 @@
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.remove();
         if (this.changeEdge) {
+          this.changeEdge.view.unfade();
           if (ui.helper.data("removeChangeEdge")){
             this.changeEdge.collection.remove(this.changeEdge);
           } else {

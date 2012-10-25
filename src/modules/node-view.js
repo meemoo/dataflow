@@ -19,16 +19,13 @@
     template: _.template(template),
     className: "node",
     events: {
-      "click .delete": "deleteMe",
+      "click .delete": "removeModel",
       "dragstop":      "dragStop",
       "click .edit":   "showControls",
       "click .done":   "hideControls"
     },
     initialize: function() {
       this.$el.html(this.template(this.model.toJSON()));
-
-      // Label edit
-      this.$(".label-edit").hide();
 
       // Initialize i/o views
       this.model.inputs.view = new Input.Views.Collection({
@@ -68,6 +65,7 @@
 
       // Hide controls
       this.$(".controls").hide();
+      this.$(".title .label-edit").hide();
 
       return this;
     },
@@ -107,7 +105,7 @@
       this.$(".controls").hide();
       this.$(".edit").show();
     },
-    deleteMe: function(){
+    removeModel: function(){
       this.model.collection.remove(this.model);
     }
   });
