@@ -44,23 +44,25 @@
       Base.View.prototype.initialize.call(this);
       // Initial size
       this.$el.css({
-        left: this.model.get("w"),
-        top: this.model.get("h")
+        width: this.model.get("w"),
+        height: this.model.get("h")
       });
       // Make resizable
       var self = this;
       this.$el.resizable({
-        helper: function(){
-          var node = self.$el;
-          var width = node.width();
-          var height = node.height();
-          return $('<div class="node helper" style="width:'+width+'px; height:'+height+'px">');
-        },
-        stop: self.resizeStop
+        helper: "node helper",
+        stop: function(event, ui){
+          self.resizeStop(event, ui);
+        }
       });
     },
     resizeStop: function(event, ui) {
-      console.log();
+      this.model.set({
+        "w": ui.size.width,
+        "h": ui.size.height
+      });
+      // Triggers edge redraw
+      this.model.trigger("move", this.model);
     }
   });
 

@@ -27,6 +27,9 @@
     initialize: function() {
       this.$el.html(this.template(this.model.toJSON()));
 
+      // Add type class
+      this.$el.addClass(this.model.type);
+
       // Initialize i/o views
       this.model.inputs.view = new Input.Views.Collection({
         collection: this.model.inputs
