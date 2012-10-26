@@ -35,6 +35,12 @@
     },
     loadGraph: function(source) {
       if (this.graph) {
+        if (this.currentGraph.view) {
+          this.currentGraph.view.remove();
+        }
+        if (this.graph.view) {
+          this.graph.view.remove();
+        }
         this.graph.remove();
       }
       var Graph = this.module("graph");
