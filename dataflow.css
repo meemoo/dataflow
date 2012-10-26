@@ -17,6 +17,18 @@ button, input[type="submit"] {
   margin: 1px;
 }
 
+.plugins {
+   position: absolute; 
+   top:0; 
+   left:0;
+}
+  .plugins h1 {
+    font-size: 20px;
+    font-weight: normal;
+    margin: 10px 0 5px 0;
+    padding: 0;
+  }
+
 .graph {
   position: relative;
 }

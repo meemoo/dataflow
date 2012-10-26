@@ -9,6 +9,14 @@
   var Test = Dataflow.node("test");
 
   Test.Model = BaseResizable.Model.extend({
+    defaults: {
+      label: "",
+      type: "test",
+      x: 200,
+      y: 100,
+      w: 200,
+      h: 200
+    },
     inputs:[
       {
         id: "input",

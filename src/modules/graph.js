@@ -5,6 +5,10 @@
   var Edge = Dataflow.module("edge");
 
   Graph.Model = Backbone.Model.extend({
+    defaults: {
+      nodes: [],
+      edges: []
+    },
     initialize: function() {
       var i;
 

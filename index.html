@@ -8,26 +8,13 @@
 </head>
 
 <body>
-  <!-- Testing -->
-  <div id="testing" style="position:absolute; top:0; left:0">
-    <div style="font-size:small; margin-bottom:1em;">
-      <a href="https://github.com/meemoo/dataflow">meemoo/dataflow project page</a>
-    </div>
-    <form id="add">
-      <input id="nodeid" type="text" placeholder="node id" value="3" />
-      <input id="addnode" type="submit" value="add node" />
-    </form>
-    <form id="source" style="width: 230px;">
-      <textarea id="code" style="width: 230px; height: 400px;"></textarea><br/>
-      <input id="apply" type="submit" value="apply changes" />
-    </form>
-    <div id="log" style="width:400px; height: 250px; overflow: auto;">
-      <ol id="loglist" />
-    </div>
-  </div>
-
   <!-- Hello Dataflow -->
   <div id="app">
+    <div class="plugins">
+      <div style="font-size:small; margin-bottom:1em;">
+        <a href="https://github.com/meemoo/dataflow">meemoo/dataflow</a>
+      </div>
+    </div>
   </div>
 
   <!-- Third-Party Libraries -->
@@ -57,58 +44,28 @@
   <script src="src/nodes/base.js"></script>
   <script src="src/nodes/base-resizable.js"></script>
   <script src="src/nodes/test.js"></script>
-
   <!-- Nodes (subgraph functionality) -->
   <script src="src/nodes/dataflow-input.js"></script>
   <script src="src/nodes/dataflow-output.js"></script>
   <script src="src/nodes/dataflow-subgraph.js"></script>
 
+  <!-- Plugins -->
+  <script src="src/plugins/library.js"></script>
+  <script src="src/plugins/view-source.js"></script>
+  <script src="src/plugins/log.js"></script>
+
   <!-- Testing -->
   <script>
     $(function($) {
 
-      function loadGraph(graph){
-        var g = Dataflow.loadGraph(graph);
-        g.trigger("change");
-      };
-
-      // On change update code view
-      Dataflow.on("change", function(graph){
-        $("#code").val( JSON.stringify(Dataflow.graph.toJSON(), null, "  ") );
-      });
-
       // Log to console
       Dataflow.debug = true;
-      // Log message and scroll
-      function log(message){
-        message = _.escape(message);
-        $("#loglist").append("<li>" + message + "</li>");
-        $("#log").scrollTop( $("#log").prop("scrollHeight") );
-      }
-
-      // Log
-      Dataflow.on("log", function(message){
-        log("log: " + message);
-      });
-
-      // Log graph changes
-      Dataflow.on("node:add", function(graph, node){
-        log("node added: " + node.toString());
-      });
-      Dataflow.on("node:remove", function(graph, node){
-        log("node removed: " + node.toString());
-      });
-      Dataflow.on("edge:add", function(graph, edge){
-        log("edge added: " + edge.toString());
-      });
-      Dataflow.on("edge:remove", function(graph, edge){
-        log("edge removed: " + edge.toString());
-      });
 
       // Load test graph
-      loadGraph(
+      var g = Dataflow.loadGraph(
         {"nodes":[{"id":18,"label":"subgraph test","type":"dataflow-subgraph","x":340,"y":118,"w":200,"h":200,"graph":{"nodes":[{"id":1,"label":"input","type":"dataflow-input","x":269,"y":80,"input-type":"all"},{"id":18,"label":"subsubgraph","type":"dataflow-subgraph","x":283,"y":237,"w":200,"h":200,"graph":{"nodes":[{"id":1,"label":"in","type":"dataflow-input","x":293,"y":266,"input-type":"all"},{"id":2,"label":"node one","type":"test","x":597,"y":122,"w":200,"h":200},{"id":4,"label":"out","type":"dataflow-output","x":930,"y":195,"output-type":"all"}],"edges":[{"source":{"node":1,"port":"data"},"target":{"node":2,"port":"input"}},{"source":{"node":2,"port":"output"},"target":{"node":4,"port":"data"}}]}},{"id":2,"label":"node one","type":"test","x":583,"y":193,"w":200,"h":200},{"id":4,"label":"test-out-label","type":"dataflow-output","x":879,"y":61,"output-type":"all"}],"edges":[{"source":{"node":1,"port":"data"},"target":{"node":2,"port":"input"}},{"source":{"node":2,"port":"output"},"target":{"node":4,"port":"data"}}]}},{"id":20,"label":"test","type":"test","x":685,"y":167,"w":200,"h":200}],"edges":[{"source":{"node":18,"port":"test-out-label"},"target":{"node":20,"port":"input"}}]}
       );
+      g.trigger("change");
 
       // Add nodes to test graph
       var TestNode = Dataflow.node("test");
@@ -127,21 +84,6 @@
         });
         Dataflow.currentGraph.nodes.add(newNode);
         $('#nodeid').val(id+1);
-        return false;
-      });
-
-      // Apply source to test graph
-      $("#source").submit(function(){
-        var graph;
-        try {
-          graph = JSON.parse( $("#code").val() );
-        } catch(error){
-          Dataflow.log("Invalid JSON");
-          return false;
-        }
-        if (graph) {
-          loadGraph(graph);
-        }
         return false;
       });
 

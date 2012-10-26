@@ -2,6 +2,10 @@
 
 (function(){
   var App = Backbone.Model.extend({
+    "$el": $("#app"),
+    "$": function(query) {
+      return $("#app").children(query);
+    },
     // Create the object to contain the modules
     modules: {},
     module: function(name) {
@@ -24,6 +28,11 @@
       // Create a node scaffold and save it under this name
       return this.nodes[name] = {};
     },
+    addPlugin: function(name, template) {
+      this.$(".plugins")
+        .append("<h1>"+name+"</h1>")
+        .append(template);
+    },
     loadGraph: function(source) {
       if (this.graph) {
         this.graph.remove();
@@ -31,7 +40,7 @@
       var Graph = this.module("graph");
       var newGraph = new Graph.Model(source);
       newGraph.view = new Graph.View({model: newGraph});
-      $("#app").html(newGraph.view.render().el);
+      $("#app").append(newGraph.view.render().el);
 
       // For debugging
       this.graph = this.currentGraph = newGraph;
