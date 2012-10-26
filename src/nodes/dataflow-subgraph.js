@@ -100,7 +100,7 @@
       Dataflow.currentGraph = this.model.graph;
 
       var self = this;
-      var closeButton = $("<button>close subgraph</button>")
+      var closeButton = $("<button>close "+_.escape(this.model.get("label"))+"</button>")
         .click(function(){
           self.closeSubgraph();
         });
