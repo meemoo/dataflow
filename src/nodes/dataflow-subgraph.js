@@ -55,6 +55,7 @@
       return json;
     },
     remove: function(){
+      BaseResizable.Model.prototype.remove.call(this);
       this.graph.remove();
     },
     inputs:[
@@ -80,6 +81,7 @@
       this.model.parentGraph.view.$el.detach();
       // Show sub
       $("#app").append(this.model.graph.view.el);
+      Dataflow.currentGraph = this.model.graph;
 
       var self = this;
       var closeButton = $("<button>close subgraph</button>")
@@ -97,6 +99,7 @@
       this.model.graph.view.$el.detach();
       // Show parent
       $("#app").append(this.model.parentGraph.view.el);
+      Dataflow.currentGraph = this.model.parentGraph;
     }
   });
 

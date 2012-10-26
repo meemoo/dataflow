@@ -34,7 +34,7 @@
       $("#app").html(newGraph.view.render().el);
 
       // For debugging
-      this.graph = newGraph;
+      this.graph = this.currentGraph = newGraph;
 
       return newGraph;
     },
