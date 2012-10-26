@@ -17,7 +17,7 @@
   var Node = Dataflow.module("node");
   var Edge = Dataflow.module("edge");
 
-  Graph.Views.Main = Backbone.View.extend({
+  Graph.View = Backbone.View.extend({
     template: _.template(template),
     className: "graph",
     initialize: function() {
@@ -69,7 +69,7 @@
     },
     addEdge: function(edge){
       // Initialize
-      edge.view = new Edge.Views.Main({model:edge});
+      edge.view = new Edge.View({model:edge});
       // Save to local collection
       this.edges[edge.id] = edge.view;
       // Render

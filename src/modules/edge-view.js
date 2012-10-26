@@ -14,7 +14,7 @@
     return svg;
   };
   
-  Edge.Views.Main = Backbone.View.extend({
+  Edge.View = Backbone.View.extend({
     tagName: "div",
     className: "edge",
     positions: null,
@@ -72,16 +72,16 @@
       }
     },
     fade: function(){
-      this.el.classList.add("fade");
+      this.el.setAttribute("class", "edge fade");
     },
     unfade: function(){
-      this.el.classList.remove("fade");
+      this.el.setAttribute("class", "edge");
     },
     highlight: function(){
-      this.el.classList.add("highlight");
+      this.el.setAttribute("class", "edge highlight");
     },
     unhighlight: function(){
-      this.el.classList.remove("highlight");
+      this.el.setAttribute("class", "edge");
     },
     edgePath: function(positions){
       return "M " + positions.from.left + " " + positions.from.top + 

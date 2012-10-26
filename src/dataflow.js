@@ -11,7 +11,7 @@
         return this.modules[name];
       }
       // Create a module scaffold and save it under this name
-      return this.modules[name] = { Views: {} };
+      return this.modules[name] = {};
     },
     // Create the object to contain the nodes
     nodes: {},
@@ -30,7 +30,7 @@
       }
       var Graph = this.module("graph");
       var newGraph = new Graph.Model(source);
-      newGraph.view = new Graph.Views.Main({model: newGraph});
+      newGraph.view = new Graph.View({model: newGraph});
       $("#app").html(newGraph.view.render().el);
 
       // For debugging

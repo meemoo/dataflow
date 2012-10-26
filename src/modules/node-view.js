@@ -15,7 +15,7 @@
   var Input = Dataflow.module("input");
   var Output = Dataflow.module("output");
  
-  Node.Views.Main = Backbone.View.extend({
+  Node.View = Backbone.View.extend({
     template: _.template(template),
     className: "node",
     events: {
@@ -31,14 +31,14 @@
       this.$el.addClass(this.model.type);
 
       // Initialize i/o views
-      this.model.inputs.view = new Input.Views.Collection({
+      this.model.inputs.view = new Input.CollectionView({
         collection: this.model.inputs
       });
       this.model.inputs.view.render();
       this.model.inputs.view.renderAllItems();
       this.inputs = this.model.inputs.view;
       // Outs
-      this.model.outputs.view = new Output.Views.Collection({
+      this.model.outputs.view = new Output.CollectionView({
         collection: this.model.outputs
       });
       this.model.outputs.view.render();

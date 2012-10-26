@@ -7,7 +7,7 @@
     '<span class="hole out" title="drag to make new wire"></span>'+
     '<span class="plug out" title="drag to edit wire"></span>';
 
-  Output.Views.Main = Backbone.View.extend({
+  Output.View = Backbone.View.extend({
     template: _.template(template),
     tagName: "li",
     className: "port out",
@@ -54,7 +54,7 @@
         parentGraph: this.model.parentNode.parentGraph,
         preview: true
       });
-      this.previewEdgeView = new Edge.Views.Main({
+      this.previewEdgeView = new Edge.View({
         model: this.previewEdge
       });
       var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
@@ -94,7 +94,7 @@
             parentGraph: this.model.parentNode.parentGraph,
             preview: true
           });
-          this.previewEdgeChangeView = new Edge.Views.Main({
+          this.previewEdgeChangeView = new Edge.View({
             model: this.previewEdgeChange
           });
           var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
@@ -170,9 +170,9 @@
     }
   });
 
-  Output.Views.Collection = Backbone.CollectionView.extend({
+  Output.CollectionView = Backbone.CollectionView.extend({
     tagName: "ul",
-    itemView: Output.Views.Main
+    itemView: Output.View
   }); 
 
 }(Dataflow.module("output")) );

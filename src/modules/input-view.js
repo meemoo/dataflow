@@ -7,7 +7,7 @@
     '<span class="hole in" title="drag to make new wire"></span>'+ //i18n
     '<span class="label in"><%= id %></span>';
  
-  Input.Views.Main = Backbone.View.extend({
+  Input.View = Backbone.View.extend({
     template: _.template(template),
     tagName: "li",
     className: "port in",
@@ -55,7 +55,7 @@
         parentGraph: this.model.parentNode.parentGraph,
         preview: true
       });
-      this.previewEdgeNewView = new Edge.Views.Main({
+      this.previewEdgeNewView = new Edge.View({
         model: this.previewEdgeNew
       });
       var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
@@ -99,7 +99,7 @@
             parentGraph: this.model.parentNode.parentGraph,
             preview: true
           });
-          this.previewEdgeChangeView = new Edge.Views.Main({
+          this.previewEdgeChangeView = new Edge.View({
             model: this.previewEdgeChange
           });
           var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
@@ -176,9 +176,9 @@
     }
   });
 
-  Input.Views.Collection = Backbone.CollectionView.extend({
+  Input.CollectionView = Backbone.CollectionView.extend({
     tagName: "ul",
-    itemView: Input.Views.Main
+    itemView: Input.View
   }); 
 
 }(Dataflow.module("input")) );

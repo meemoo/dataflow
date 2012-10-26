@@ -1,8 +1,8 @@
 ( function(Dataflow) {
  
   // Dependencies
-  var Base = Dataflow.node("base");
   var Node = Dataflow.module("node");
+  var Base = Dataflow.node("base");
 
   Base.Model = Node.Model.extend({
     defaults: {
@@ -27,7 +27,7 @@
     ]
   });
 
-  Base.View = Node.Views.Main.extend({
+  Base.View = Node.View.extend({
   });
 
 }(Dataflow) );

@@ -15,7 +15,7 @@
         return this.modules[name];
       }
       // Create a module scaffold and save it under this name
-      return this.modules[name] = { Views: {} };
+      return this.modules[name] = {};
     },
     // Create the object to contain the nodes
     nodes: {},
@@ -34,7 +34,7 @@
       }
       var Graph = this.module("graph");
       var newGraph = new Graph.Model(source);
-      newGraph.view = new Graph.Views.Main({model: newGraph});
+      newGraph.view = new Graph.View({model: newGraph});
       $("#app").html(newGraph.view.render().el);
 
       // For debugging
@@ -374,7 +374,7 @@ jQuery(function($) {
   var Node = Dataflow.module("node");
   var Edge = Dataflow.module("edge");
 
-  Graph.Views.Main = Backbone.View.extend({
+  Graph.View = Backbone.View.extend({
     template: _.template(template),
     className: "graph",
     initialize: function() {
@@ -426,7 +426,7 @@ jQuery(function($) {
     },
     addEdge: function(edge){
       // Initialize
-      edge.view = new Edge.Views.Main({model:edge});
+      edge.view = new Edge.View({model:edge});
       // Save to local collection
       this.edges[edge.id] = edge.view;
       // Render
@@ -473,7 +473,7 @@ jQuery(function($) {
   var Input = Dataflow.module("input");
   var Output = Dataflow.module("output");
  
-  Node.Views.Main = Backbone.View.extend({
+  Node.View = Backbone.View.extend({
     template: _.template(template),
     className: "node",
     events: {
@@ -489,14 +489,14 @@ jQuery(function($) {
       this.$el.addClass(this.model.type);
 
       // Initialize i/o views
-      this.model.inputs.view = new Input.Views.Collection({
+      this.model.inputs.view = new Input.CollectionView({
         collection: this.model.inputs
       });
       this.model.inputs.view.render();
       this.model.inputs.view.renderAllItems();
       this.inputs = this.model.inputs.view;
       // Outs
-      this.model.outputs.view = new Output.Views.Collection({
+      this.model.outputs.view = new Output.CollectionView({
         collection: this.model.outputs
       });
       this.model.outputs.view.render();
@@ -582,7 +582,7 @@ jQuery(function($) {
     '<span class="hole in" title="drag to make new wire"></span>'+ //i18n
     '<span class="label in"><%= id %></span>';
  
-  Input.Views.Main = Backbone.View.extend({
+  Input.View = Backbone.View.extend({
     template: _.template(template),
     tagName: "li",
     className: "port in",
@@ -630,7 +630,7 @@ jQuery(function($) {
         parentGraph: this.model.parentNode.parentGraph,
         preview: true
       });
-      this.previewEdgeNewView = new Edge.Views.Main({
+      this.previewEdgeNewView = new Edge.View({
         model: this.previewEdgeNew
       });
       var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
@@ -674,7 +674,7 @@ jQuery(function($) {
             parentGraph: this.model.parentNode.parentGraph,
             preview: true
           });
-          this.previewEdgeChangeView = new Edge.Views.Main({
+          this.previewEdgeChangeView = new Edge.View({
             model: this.previewEdgeChange
           });
           var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
@@ -751,9 +751,9 @@ jQuery(function($) {
     }
   });
 
-  Input.Views.Collection = Backbone.CollectionView.extend({
+  Input.CollectionView = Backbone.CollectionView.extend({
     tagName: "ul",
-    itemView: Input.Views.Main
+    itemView: Input.View
   }); 
 
 }(Dataflow.module("input")) );
@@ -767,7 +767,7 @@ jQuery(function($) {
     '<span class="hole out" title="drag to make new wire"></span>'+
     '<span class="plug out" title="drag to edit wire"></span>';
 
-  Output.Views.Main = Backbone.View.extend({
+  Output.View = Backbone.View.extend({
     template: _.template(template),
     tagName: "li",
     className: "port out",
@@ -814,7 +814,7 @@ jQuery(function($) {
         parentGraph: this.model.parentNode.parentGraph,
         preview: true
       });
-      this.previewEdgeView = new Edge.Views.Main({
+      this.previewEdgeView = new Edge.View({
         model: this.previewEdge
       });
       var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
@@ -854,7 +854,7 @@ jQuery(function($) {
             parentGraph: this.model.parentNode.parentGraph,
             preview: true
           });
-          this.previewEdgeChangeView = new Edge.Views.Main({
+          this.previewEdgeChangeView = new Edge.View({
             model: this.previewEdgeChange
           });
           var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
@@ -930,9 +930,9 @@ jQuery(function($) {
     }
   });
 
-  Output.Views.Collection = Backbone.CollectionView.extend({
+  Output.CollectionView = Backbone.CollectionView.extend({
     tagName: "ul",
-    itemView: Output.Views.Main
+    itemView: Output.View
   }); 
 
 }(Dataflow.module("output")) );
@@ -953,7 +953,7 @@ jQuery(function($) {
     return svg;
   };
   
-  Edge.Views.Main = Backbone.View.extend({
+  Edge.View = Backbone.View.extend({
     tagName: "div",
     className: "edge",
     positions: null,
@@ -1011,16 +1011,16 @@ jQuery(function($) {
       }
     },
     fade: function(){
-      this.el.classList.add("fade");
+      this.el.setAttribute("class", "edge fade");
     },
     unfade: function(){
-      this.el.classList.remove("fade");
+      this.el.setAttribute("class", "edge");
     },
     highlight: function(){
-      this.el.classList.add("highlight");
+      this.el.setAttribute("class", "edge highlight");
     },
     unhighlight: function(){
-      this.el.classList.remove("highlight");
+      this.el.setAttribute("class", "edge");
     },
     edgePath: function(positions){
       return "M " + positions.from.left + " " + positions.from.top + 
@@ -1089,8 +1089,8 @@ jQuery(function($) {
 ( function(Dataflow) {
  
   // Dependencies
-  var Base = Dataflow.node("base");
   var Node = Dataflow.module("node");
+  var Base = Dataflow.node("base");
 
   Base.Model = Node.Model.extend({
     defaults: {
@@ -1115,7 +1115,7 @@ jQuery(function($) {
     ]
   });
 
-  Base.View = Node.Views.Main.extend({
+  Base.View = Node.View.extend({
   });
 
 }(Dataflow) );
@@ -1123,8 +1123,8 @@ jQuery(function($) {
 ( function(Dataflow) {
  
   // Dependencies
-  var BaseResizable = Dataflow.node("base-resizable");
   var Base = Dataflow.node("base");
+  var BaseResizable = Dataflow.node("base-resizable");
 
   BaseResizable.Model = Base.Model.extend({
     defaults: {
@@ -1162,18 +1162,17 @@ jQuery(function($) {
         height: this.model.get("h")
       });
       // Make resizable
+      var self = this;
       this.$el.resizable({
-        helper: "node helper"
+        helper: "node helper",
+        stop: function(event, ui) {
+          self.resizeStop(event, ui);
+        }
       });
       // The simplest way to extend the events hash
-      this.addEvents({
-        'resizestop': 'resizeStop'
-      });
-      // this.delegateEvents(
-      //   _.extend(_.clone(this.events), {
-      //     'resizestop': 'resizeStop'
-      //   })
-      // );
+      // this.addEvents({
+      //   'resizestop': 'resizeStop'
+      // });
     },
     resizeStop: function(event, ui) {
       this.model.set({

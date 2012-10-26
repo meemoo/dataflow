@@ -114,6 +114,8 @@
         var newNode = new TestNode.Model({
           id: id,
           type: "test",
+          x: window.scrollX - 100 + Math.floor($(window).width()/2),
+          y: window.scrollY - 100 + Math.floor($(window).height()/2),
           parentGraph: Dataflow.graph
         });
         Dataflow.graph.get('nodes').add(newNode);
