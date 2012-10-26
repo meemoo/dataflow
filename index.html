@@ -61,6 +61,7 @@
   <!-- Nodes (subgraph functionality) -->
   <script src="src/nodes/dataflow-input.js"></script>
   <script src="src/nodes/dataflow-output.js"></script>
+  <script src="src/nodes/dataflow-subgraph.js"></script>
 
   <!-- Testing -->
   <script>
@@ -73,7 +74,7 @@
 
       // On change update code view
       Dataflow.on("change", function(graph){
-        $("#code").val( JSON.stringify(graph.toJSON(), null, "  ") );
+        $("#code").val( JSON.stringify(Dataflow.graph.toJSON(), null, "  ") );
       });
 
       // Log to console
@@ -106,7 +107,7 @@
 
       // Load test graph
       loadGraph(
-        {"nodes":[{"id":1,"label":"input","type":"dataflow-input","x":272,"y":128},{"id":2,"label":"node one","type":"test","x":527,"y":119,"w":200,"h":200},{"id":4,"label":"test output","type":"dataflow-output","x":793,"y":223}],"edges":[{"source":{"node":1,"port":"data"},"target":{"node":2,"port":"input"}},{"source":{"node":2,"port":"output"},"target":{"node":4,"port":"data"}}]}
+        {"nodes":[{"id":18,"label":"subgraph test","type":"dataflow-subgraph","x":340,"y":118,"w":200,"h":200,"graph":{"nodes":[{"id":1,"label":"input","type":"dataflow-input","x":269,"y":80,"input-type":"all"},{"id":18,"label":"subsubgraph","type":"dataflow-subgraph","x":283,"y":237,"w":200,"h":200,"graph":{"nodes":[{"id":1,"label":"in","type":"dataflow-input","x":293,"y":266,"input-type":"all"},{"id":2,"label":"node one","type":"test","x":597,"y":122,"w":200,"h":200},{"id":4,"label":"out","type":"dataflow-output","x":930,"y":195,"output-type":"all"}],"edges":[{"source":{"node":1,"port":"data"},"target":{"node":2,"port":"input"}},{"source":{"node":2,"port":"output"},"target":{"node":4,"port":"data"}}]}},{"id":2,"label":"node one","type":"test","x":583,"y":193,"w":200,"h":200},{"id":4,"label":"test-out-label","type":"dataflow-output","x":879,"y":61,"output-type":"all"}],"edges":[{"source":{"node":1,"port":"data"},"target":{"node":2,"port":"input"}},{"source":{"node":2,"port":"output"},"target":{"node":4,"port":"data"}}]}},{"id":20,"label":"test","type":"test","x":685,"y":167,"w":200,"h":200}],"edges":[{"source":{"node":18,"port":"test-out-label"},"target":{"node":20,"port":"input"}}]}
       );
 
       // Add nodes to test graph

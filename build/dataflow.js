@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.1 - 2012-10-25
+/*! dataflow.js - v0.0.1 - 2012-10-26
 * https://github.com/meemoo/dataflow
 * Copyright (c) 2012 Forrest Oliphant; Licensed MIT, GPL */
 
@@ -48,7 +48,17 @@
       if (this.debug) {
         console.log("Dataflow: ", arguments);
       }
-    }
+    },
+    types: [
+      "all",
+      "canvas:2d",
+      "canvas:webgl",
+      "string",
+      "number",
+      "int",
+      "object",
+      "array"
+    ]
   });
 
   // Our global
@@ -160,6 +170,12 @@ jQuery(function($) {
       while(this.nodes.length > 0){
         this.nodes.remove(this.nodes.at(this.nodes.length-1));
       }
+    },
+    toJSON: function(){
+      return {
+        nodes: this.nodes,
+        edges: this.edges
+      };
     }
   });
 
@@ -234,7 +250,7 @@ jQuery(function($) {
       // Stop any processes that need to be stopped
     },
     toString: function(){
-      return this.id;
+      return this.id + " ("+this.type+")";
     },
     toJSON: function(){
       return {
@@ -368,7 +384,8 @@ jQuery(function($) {
         // '</defs>'+
       '</svg>'+
     '</div>'+
-    '<div class="nodes" />';
+    '<div class="nodes" />'+
+    '<div class="graph-controls" />';
 
   // Dependencies
   var Node = Dataflow.module("node");
@@ -462,7 +479,8 @@ jQuery(function($) {
     '<h1 class="title"><%- id %>: <span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
     '<div class="controls">'+
       '<button class="delete">delete</button>'+
-      '<button class="done">done</button>'+
+      '<button class="save">save</button>'+
+      '<button class="cancel">cancel</button>'+
     '</div>'+
     '<button class="edit">edit</button>'+
     '<div class="ports ins" />'+
@@ -480,7 +498,8 @@ jQuery(function($) {
       "click .delete": "removeModel",
       "dragstop":      "dragStop",
       "click .edit":   "showControls",
-      "click .done":   "hideControls"
+      "click .cancel": "hideControls",
+      "click .save":   "saveLabel"
     },
     initialize: function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -553,18 +572,21 @@ jQuery(function($) {
       this.$(".controls").show();
     },
     hideControls: function(){
-      // Save new label
-      var newLabel = this.$(".title .label-edit").val();
-      if (this.model.get("label") !== newLabel) {
-        this.model.set("label", newLabel);
-        this.$(".title .label").text(newLabel);
-      }
       // Hide label edit
       this.$(".title .label-edit").hide();
       this.$(".title .label").show();
       // Hide controls
       this.$(".controls").hide();
       this.$(".edit").show();
+    },
+    saveLabel: function(){
+      // Save new label
+      var newLabel = this.$(".title .label-edit").val();
+      if (this.model.get("label") !== newLabel) {
+        this.model.set("label", newLabel);
+        this.$(".title .label").text(newLabel);
+      }
+      this.hideControls();
     },
     removeModel: function(){
       this.model.collection.remove(this.model);
@@ -1221,5 +1243,81 @@ jQuery(function($) {
       this.$(".inner").text("the node view .inner div can be used for info, ui, etc...");
     }
   });
+
+}(Dataflow) );
+
+( function(Dataflow) {
+ 
+  // Dependencies
+  var Base = Dataflow.node("base");
+  var DataflowInput = Dataflow.node("dataflow-input");
+
+  DataflowInput.Model = Base.Model.extend({
+    defaults: {
+      label: "input",
+      type: "dataflow-input",
+      x: 200,
+      y: 100,
+      "input-type": "all"
+    },
+    toJSON: function(){
+      var json = Base.Model.prototype.toJSON.call(this);
+      json["input-type"] = this.get("input-type");
+      return json;
+    },
+    inputs:[
+      // {
+      //   id: "data",
+      //   type: "all"
+      // },
+    ],
+    outputs:[
+      {
+        id: "data",
+        type: "all"
+      }
+    ]
+  });
+
+  // DataflowInput.View = Base.View.extend({
+  // });
+
+}(Dataflow) );
+
+( function(Dataflow) {
+ 
+  // Dependencies
+  var Base = Dataflow.node("base");
+  var DataflowOutput = Dataflow.node("dataflow-output");
+
+  DataflowOutput.Model = Base.Model.extend({
+    defaults: {
+      label: "output",
+      type: "dataflow-output",
+      x: 200,
+      y: 100,
+      "output-type": "all"
+    },
+    toJSON: function(){
+      var json = Base.Model.prototype.toJSON.call(this);
+      json["output-type"] = this.get("output-type");
+      return json;
+    },
+    inputs:[
+      {
+        id: "data",
+        type: "all"
+      }
+    ],
+    outputs:[
+      // {
+      //   id: "data",
+      //   type: "all"
+      // }
+    ]
+  });
+
+  // DataflowInput.View = Base.View.extend({
+  // });
 
 }(Dataflow) );

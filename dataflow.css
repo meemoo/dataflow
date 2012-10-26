@@ -1,6 +1,20 @@
 html, body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  height: 100%;
+
+  font-family: Verdana;
+  font-size: 14px;
+}
+
+button {
+  border-radius: 3px;
+  border: 1px #CCC solid;
+  background-color: #EEE;
+  color: black;
+  font-size: 14px;
+  margin: 1px;
 }
 
 .graph {
@@ -59,9 +73,21 @@ html, body {
   }
   .node h1 {
     font-size: 20px;
+    font-weight: normal;
     margin: 0;
     padding: 0;
   }
+  .node .controls {
+  }
+    .node .controls .delete {
+      margin-right: 10px;
+    }
+
+.graph-controls {
+  position: fixed;
+  top: 0;
+  right: 0;
+}
 
 .ins {
   text-align: left;

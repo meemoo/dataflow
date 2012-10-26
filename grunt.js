@@ -33,9 +33,10 @@ module.exports = function(grunt) {
           "src/nodes/base.js",
           "src/nodes/base-resizable.js",
           "src/nodes/test.js",
+          // Nodes (for subgraphs)
           "src/nodes/dataflow-input.js",
-          "src/nodes/dataflow-output.js"
-          // "src/nodes/subgraph.js",
+          "src/nodes/dataflow-output.js",
+          "src/nodes/subgraph.js"
         ],
         dest: 'build/<%= pkg.name %>.js'
       }

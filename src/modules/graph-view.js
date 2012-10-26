@@ -11,7 +11,8 @@
         // '</defs>'+
       '</svg>'+
     '</div>'+
-    '<div class="nodes" />';
+    '<div class="nodes" />'+
+    '<div class="graph-controls" />';
 
   // Dependencies
   var Node = Dataflow.module("node");

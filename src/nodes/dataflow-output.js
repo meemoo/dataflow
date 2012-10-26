@@ -9,21 +9,18 @@
       label: "output",
       type: "dataflow-output",
       x: 200,
-      y: 100
+      y: 100,
+      "output-type": "all"
+    },
+    toJSON: function(){
+      var json = Base.Model.prototype.toJSON.call(this);
+      json["output-type"] = this.get("output-type");
+      return json;
     },
     inputs:[
       {
         id: "data",
         type: "all"
-      },
-      {
-        id: "id",
-        type: "string"
-      },
-      {
-        id: "type",
-        type: "string",
-        defaultValue: "all"
       }
     ],
     outputs:[

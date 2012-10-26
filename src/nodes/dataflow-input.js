@@ -9,22 +9,19 @@
       label: "input",
       type: "dataflow-input",
       x: 200,
-      y: 100
+      y: 100,
+      "input-type": "all"
+    },
+    toJSON: function(){
+      var json = Base.Model.prototype.toJSON.call(this);
+      json["input-type"] = this.get("input-type");
+      return json;
     },
     inputs:[
       // {
       //   id: "data",
       //   type: "all"
       // },
-      {
-        id: "id",
-        type: "string"
-      },
-      {
-        id: "type",
-        type: "string",
-        defaultValue: "all"
-      }
     ],
     outputs:[
       {

@@ -80,6 +80,12 @@
       while(this.nodes.length > 0){
         this.nodes.remove(this.nodes.at(this.nodes.length-1));
       }
+    },
+    toJSON: function(){
+      return {
+        nodes: this.nodes,
+        edges: this.edges
+      };
     }
   });
 

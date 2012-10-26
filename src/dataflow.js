@@ -44,7 +44,17 @@
       if (this.debug) {
         console.log("Dataflow: ", arguments);
       }
-    }
+    },
+    types: [
+      "all",
+      "canvas:2d",
+      "canvas:webgl",
+      "string",
+      "number",
+      "int",
+      "object",
+      "array"
+    ]
   });
 
   // Our global
