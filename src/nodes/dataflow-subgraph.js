@@ -78,8 +78,6 @@
     editSubgraph: function(){
       // Hide parent
       this.model.parentGraph.view.$el.detach();
-      // var currentView = this.model.parentGraph.view.el;
-      // currentView.parentNode.removeChild(currentView);
       // Show sub
       $("#app").append(this.model.graph.view.el);
 

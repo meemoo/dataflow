@@ -8,7 +8,7 @@ html, body {
   font-size: 14px;
 }
 
-button {
+button, input[type="submit"] {
   border-radius: 3px;
   border: 1px #CCC solid;
   background-color: #EEE;
