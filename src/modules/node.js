@@ -67,7 +67,7 @@
       // Stop any processes that need to be stopped
     },
     toString: function(){
-      return this.id;
+      return this.id + " ("+this.type+")";
     },
     toJSON: function(){
       return {

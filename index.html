@@ -58,6 +58,10 @@
   <script src="src/nodes/base-resizable.js"></script>
   <script src="src/nodes/test.js"></script>
 
+  <!-- Nodes (subgraph functionality) -->
+  <script src="src/nodes/dataflow-input.js"></script>
+  <script src="src/nodes/dataflow-output.js"></script>
+
   <!-- Testing -->
   <script>
     $(function($) {
@@ -101,7 +105,9 @@
       });
 
       // Load test graph
-      loadGraph({"nodes":[{"id":2,"type":"test","label":"node two","x":620,"y":100},{"id":1,"type":"test","label":"node one","x":290,"y":100}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}}]});
+      loadGraph(
+        {"nodes":[{"id":1,"label":"input","type":"dataflow-input","x":272,"y":128},{"id":2,"label":"node one","type":"test","x":527,"y":119,"w":200,"h":200},{"id":4,"label":"test output","type":"dataflow-output","x":793,"y":223}],"edges":[{"source":{"node":1,"port":"data"},"target":{"node":2,"port":"input"}},{"source":{"node":2,"port":"output"},"target":{"node":4,"port":"data"}}]}
+      );
 
       // Add nodes to test graph
       var TestNode = Dataflow.node("test");

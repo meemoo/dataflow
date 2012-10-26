@@ -3,8 +3,9 @@
   var template = 
     '<h1 class="title"><%- id %>: <span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
     '<div class="controls">'+
-      '<button class="delete">delete</button>'+
-      '<button class="done">done</button>'+
+      '<button class="delete">delete</button> ... '+
+      '<button class="save">save</button>'+
+      '<button class="cancel">cancel</button>'+
     '</div>'+
     '<button class="edit">edit</button>'+
     '<div class="ports ins" />'+
@@ -22,7 +23,8 @@
       "click .delete": "removeModel",
       "dragstop":      "dragStop",
       "click .edit":   "showControls",
-      "click .done":   "hideControls"
+      "click .cancel": "hideControls",
+      "click .save":   "saveLabel"
     },
     initialize: function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -95,18 +97,21 @@
       this.$(".controls").show();
     },
     hideControls: function(){
-      // Save new label
-      var newLabel = this.$(".title .label-edit").val();
-      if (this.model.get("label") !== newLabel) {
-        this.model.set("label", newLabel);
-        this.$(".title .label").text(newLabel);
-      }
       // Hide label edit
       this.$(".title .label-edit").hide();
       this.$(".title .label").show();
       // Hide controls
       this.$(".controls").hide();
       this.$(".edit").show();
+    },
+    saveLabel: function(){
+      // Save new label
+      var newLabel = this.$(".title .label-edit").val();
+      if (this.model.get("label") !== newLabel) {
+        this.model.set("label", newLabel);
+        this.$(".title .label").text(newLabel);
+      }
+      this.hideControls();
     },
     removeModel: function(){
       this.model.collection.remove(this.model);
