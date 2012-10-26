@@ -30,9 +30,11 @@
       for (var i=0; i<inputs.length; i++){
         var input = inputs[i];
         var newInput = new Input.Model({
-          id: input.get("label"),
+          id: input.id,
+          label: input.get("label"),
           type: input.get("input-type"),
-          parentNode: this
+          parentNode: this,
+          inputNode: input
         });
         this.inputs.add(newInput);
       }
@@ -42,9 +44,11 @@
       for (i=0; i<outputs.length; i++){
         var output = outputs[i];
         var newOutput = new Output.Model({
-          id: output.get("label"),
+          id: output.id,
+          label: output.get("label"),
           type: output.get("output-type"),
-          parentNode: this
+          parentNode: this,
+          outputNode: output
         });
         this.outputs.add(newOutput);
       }
@@ -75,6 +79,18 @@
           self.editSubgraph();
         });
       this.$(".inner").append(editButton);
+
+      // Listen for label changes
+      this.model.inputs.each(function(input){
+        input.get("inputNode").on("change:label", function(i){
+          input.view.$(".label").text(i.get("label"));
+        }, this);
+      }, this);
+      this.model.outputs.each(function(output){
+        output.get("outputNode").on("change:label", function(o){
+          output.view.$(".label").text(o.get("label"));
+        }, this);
+      }, this);
     },
     editSubgraph: function(){
       // Hide parent

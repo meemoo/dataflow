@@ -2,11 +2,15 @@
  
   Input.Model = Backbone.Model.extend({
     defaults: {
-      id: "output",
+      id: "input",
+      label: "",
       type: "all"
     },
     initialize: function() {
       this.parentNode = this.get("parentNode");
+      if (this.get("label")===""){
+        this.set({label: this.id});
+      }
     }
   });
 

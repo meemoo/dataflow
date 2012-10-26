@@ -5,7 +5,7 @@
   var template = 
     '<span class="plug in" title="drag to edit wire"></span>'+ //i18n
     '<span class="hole in" title="drag to make new wire"></span>'+ //i18n
-    '<span class="label in"><%= id %></span>';
+    '<span class="label in"><%= label %></span>';
  
   Input.View = Backbone.View.extend({
     template: _.template(template),

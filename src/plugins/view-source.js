@@ -1,8 +1,8 @@
 ( function(Dataflow) {
  
   var template = 
-    '<form id="source" style="width: 230px;">'+
-      '<textarea id="code" style="width: 230px; height: 400px;"></textarea><br/>'+
+    '<form id="source" style="width: 330px;">'+
+      '<textarea id="code" style="width: 100%; height: 400px;"></textarea><br/>'+
       '<input id="apply" type="submit" value="apply changes" />'+
     '</form>';
 
