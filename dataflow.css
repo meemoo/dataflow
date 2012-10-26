@@ -18,9 +18,10 @@ button, input[type="submit"] {
 }
 
 .plugins {
-   position: absolute; 
-   top:0; 
-   left:0;
+  position: absolute; 
+  top:0; 
+  left:0;
+  z-index: 2;
 }
   .plugins h1 {
     font-size: 20px;
@@ -36,7 +37,7 @@ button, input[type="submit"] {
   position: absolute;
   top: 10px;
   left: 10px;
-  z-index: -1;
+  z-index: 1;
 }
 .svg-edges {
 }
@@ -70,7 +71,7 @@ button, input[type="submit"] {
   position: absolute;
   top: 0;
   left: 0;  
-  z-index: 1;
+  z-index: 3;
 }
 .node {
   position: absolute;

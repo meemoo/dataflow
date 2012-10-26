@@ -67,26 +67,6 @@
       );
       g.trigger("change");
 
-      // Add nodes to test graph
-      var TestNode = Dataflow.node("test");
-      $("#add").submit(function(){
-        var id = parseInt($('#nodeid').val(), 10);
-        if (id!==id) {
-          //NaN
-          return false;
-        }
-        var newNode = new TestNode.Model({
-          id: id,
-          type: "test",
-          x: window.scrollX - 100 + Math.floor($(window).width()/2),
-          y: window.scrollY - 100 + Math.floor($(window).height()/2),
-          parentGraph: Dataflow.graph
-        });
-        Dataflow.currentGraph.nodes.add(newNode);
-        $('#nodeid').val(id+1);
-        return false;
-      });
-
     });
   </script>
 
