@@ -125,7 +125,7 @@
           y: window.scrollY - 100 + Math.floor($(window).height()/2),
           parentGraph: Dataflow.graph
         });
-        Dataflow.graph.get('nodes').add(newNode);
+        Dataflow.currentGraph.nodes.add(newNode);
         $('#nodeid').val(id+1);
         return false;
       });
