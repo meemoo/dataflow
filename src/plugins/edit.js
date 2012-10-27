@@ -63,10 +63,14 @@
     // edges
     copied.edges = [];
     Dataflow.currentGraph.edges.each(function(edge){
-      var connected = Dataflow.currentGraph.nodes.any(function(node){
-        return edge.isConnectedToNode(node);
+      // Only copy the edges between nodes being copied
+      var connectedSource = _.any(copied.nodes, function(node){
+        return (edge.source.parentNode.id === node.id);
       });
-      if (connected) {
+      var connectedTarget = _.any(copied.nodes, function(node){
+        return (edge.target.parentNode.id === node.id);
+      });
+      if (connectedSource && connectedTarget){
         copied.edges.push( JSON.parse(JSON.stringify(edge)) );
       }
     });
@@ -118,6 +122,10 @@
         Dataflow.currentGraph.edges.add(newEdge);
       }
     }
+    // Rerender edges
+    _.defer(function(){
+      Dataflow.currentGraph.view.rerenderEdges();
+    });
   }
   $("#dataflow-plugin-edit-paste").click(paste);
 
