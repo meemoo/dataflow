@@ -86,41 +86,42 @@
       var newNodes = [];
       // Deselect all
       Dataflow.currentGraph.view.$(".node").removeClass("selected");
-      for (var i=0; i<copied.nodes.length; i++) {
-        var oldNode = copied.nodes[i];
+      _.each(copied.nodes, function(node){
         // Offset pasted
-        oldNode.x += 50;
-        oldNode.y += 50;
-        oldNode.parentGraph = Dataflow.currentGraph;
-        var oldId = oldNode.id;
+        node.x += 50;
+        node.y += 50;
+        node.parentGraph = Dataflow.currentGraph;
+        var oldId = node.id;
         // Make unique id
-        while (Dataflow.currentGraph.nodes.get(oldNode.id)){
-          oldNode.id++;
+        while (Dataflow.currentGraph.nodes.get(node.id)){
+          node.id++;
         }
-        // Update copied edges with new node ids
-        if (oldId !== oldNode.id) {
-          for (var j=0; j<copied.edges.length; j++) {
-            var edge = copied.edges[j];
+        // Update copied edges with new node id
+        if (oldId !== node.id) {
+          _.each(copied.edges, function(edge){
             if (edge.source.node === oldId) {
-              edge.source.node = oldNode.id;
+              edge.source.node = node.id;
             }
             if (edge.target.node === oldId) {
-              edge.target.node = oldNode.id;
+              edge.target.node = node.id;
             }
-          }
+          });
         }
-        var newNode = new Dataflow.nodes[oldNode.type].Model(oldNode);
+        var newNode = new Dataflow.nodes[node.type].Model(node);
         Dataflow.currentGraph.nodes.add(newNode);
         // Select it
         newNode.view.$el.addClass("selected");
-      }
+      });
       // Add edges
-      for (var k=0; k<copied.edges.length; k++) {
-        var oldEdge = copied.edges[k];
-        oldEdge.parentGraph = Dataflow.currentGraph;
-        var newEdge = new Dataflow.modules.edge.Model(oldEdge);
+      _.each(copied.edges, function(edge){
+        // Clone edge object (otherwise weirdness on multiple pastes)
+        edge = JSON.parse(JSON.stringify(edge));
+        // Add it
+        edge.parentGraph = Dataflow.currentGraph;
+        edge.id = edge.source.node+":"+edge.source.port+"→"+edge.target.node+":"+edge.target.port;
+        var newEdge = new Dataflow.modules.edge.Model(edge);
         Dataflow.currentGraph.edges.add(newEdge);
-      }
+      });
     }
     // Rerender edges
     _.defer(function(){
