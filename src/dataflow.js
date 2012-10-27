@@ -31,7 +31,7 @@
     addPlugin: function(name, html) {
       var title = $('<h1 />')
         .text(name)
-        .click(function(event){
+        .click(function(){
           $(this).next().toggle();
         });
       var section = $('<div />')

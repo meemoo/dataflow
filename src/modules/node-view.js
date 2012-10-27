@@ -1,6 +1,7 @@
 ( function(Node) {
 
   var template = 
+    '<div class="outer" />'+
     '<h1 class="title"><%- id %>: <span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
     '<div class="controls">'+
       '<button class="delete">delete</button>'+
@@ -20,6 +21,7 @@
     template: _.template(template),
     className: "node",
     events: {
+      "mousedown .title":  "select",
       "click .delete": "removeModel",
       "dragstop":      "dragStop",
       "click .edit":   "showControls",
@@ -115,6 +117,19 @@
     },
     removeModel: function(){
       this.model.collection.remove(this.model);
+    },
+    select: function(event){
+      if (event.ctrlKey || event.metaKey) {
+        // Command key is pressed, toggle selection
+        this.$el.toggleClass("selected");
+      } else {
+        // Command key isn't pressed, deselect others and select this one
+        this.model.parentGraph.view.$(".selected").removeClass("selected");
+        this.$el.addClass("selected");
+      }
+      
+      // Don't fire click on graph
+      // event.stopPropagation();
     }
   });
 

@@ -6,11 +6,18 @@
 
   DataflowInput.Model = Base.Model.extend({
     defaults: {
-      label: "input",
+      label: "",
       type: "dataflow-input",
       x: 200,
       y: 100,
       "input-type": "all"
+    },
+    initialize: function(){
+      if (this.get("label")===""){
+        this.set({label:"input"+this.id});
+      }
+      // super
+      Base.Model.prototype.initialize.call(this);
     },
     toJSON: function(){
       var json = Base.Model.prototype.toJSON.call(this);

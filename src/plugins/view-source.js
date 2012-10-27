@@ -10,7 +10,9 @@
 
   // On change update code view
   Dataflow.on("change", function(graph){
-    $("#code").val( JSON.stringify(Dataflow.graph.toJSON(), null, "  ") );
+    if (Dataflow.graph) {
+      $("#code").val( JSON.stringify(Dataflow.graph.toJSON(), null, "  ") );
+    }
   });
 
   // Apply source to test graph

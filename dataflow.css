@@ -9,6 +9,7 @@ html, body {
 }
 
 button, input[type="submit"] {
+  cursor: pointer;
   border-radius: 3px;
   border: 1px #CCC solid;
   background-color: #EEE;
@@ -78,13 +79,23 @@ button, input[type="submit"] {
   display: inline-block;
   width: 200px;
   border: 1px black solid;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.8);
 }
+  .node .outer {
+    position: absolute;
+    top:0;right:0;bottom:0;left:0;
+    z-index: -1;
+  }
+    .node.selected .outer {
+      border: 3px black solid;
+      top:-3px;right:-3px;bottom:-3px;left:-3px;
+    }
   .node.helper {
     border-style: dotted;
     background-color: rgba(255, 255, 255, 0.5);
   }
   .node h1 {
+    cursor: move;
     font-size: 20px;
     font-weight: normal;
     margin: 0;
@@ -128,6 +139,7 @@ button, input[type="submit"] {
       border-color: black;
     }
     .port .hole {
+      cursor: pointer;
       width: 18px;
       height: 18px;
       display: inline-block;
@@ -140,6 +152,7 @@ button, input[type="submit"] {
     }
       .port .plug.active,
       .port .plug.helper {
+        cursor: pointer;
         background-color: #AAA;
       }
 

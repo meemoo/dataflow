@@ -6,11 +6,18 @@
 
   DataflowOutput.Model = Base.Model.extend({
     defaults: {
-      label: "output",
+      label: "",
       type: "dataflow-output",
       x: 200,
       y: 100,
       "output-type": "all"
+    },
+    initialize: function(){
+      if (this.get("label")===""){
+        this.set({label:"output"+this.id});
+      }
+      // super
+      Base.Model.prototype.initialize.call(this);
     },
     toJSON: function(){
       var json = Base.Model.prototype.toJSON.call(this);
@@ -31,7 +38,7 @@
     ]
   });
 
-  // DataflowInput.View = Base.View.extend({
+  // DataflowOutput.View = Base.View.extend({
   // });
 
 }(Dataflow) );
