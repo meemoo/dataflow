@@ -12,7 +12,7 @@
       var addButton = $("<button>+</button>")
         .click(function(){
           // Find vacant id
-          var id = 1; 
+          var id = Dataflow.currentGraph.nodes.length + 1;
           while (Dataflow.currentGraph.nodes.get(id)){
             id++;
           }

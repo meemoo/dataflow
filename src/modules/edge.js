@@ -28,6 +28,9 @@
         }
       }
     },
+    isConnectedToPort: function(port) {
+      return ( this.source === port || this.target === port );
+    },
     isConnectedToNode: function(node) {
       return ( this.source.parentNode === node || this.target.parentNode === node );
     },
