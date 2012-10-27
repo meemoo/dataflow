@@ -29,9 +29,13 @@
       return this.nodes[name] = {};
     },
     addPlugin: function(name, template) {
+      var title = $("<h1>"+name+"</h1>")
+        .click(function(event){
+          $(this).next().toggle();
+        });
       this.$(".plugins")
-        .append("<h1>"+name+"</h1>")
-        .append(template);
+        .append(title)
+        .append($(template).hide());
     },
     loadGraph: function(source) {
       if (this.graph) {
