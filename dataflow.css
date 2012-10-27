@@ -80,6 +80,7 @@ button, input[type="submit"] {
   width: 200px;
   border: 1px black solid;
   background-color: rgba(255, 255, 255, 0.8);
+  z-index: 0;
 }
   .node .outer {
     position: absolute;

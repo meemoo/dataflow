@@ -31,12 +31,14 @@
   function cut(){
     // Copy selected
     copy();
+    // Move back so paste in original place
+    _.each(copied.nodes, function(node){
+      node.x -= 50;
+      node.y -= 50;
+    });
     // Remove selected
-    var toRemove = [];
-    Dataflow.currentGraph.nodes.each(function(node){
-      if (node.view.$el.hasClass("selected")) {
-        toRemove.push(node);
-      }
+    var toRemove = Dataflow.currentGraph.nodes.filter(function(node){
+      return node.view.$el.hasClass("selected");
     });
     _.each(toRemove, function(node){
       node.collection.remove(node);
@@ -61,7 +63,10 @@
     // edges
     copied.edges = [];
     Dataflow.currentGraph.edges.each(function(edge){
-      if (false) {
+      var connected = Dataflow.currentGraph.nodes.any(function(node){
+        return edge.isConnectedToNode(node);
+      });
+      if (connected) {
         copied.edges.push( JSON.parse(JSON.stringify(edge)) );
       }
     });
@@ -83,39 +88,35 @@
         oldNode.x += 50;
         oldNode.y += 50;
         oldNode.parentGraph = Dataflow.currentGraph;
-        oldNode.oldId = oldNode.id;
+        var oldId = oldNode.id;
         // Make unique id
         while (Dataflow.currentGraph.nodes.get(oldNode.id)){
           oldNode.id++;
         }
+        // Update copied edges with new node ids
+        if (oldId !== oldNode.id) {
+          for (var j=0; j<copied.edges.length; j++) {
+            var edge = copied.edges[j];
+            if (edge.source.node === oldId) {
+              edge.source.node = oldNode.id;
+            }
+            if (edge.target.node === oldId) {
+              edge.target.node = oldNode.id;
+            }
+          }
+        }
         var newNode = new Dataflow.nodes[oldNode.type].Model(oldNode);
         Dataflow.currentGraph.nodes.add(newNode);
-        // newNode.copiedFrom = oldNode.id;
-        // newNodes.push(newNode);
-        // Select pasted
-        if (newNode.view) {
-          newNode.view.$el.addClass("selected");
-        }
+        // Select it
+        newNode.view.$el.addClass("selected");
       }
-      // // Add edges
-      // for (var j=0; j<copied.edges.length; j++) {
-      //   var oldEdge = copied.edges[j];
-      //   var newEdge = {source:[],target:[]};
-      //   for (var k=0; k<newNodes.length; k++) {
-      //     var node = newNodes[k];
-      //     if (oldEdge.source[0] === node.copiedFrom) {
-      //       newEdge.source[0] = node.id;
-      //     }
-      //     if (oldEdge.target[0] === node.copiedFrom) {
-      //       newEdge.target[0] = node.id;
-      //     }
-      //   }
-      //   newEdge.source[1] = oldEdge.source[1];
-      //   newEdge.target[1] = oldEdge.target[1];
-      //   newEdge = new Iframework.Edge( newEdge );
-      //   newEdge.graph = this.model;
-      //   this.model.addEdge(newEdge);
-      // }
+      // Add edges
+      for (var k=0; k<copied.edges.length; k++) {
+        var oldEdge = copied.edges[k];
+        oldEdge.parentGraph = Dataflow.currentGraph;
+        var newEdge = new Dataflow.modules.edge.Model(oldEdge);
+        Dataflow.currentGraph.edges.add(newEdge);
+      }
     }
   }
   $("#dataflow-plugin-edit-paste").click(paste);

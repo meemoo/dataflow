@@ -38,6 +38,7 @@ module.exports = function(grunt) {
           "src/nodes/dataflow-output.js",
           "src/nodes/subgraph.js",
           // Plugins
+          "src/plugins/edit.js",
           "src/plugins/library.js",
           "src/plugins/view-source.js",
           "src/plugins/log.js"
