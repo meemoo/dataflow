@@ -28,14 +28,18 @@
       // Create a node scaffold and save it under this name
       return this.nodes[name] = {};
     },
-    addPlugin: function(name, template) {
-      var title = $("<h1>"+name+"</h1>")
+    addPlugin: function(name, html) {
+      var title = $('<h1 />')
+        .text(name)
         .click(function(event){
           $(this).next().toggle();
         });
+      var section = $('<div />')
+        .html(html)
+        .hide();
       this.$(".plugins")
         .append(title)
-        .append($(template).hide());
+        .append(section);
     },
     loadGraph: function(source) {
       if (this.graph) {
