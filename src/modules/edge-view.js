@@ -25,10 +25,10 @@
       };
       // Render on source/target view move
       if (this.model.source) {
-        this.model.source.parentNode.on("change:x, change:y, change:w", this.render, this);
+        this.model.source.parentNode.on("change:x change:y change:w", this.render, this);
       }
       if (this.model.target) {
-        this.model.target.parentNode.on("change:x, change:y", this.render, this);
+        this.model.target.parentNode.on("change:x change:y", this.render, this);
       }
       // Set port plug active
       if (this.model.source) {
