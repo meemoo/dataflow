@@ -25,10 +25,10 @@
       };
       // Render on source/target view move
       if (this.model.source) {
-        this.model.source.parentNode.on("move", this.render, this);
+        this.model.source.parentNode.on("change:x, change:y, change:w", this.render, this);
       }
       if (this.model.target) {
-        this.model.target.parentNode.on("move", this.render, this);
+        this.model.target.parentNode.on("change:x, change:y", this.render, this);
       }
       // Set port plug active
       if (this.model.source) {
@@ -94,10 +94,10 @@
       var target = this.model.target;
       // Remove listeners
       if (source) {
-        source.parentNode.off("move", this.render, this);
+        source.parentNode.off(null, null, this);
       }
       if (target) {
-        target.parentNode.off("move", this.render, this);
+        target.parentNode.off(null, null, this);
       }
       // Check if port plug is still active
       if (source) {

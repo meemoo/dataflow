@@ -57,8 +57,6 @@
         "w": ui.size.width,
         "h": ui.size.height
       });
-      // Triggers edge redraw
-      this.model.trigger("move", this.model);
     }
   });
 

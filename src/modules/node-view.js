@@ -88,7 +88,6 @@
         y: y
       });
       this.model.collection.sort({silent: true});
-      this.model.trigger("move", this.model);
     },
     showControls: function(){
       // Show label edit
