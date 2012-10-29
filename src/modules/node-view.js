@@ -35,19 +35,13 @@
       this.$el.addClass(this.model.type);
 
       // Initialize i/o views
-      this.model.inputs.view = new Input.CollectionView({
+      this.inputs = this.model.inputs.view = new Input.CollectionView({
         collection: this.model.inputs
       });
-      this.model.inputs.view.render();
-      this.model.inputs.view.renderAllItems();
-      this.inputs = this.model.inputs.view;
       // Outs
-      this.model.outputs.view = new Output.CollectionView({
+      this.outputs = this.model.outputs.view = new Output.CollectionView({
         collection: this.model.outputs
       });
-      this.model.outputs.view.render();
-      this.model.outputs.view.renderAllItems();
-      this.outputs = this.model.outputs.view;
 
       var self = this;
       this.$el.draggable({

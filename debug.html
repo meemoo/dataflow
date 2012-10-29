@@ -23,8 +23,36 @@
   <script src="libs/underscore.js"></script>
   <script src="libs/backbone.js"></script>
 
-  <!-- Dataflow -->
-  <script src="build/dataflow.min.js"></script>
+  <!-- Dataflow core -->
+  <script src="src/dataflow.js"></script>
+
+  <!-- Dataflow Modules -->
+  <script src="src/modules/graph.js"></script>
+  <script src="src/modules/node.js"></script>
+  <script src="src/modules/input.js"></script>
+  <script src="src/modules/output.js"></script>
+  <script src="src/modules/edge.js"></script>
+
+  <script src="src/modules/graph-view.js"></script>
+  <script src="src/modules/node-view.js"></script>
+  <script src="src/modules/input-view.js"></script>
+  <script src="src/modules/output-view.js"></script>
+  <script src="src/modules/edge-view.js"></script>
+
+  <!-- Nodes (some basics to extend) -->
+  <script src="src/nodes/base.js"></script>
+  <script src="src/nodes/base-resizable.js"></script>
+  <script src="src/nodes/test.js"></script>
+  <!-- Nodes (subgraph functionality) -->
+  <script src="src/nodes/dataflow-input.js"></script>
+  <script src="src/nodes/dataflow-output.js"></script>
+  <script src="src/nodes/dataflow-subgraph.js"></script>
+
+  <!-- Plugins -->
+  <script src="src/plugins/edit.js"></script>
+  <script src="src/plugins/library.js"></script>
+  <script src="src/plugins/view-source.js"></script>
+  <script src="src/plugins/log.js"></script>
 
   <!-- Testing -->
   <script>
@@ -32,7 +60,7 @@
       // Everything should be loaded now
 
       // Log to console
-      // Dataflow.debug = true;
+      Dataflow.debug = true;
 
       // Load test graph
       var g = Dataflow.loadGraph(

@@ -88,6 +88,27 @@
   Backbone.View.prototype.addEvents = function(events) {
     this.delegateEvents( _.extend(_.clone(this.events), events) );
   };
+
+  // Simple collection view
+  Backbone.CollectionView = Backbone.Model.extend({
+    // this.tagName and this.itemView should be set
+    initialize: function(){
+      this.el = document.createElement(this.tagName);
+      this.$el = $(this.el);
+      var collection = this.get("collection");
+      collection.each(this.addItem, this);
+      collection.on("add", this.addItem, this);
+      collection.on("remove", this.removeItem, this);
+    },
+    addItem: function(item){
+      item.view = new this.itemView({model:item});
+      this.$el.append(item.view.render().el);
+    },
+    removeItem: function(item){
+      item.view.remove();
+    }
+  });
+
 }());
 
 // All code has been downloaded and evaluated and app is ready to be initialized.

@@ -42,6 +42,7 @@
       });
     },
     render: function () {
+      return this;
     },
     newEdgeStart: function(event, ui){
       // Don't drag node
