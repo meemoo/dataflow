@@ -51,6 +51,7 @@
         var showGraph = function(graph) {
           return function () {
             Dataflow.showGraph(graph);
+            return false;
           };
         };
         while(parentNode){
@@ -61,11 +62,11 @@
           } else {
             upLabel = "main";
           }
-          upButton = $("<button>")
+          upButton = $('<a href="#">')
             .text( upLabel )
             .click( showGraph(parentGraph) );
           this.$(".graph-controls")
-            .prepend(" &gt; ")
+            .prepend(" / ")
             .prepend(upButton);
         }
       }

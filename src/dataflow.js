@@ -66,6 +66,7 @@
       this.currentGraph.view.$el.detach();
       // Show new
       this.$el.append(graph.view.el);
+      graph.view.render();
       this.currentGraph = graph;
     },
     debug: false,

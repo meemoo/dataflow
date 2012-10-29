@@ -129,30 +129,6 @@
     },
     showSubgraph: function(){
       Dataflow.showGraph(this.model.graph);
-
-      // var navigation = $("<div />");
-
-      // // Make navigation
-      // var navToGraph = this.model.graph;
-      // while (navToGraph.get("parentNode")) {
-      //   // console.log(navToGraph.get("parentNode").get("label"));
-      //   var button = $("<button>")
-      //     .text( navToGraph.get("parentNode").get("label") )
-      //     .click(function(){
-      //       Dataflow.showGraph(navToGraph);
-      //     });
-      //   navigation.prepend(button);
-      //   // Next up?
-      //   navToGraph = navToGraph.get("parentNode").get("parentGraph");
-      // }
-
-      // this.model.graph.view.$(".graph-controls")
-      //   .append(navigation);
-      
-      this.model.graph.view.render();
-    },
-    closeSubgraph: function(){
-      Dataflow.showGraph(this.model.parentGraph);
     }
   });
 
