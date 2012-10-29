@@ -90,7 +90,7 @@
         x: x,
         y: y
       });
-      this.model.collection.sort({silent: true});
+      // this.model.collection.sort({silent: true});
     },
     showControls: function(){
       // Show label edit
