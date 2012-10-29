@@ -39,12 +39,12 @@
       this.model.edges.on("add", this.addEdge, this);
       this.model.edges.on("remove", this.removeEdge, this);
 
-      // For subgraphs only: buttons to navigate up
+      // For subgraphs only: breadcrumbs to navigate up
       var parentNode = this.model.get("parentNode");
       if (parentNode){
         // This subgraph's label
         this.$(".graph-controls")
-          .prepend( _.escape(parentNode.get("label")) );
+          .text( parentNode.get("label") );
 
         // Buttons up
         var parentGraph, upButton, upLabel;
@@ -58,7 +58,7 @@
           parentGraph = parentNode.get("parentGraph");
           parentNode = parentGraph.get("parentNode");
           if (parentNode) {
-            upLabel = _.escape(parentNode.get("label"));
+            upLabel = parentNode.get("label");
           } else {
             upLabel = "main";
           }
