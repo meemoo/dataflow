@@ -22,7 +22,6 @@
     className: "node",
     events: {
       "mousedown .title":  "select",
-      "mousedown .label-edit":  "labelEdit",
       "click .delete": "removeModel",
       "dragstop":      "dragStop",
       "click .edit":   "showControls",
@@ -144,9 +143,6 @@
         }
       }, this);
       this.el.style.zIndex = topZ+1;
-    },
-    labelEdit: function(event){
-      event.stopPropagation();
     }
   });
 
