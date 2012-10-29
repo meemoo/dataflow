@@ -83,9 +83,9 @@
 
   function paste(){
     if (copied && copied.nodes.length > 0) {
-      var newNodes = [];
       // Deselect all
       Dataflow.currentGraph.view.$(".node").removeClass("selected");
+      // Add nodes
       _.each(copied.nodes, function(node){
         // Offset pasted
         node.x += 50;
@@ -110,7 +110,7 @@
         var newNode = new Dataflow.nodes[node.type].Model(node);
         Dataflow.currentGraph.nodes.add(newNode);
         // Select it
-        newNode.view.$el.addClass("selected");
+        newNode.view.select();
       });
       // Add edges
       _.each(copied.edges, function(edge){

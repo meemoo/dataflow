@@ -11,6 +11,8 @@
     if (exclude.indexOf(index) === -1) {
       var addButton = $("<button>+</button>")
         .click(function(){
+          // Deselect others
+          Dataflow.currentGraph.view.$(".node").removeClass("selected");
           // Find vacant id
           var id = Dataflow.currentGraph.nodes.length + 1;
           while (Dataflow.currentGraph.nodes.get(id)){
@@ -23,6 +25,8 @@
             parentGraph: Dataflow.currentGraph
           });
           Dataflow.currentGraph.nodes.add(newNode);
+          // Select and bring to top
+          newNode.view.select();
         });
       var item = $("<li />")
         .append(addButton)

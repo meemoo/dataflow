@@ -88,6 +88,9 @@ button, input[type="submit"] {
     z-index: -1;
   }
     .node.selected .outer {
+      background-color: white;
+    }
+    .node.selected .outer {
       border: 3px black solid;
       top:-3px;right:-3px;bottom:-3px;left:-3px;
     }

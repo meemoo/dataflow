@@ -22,6 +22,7 @@
     className: "node",
     events: {
       "mousedown .title":  "select",
+      "mousedown .label-edit":  "labelEdit",
       "click .delete": "removeModel",
       "dragstop":      "dragStop",
       "click .edit":   "showControls",
@@ -52,6 +53,7 @@
       var self = this;
       this.$el.draggable({
         handle: "h1",
+        // helper: "node helper"
         helper: function(){
           var node = self.$el;
           var width = node.width();
@@ -118,17 +120,33 @@
       this.model.collection.remove(this.model);
     },
     select: function(event){
-      if (event.ctrlKey || event.metaKey) {
-        // Command key is pressed, toggle selection
-        this.$el.toggleClass("selected");
+      if (event) {
+        // Called from click
+        if (event.ctrlKey || event.metaKey) {
+          // Command key is pressed, toggle selection
+          this.$el.toggleClass("selected");
+        } else {
+          // Command key isn't pressed, deselect others and select this one
+          this.model.parentGraph.view.$(".selected").removeClass("selected");
+          this.$el.addClass("selected");
+        }
       } else {
-        // Command key isn't pressed, deselect others and select this one
-        this.model.parentGraph.view.$(".selected").removeClass("selected");
-        this.$el.addClass("selected");
+        // Called from code
+        this.$el.addClass("selected");        
       }
-      
-      // Don't fire click on graph
-      // event.stopPropagation();
+
+      // Bring to top
+      var topZ = 0;
+      this.model.collection.each(function(node){
+        var thisZ = parseInt(node.view.el.style.zIndex, 10);
+        if (thisZ > topZ) {
+          topZ = thisZ;
+        }
+      }, this);
+      this.el.style.zIndex = topZ+1;
+    },
+    labelEdit: function(event){
+      event.stopPropagation();
     }
   });
 
