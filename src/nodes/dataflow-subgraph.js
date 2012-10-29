@@ -96,17 +96,18 @@
     ]
   });
 
+  var innerTemplate = '<button class="show-subgraph">edit subgraph</button>';
+
   DataflowSubgraph.View = BaseResizable.View.extend({
+    events: function(){
+      var events = BaseResizable.View.prototype.events.call(this);
+      events["click .show-subgraph"] = "showSubgraph";
+      return events;
+    },
+    innerTemplate: _.template(innerTemplate),
     initialize: function() {
       BaseResizable.View.prototype.initialize.call(this);
       this.model.graph.view = new Graph.View({model:this.model.graph});
-
-      var self = this;
-      var editButton = $("<button>edit subgraph</button>")
-        .click(function(){
-          self.editSubgraph();
-        });
-      this.$(".inner").append(editButton);
 
       // Listen for label changes
       this.model.inputs.each(this.addInput, this);
@@ -126,30 +127,32 @@
         output.view.$(".label").text(o.get("label"));
       }, this);
     },
-    editSubgraph: function(){
-      // Hide parent
-      this.model.parentGraph.view.$el.detach();
-      // Show sub
-      $("#app").append(this.model.graph.view.el);
-      Dataflow.currentGraph = this.model.graph;
+    showSubgraph: function(){
+      Dataflow.showGraph(this.model.graph);
 
-      var self = this;
-      var closeButton = $("<button>close "+_.escape(this.model.get("label"))+"</button>")
-        .click(function(){
-          self.closeSubgraph();
-        });
-      this.model.graph.view.$(".graph-controls")
-        .empty()
-        .append(closeButton);
+      // var navigation = $("<div />");
+
+      // // Make navigation
+      // var navToGraph = this.model.graph;
+      // while (navToGraph.get("parentNode")) {
+      //   // console.log(navToGraph.get("parentNode").get("label"));
+      //   var button = $("<button>")
+      //     .text( navToGraph.get("parentNode").get("label") )
+      //     .click(function(){
+      //       Dataflow.showGraph(navToGraph);
+      //     });
+      //   navigation.prepend(button);
+      //   // Next up?
+      //   navToGraph = navToGraph.get("parentNode").get("parentGraph");
+      // }
+
+      // this.model.graph.view.$(".graph-controls")
+      //   .append(navigation);
       
       this.model.graph.view.render();
     },
     closeSubgraph: function(){
-      // Hide subgraph
-      this.model.graph.view.$el.detach();
-      // Show parent
-      $("#app").append(this.model.parentGraph.view.el);
-      Dataflow.currentGraph = this.model.parentGraph;
+      Dataflow.showGraph(this.model.parentGraph);
     }
   });
 

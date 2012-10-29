@@ -13,20 +13,25 @@
     '<div class="ports outs" />'+
     '<div class="inner" />';
 
+  var innerTemplate = "";
+
   // Dependencies
   var Input = Dataflow.module("input");
   var Output = Dataflow.module("output");
  
   Node.View = Backbone.View.extend({
     template: _.template(template),
+    innerTemplate: _.template(innerTemplate),
     className: "node",
-    events: {
-      "mousedown .title":  "select",
-      "click .delete": "removeModel",
-      "dragstop":      "dragStop",
-      "click .edit":   "showControls",
-      "click .cancel": "hideControls",
-      "click .save":   "saveLabel"
+    events: function(){
+      return {
+        "mousedown .title":  "select",
+        "click .delete": "removeModel",
+        "dragstop":      "dragStop",
+        "click .edit":   "showControls",
+        "click .cancel": "hideControls",
+        "click .save":   "saveLabel"
+      };
     },
     initialize: function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -54,6 +59,9 @@
           return $('<div class="node helper" style="width:'+width+'px; height:'+height+'px">');
         }
       });
+
+      // Inner template
+      this.$(".inner").append(this.innerTemplate);
     },
     render: function() {
       // Initial position

@@ -54,12 +54,19 @@
       var Graph = this.module("graph");
       var newGraph = new Graph.Model(source);
       newGraph.view = new Graph.View({model: newGraph});
-      $("#app").append(newGraph.view.render().el);
+      this.$el.append(newGraph.view.render().el);
 
       // For debugging
       this.graph = this.currentGraph = newGraph;
 
       return newGraph;
+    },
+    showGraph: function(graph){
+      // Hide current
+      this.currentGraph.view.$el.detach();
+      // Show new
+      this.$el.append(graph.view.el);
+      this.currentGraph = graph;
     },
     debug: false,
     log: function(message) {

@@ -38,6 +38,37 @@
       this.model.edges.each(this.addEdge, this);
       this.model.edges.on("add", this.addEdge, this);
       this.model.edges.on("remove", this.removeEdge, this);
+
+      // For subgraphs only: buttons to navigate up
+      var parentNode = this.model.get("parentNode");
+      if (parentNode){
+        // This subgraph's label
+        this.$(".graph-controls")
+          .prepend( _.escape(parentNode.get("label")) );
+
+        // Buttons up
+        var parentGraph, upButton, upLabel;
+        var showGraph = function(graph) {
+          return function () {
+            Dataflow.showGraph(graph);
+          };
+        };
+        while(parentNode){
+          parentGraph = parentNode.get("parentGraph");
+          parentNode = parentGraph.get("parentNode");
+          if (parentNode) {
+            upLabel = _.escape(parentNode.get("label"));
+          } else {
+            upLabel = "main";
+          }
+          upButton = $("<button>")
+            .text( upLabel )
+            .click( showGraph(parentGraph) );
+          this.$(".graph-controls")
+            .prepend(" &gt; ")
+            .prepend(upButton);
+        }
+      }
     },
     render: function() {
       // HACK to get them to show correct positions on load

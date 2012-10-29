@@ -40,6 +40,8 @@
         accept: ".plug.out, .hole.in",
         activeClassType: "droppable-hover"
       });
+
+      // this.model.parentNode.on("change:x change:y change:w", this.movedHole, this);
     },
     render: function () {
       return this;
@@ -151,9 +153,17 @@
       // Tells changeEdgeStop to remove to old edge
       ui.helper.data("removeChangeEdge", (oldLength < this.model.parentNode.parentGraph.edges.length));
     },
+    // _holePosition: null,
     holePosition: function () {
+      // if (!this._holePosition){
+      //   this._holePosition = this.$(".hole").offset();
+      // }
+      // return this._holePosition;
       return this.$(".hole").offset();
     },
+    // movedHole: function(){
+    //   this._holePosition = null;
+    // },
     plugSetActive: function(){
       this.$(".plug").draggable("enable");
       this.$(".plug").addClass("active");

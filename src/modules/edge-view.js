@@ -26,6 +26,8 @@
       // Render on source/target view move
       if (this.model.source) {
         this.model.source.parentNode.on("change:x change:y change:w", this.render, this);
+        // this.model.source.parentNode.inputs.on("add remove", this.render, this);
+        // this.model.source.parentNode.outputs.on("add remove", this.render, this);
       }
       if (this.model.target) {
         this.model.target.parentNode.on("change:x change:y", this.render, this);
