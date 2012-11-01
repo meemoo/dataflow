@@ -14,7 +14,12 @@
       type: "dataflow-subgraph",
       x: 200,
       y: 100,
-      graph: {}
+      graph: {
+        nodes:[
+          {id: "1", label: "in", type:"dataflow-input",  x:180, y: 15},
+          {id:"99", label:"out", type:"dataflow-output", x:975, y:500}
+        ]
+      }
     },
     initialize: function() {
       BaseResizable.Model.prototype.initialize.call(this);

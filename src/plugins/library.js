@@ -39,6 +39,7 @@
   _.each(Dataflow.nodes, function(node, index){
     if (exclude.indexOf(index) === -1) {
       var addButton = $('<a class="button">+</a>')
+        .attr("title", "click or drag")
         .draggable({
           helper: function(){
             return $('<div class="node helper" style="width:100px; height:100px">'+index+'</div>');
