@@ -2,9 +2,16 @@
 
 (function(){
   var App = Backbone.Model.extend({
-    "$el": $("#app"),
+    // "$el": $("#app"),
     "$": function(query) {
-      return $("#app").children(query);
+      return this.$el.children(query);
+    },
+    initialize: function(q){
+      this.el = document.createElement("div");
+      this.el.className = "dataflow";
+      this.$el = $(this.el);
+      this.$el.append('<div class="plugins"/>');
+      this.$el.append('<div class="navigation"/>');
     },
     // Create the object to contain the modules
     modules: {},
@@ -90,6 +97,11 @@
 
   // Our global
   window.Dataflow = new App();
+
+  // Append main el to page body when ready
+  jQuery(function($) {
+    $('body').append(Dataflow.el);
+  });
 
   // Backbone hacks
   // Discussed here http://stackoverflow.com/a/13075845/592125

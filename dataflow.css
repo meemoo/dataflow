@@ -30,8 +30,8 @@ input[type="submit"],
 
 .plugins {
   position: absolute; 
-  top:0; 
-  left:0;
+  top: 10px; 
+  left: 0px;
   z-index: 2;
 }
   .plugins h1 {
