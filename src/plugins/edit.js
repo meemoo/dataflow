@@ -1,19 +1,15 @@
 ( function(Dataflow) {
  
-  var template = 
-    '<button id="dataflow-plugin-edit-selectall">Select All (A)</button><br />'+
-    '<button id="dataflow-plugin-edit-cut">Cut (X)</button><br />'+
-    '<button id="dataflow-plugin-edit-copy">Copy (C)</button><br />'+
-    '<button id="dataflow-plugin-edit-paste">Paste (V)</button><br />';
+  var buttons = $(
+    '<div>'+
+      '<button class="selectall">Select All (A)</button><br />'+
+      '<button class="cut">Cut (X)</button><br />'+
+      '<button class="copy">Copy (C)</button><br />'+
+      '<button class="paste">Paste (V)</button><br />'+
+    '</div>'
+  );
 
-  Dataflow.addPlugin("edit", template);
-
-  // On change update code view
-  Dataflow.on("change", function(graph){
-    if (Dataflow.graph) {
-      $("#code").val( JSON.stringify(Dataflow.graph.toJSON(), null, "  ") );
-    }
-  });
+  Dataflow.addPlugin("edit", buttons);
 
   //
   // A
@@ -22,7 +18,7 @@
   function selectAll(){
     Dataflow.currentGraph.view.$(".node").addClass("selected");
   }
-  $("#dataflow-plugin-edit-selectall").click(selectAll);
+  buttons.children(".selectall").click(selectAll);
 
   //
   // X
@@ -44,7 +40,7 @@
       node.collection.remove(node);
     });
   }
-  $("#dataflow-plugin-edit-cut").click(cut);
+  buttons.children(".cut").click(cut);
 
   //
   // C
@@ -75,7 +71,7 @@
       }
     });
   }
-  $("#dataflow-plugin-edit-copy").click(copy);
+  buttons.children(".copy").click(copy);
 
   //
   // V
@@ -128,7 +124,7 @@
       Dataflow.currentGraph.view.rerenderEdges();
     });
   }
-  $("#dataflow-plugin-edit-paste").click(paste);
+  buttons.children(".paste").click(paste);
 
 
 }(Dataflow) );

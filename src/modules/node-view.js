@@ -57,7 +57,8 @@
           var width = node.width();
           var height = node.height();
           return $('<div class="node helper" style="width:'+width+'px; height:'+height+'px">');
-        }
+        },
+        alsoDrag: ".selected"
       });
 
       // Inner template
