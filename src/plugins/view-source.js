@@ -6,7 +6,6 @@
       '<input class="apply" type="submit" value="apply changes" />'+
     '</form>'
   );
-
   var $code = $form.children(".code");
 
   Dataflow.addPlugin("view source", $form);
@@ -14,7 +13,9 @@
   // On change update code view
   Dataflow.on("change", function(graph){
     if (Dataflow.graph) {
+      var scrollBackTop = $code.prop("scrollTop");
       $code.val( JSON.stringify(Dataflow.graph.toJSON(), null, "  ") );
+      $code.scrollTop( scrollBackTop );
     }
   });
 
