@@ -53,16 +53,23 @@ input[type="submit"],
 }
 .svg-edges {
 }
-  svg path.edge {
+  svg g.edge path {
     fill: none;
-    stroke: #CCC;
-    stroke-width: 10px;
     stroke-linejoin: bevel;
   }
-  path.edge.highlight {
+  g.edge path.edge-wire {
+    stroke: #CCC;
+    stroke-width: 10px;
+  }
+    g.edge path.edge-shadow {
+      stroke: #AAA;
+      stroke-width: 12px;
+    }
+  g.edge.highlight path.edge-wire {
     stroke: #AAA;
   }
-  path.edge.fade {
+  g.edge.fade path.edge-wire,
+  g.edge.fade path.edge-shadow {
     stroke: #EEE;
   }
 .modal-bg {
