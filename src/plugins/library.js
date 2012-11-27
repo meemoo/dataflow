@@ -1,9 +1,6 @@
 ( function(Dataflow) {
  
-  var library = $('<ul id="dataflow-plugin-library" style="list-style:none; padding-left:0" />');
-
-  // function addNodeToCurrent(node) {
-  // }
+  var library = $('<ul class="dataflow-plugin-library" style="list-style:none; padding-left:0" />');
 
   var exclude = ["base", "base-resizable"];
 

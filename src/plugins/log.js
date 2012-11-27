@@ -1,18 +1,18 @@
 ( function(Dataflow) {
  
-  var template = 
-    '<div id="log" style="width:400px; height: 250px; overflow: auto;">'+
-      '<ol id="loglist"></ol>'+
-    '</div>';
+  var $log = $(
+    '<div class="dataflow-plugin-log" style="width:400px; height: 250px; overflow: auto;">'+
+      '<ol class="loglist"></ol>'+
+    '</div>'
+  );
 
-  Dataflow.addPlugin("log", template);
+  Dataflow.addPlugin("log", $log);
 
   // Log message and scroll
   function log(message){
     message = _.escape(message);
-    $("#loglist").append("<li>" + message + "</li>");
-    var logContainer = $("#log");
-    logContainer.scrollTop( logContainer.prop("scrollHeight") );
+    $log.children(".loglist").append("<li>" + message + "</li>");
+    $log.scrollTop( $log.prop("scrollHeight") );
   }
 
   // Log

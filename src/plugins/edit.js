@@ -1,7 +1,7 @@
 ( function(Dataflow) {
  
   var buttons = $(
-    '<div>'+
+    '<div class="dataflow-plugin-edit">'+
       '<button class="selectall">Select All (A)</button><br />'+
       '<button class="cut">Cut (X)</button><br />'+
       '<button class="copy">Copy (C)</button><br />'+
