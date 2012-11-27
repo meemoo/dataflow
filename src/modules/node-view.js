@@ -25,8 +25,10 @@
     className: "node",
     events: function(){
       return {
-        "mousedown .title":  "select",
+        "click .title": "select",
         "click .delete": "removeModel",
+        "dragstart":     "dragStart",
+        "drag":          "drag",
         "dragstop":      "dragStop",
         "click .edit":   "showControls",
         "click .cancel": "hideControls",
@@ -57,9 +59,10 @@
           var width = node.width();
           var height = node.height();
           return $('<div class="node helper" style="width:'+width+'px; height:'+height+'px">');
-        },
-        alsoDrag: ".selected"
+        }
       });
+
+      this.$el.data("dataflow-node-view", this);
 
       // Inner template
       this.$(".inner").append(this.innerTemplate);
@@ -80,9 +83,80 @@
 
       return this;
     },
+    _alsoDrag: [],
+    _dragDelta: {},
+    dragStart: function(event, ui){
+      // Select this
+      if (!this.$el.hasClass("ui-selected")){
+        this.select(event);
+      }
+
+      // Make helper and save start position of all other selected
+      var self = this;
+      this._alsoDrag = [];
+      this.model.parentGraph.view.$(".ui-selected").each(function() {
+        if (self.el !== this) {
+          var el = $(this);
+          var position = {
+            left: parseInt(el.css('left'), 10), 
+            top: parseInt(el.css('top'), 10)
+          };
+          el.data("ui-draggable-alsodrag-initial", position);
+          // Add helper
+          var helper = $('<div class="node helper">').css({
+            width: el.width(),
+            height: el.height(),
+            left: position.left,
+            top: position.top
+          });
+          el.parent().append(helper);
+          el.data("ui-draggable-alsodrag-helper", helper);
+          // Add to array
+          self._alsoDrag.push(el);
+        }
+      });
+    },
+    drag: function(event, ui){
+      // Drag other helpers
+      if (this._alsoDrag.length) {
+        var self = $(event.target).data("draggable");
+        var op = self.originalPosition;
+        var delta = {
+          top: (self.position.top - op.top) || 0, 
+          left: (self.position.left - op.left) || 0
+        };
+
+        _.each(this._alsoDrag, function(el){
+          var initial = el.data("ui-draggable-alsodrag-initial");
+          var helper = el.data("ui-draggable-alsodrag-helper");
+          helper.css({
+            left: initial.left + delta.left,
+            top: initial.top + delta.top
+          });
+        });
+      }
+    },
     dragStop: function(event, ui){
       var x = parseInt(ui.position.left, 10);
       var y = parseInt(ui.position.top, 10);
+      this.moveToPosition(x,y);
+      // Also drag
+      if (this._alsoDrag.length) {
+        _.each(this._alsoDrag, function(el){
+          var initial = el.data("ui-draggable-alsodrag-initial");
+          var helper = el.data("ui-draggable-alsodrag-helper");
+          var node = el.data("dataflow-node-view");
+          // Move other node
+          node.moveToPosition(parseInt(helper.css("left"), 10), parseInt(helper.css("top"), 10));
+          // Remove helper
+          helper.remove();
+          el.data("ui-draggable-alsodrag-initial", null);
+          el.data("ui-draggable-alsodrag-helper", null);
+        });
+        this._alsoDrag = [];
+      }
+    },
+    moveToPosition: function(x, y){
       this.$el.css({
         left: x,
         top: y
@@ -91,7 +165,6 @@
         x: x,
         y: y
       });
-      // this.model.collection.sort({silent: true});
     },
     showControls: function(){
       // Show label edit
@@ -126,26 +199,25 @@
         // Called from click
         if (event.ctrlKey || event.metaKey) {
           // Command key is pressed, toggle selection
-          this.$el.toggleClass("selected");
+          this.$el.toggleClass("ui-selected");
         } else {
           // Command key isn't pressed, deselect others and select this one
-          this.model.parentGraph.view.$(".selected").removeClass("selected");
-          this.$el.addClass("selected");
+          this.model.parentGraph.view.$(".ui-selected").removeClass("ui-selected");
+          this.$el.addClass("ui-selected");
         }
+        // Bring to top
+        var topZ = 0;
+        this.model.collection.each(function(node){
+          var thisZ = parseInt(node.view.el.style.zIndex, 10);
+          if (thisZ > topZ) {
+            topZ = thisZ;
+          }
+        }, this);
+        this.el.style.zIndex = topZ+1;
       } else {
         // Called from code
-        this.$el.addClass("selected");        
+        this.$el.addClass("ui-selected");
       }
-
-      // Bring to top
-      var topZ = 0;
-      this.model.collection.each(function(node){
-        var thisZ = parseInt(node.view.el.style.zIndex, 10);
-        if (thisZ > topZ) {
-          topZ = thisZ;
-        }
-      }, this);
-      this.el.style.zIndex = topZ+1;
     }
   });
 

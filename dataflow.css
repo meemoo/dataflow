@@ -84,6 +84,13 @@ input[type="submit"],
   top: 0;
   left: 0;  
   z-index: 3;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .node {
   position: absolute;
@@ -98,10 +105,10 @@ input[type="submit"],
     top:0;right:0;bottom:0;left:0;
     z-index: -1;
   }
-    .node.selected .outer {
+    .node.ui-selected .outer {
       background-color: white;
     }
-    .node.selected .outer {
+    .node.ui-selected .outer {
       border: 3px black solid;
       top:-3px;right:-3px;bottom:-3px;left:-3px;
     }

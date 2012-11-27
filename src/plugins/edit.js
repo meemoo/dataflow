@@ -16,7 +16,7 @@
   //
 
   function selectAll(){
-    Dataflow.currentGraph.view.$(".node").addClass("selected");
+    Dataflow.currentGraph.view.$(".node").addClass("ui-selected");
   }
   buttons.children(".selectall").click(selectAll);
 
@@ -34,7 +34,7 @@
     });
     // Remove selected
     var toRemove = Dataflow.currentGraph.nodes.filter(function(node){
-      return node.view.$el.hasClass("selected");
+      return node.view.$el.hasClass("ui-selected");
     });
     _.each(toRemove, function(node){
       node.collection.remove(node);
@@ -52,7 +52,7 @@
     // nodes
     copied.nodes = [];
     Dataflow.currentGraph.nodes.each(function(node){
-      if (node.view.$el.hasClass("selected")) {
+      if (node.view.$el.hasClass("ui-selected")) {
         copied.nodes.push( JSON.parse(JSON.stringify(node)) );
       }
     });
@@ -80,7 +80,7 @@
   function paste(){
     if (copied && copied.nodes.length > 0) {
       // Deselect all
-      Dataflow.currentGraph.view.$(".node").removeClass("selected");
+      Dataflow.currentGraph.view.$(".node").removeClass("ui-selected");
       // Add nodes
       _.each(copied.nodes, function(node){
         // Offset pasted

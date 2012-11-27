@@ -10,7 +10,7 @@
   var addNode = function(node, x, y) {
     return function(){
       // Deselect others
-      Dataflow.currentGraph.view.$(".node").removeClass("selected");
+      Dataflow.currentGraph.view.$(".node").removeClass("ui-selected");
       // Find vacant id
       var id = 1;
       while (Dataflow.currentGraph.nodes.get(id)){
