@@ -68,6 +68,9 @@ input[type="submit"],
   g.edge.highlight path.edge-wire {
     stroke: #AAA;
   }
+  g.edge.highlight path.edge-shadow {
+    stroke: #666;
+  }
   g.edge.fade path.edge-wire,
   g.edge.fade path.edge-shadow {
     stroke: #EEE;
