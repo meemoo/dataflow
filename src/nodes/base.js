@@ -17,14 +17,8 @@
     unload: function(){
       // Stop any processes that need to be stopped
     },
-    inputs:[
-      // {
-      //   id: "input",
-      //   type: "all"
-      // }
-    ],
-    outputs:[
-    ]
+    inputs:[],
+    outputs:[]
   });
 
   Base.View = Node.View.extend({

@@ -19,6 +19,8 @@
       this.parentGraph = this.get("parentGraph");
       this.type = this.get("type");
 
+      this.set("state", {});
+
       // Default label to type
       if (this.get("label")===""){
         this.set({
@@ -75,7 +77,8 @@
         label: this.get("label"),
         type: this.get("type"),
         x: this.get("x"),
-        y: this.get("y")
+        y: this.get("y"),
+        state: this.get("state")
       };
     },
     inputs:[

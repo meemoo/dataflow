@@ -25,10 +25,8 @@
       json.h = this.get("h");
       return json;
     },
-    inputs:[
-    ],
-    outputs:[
-    ]
+    inputs:[],
+    outputs:[]
   });
 
   BaseResizable.View = Base.View.extend({
