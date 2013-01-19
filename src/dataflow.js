@@ -35,18 +35,22 @@
       // Create a node scaffold and save it under this name
       return this.nodes[name] = {};
     },
+    plugins: {},
     addPlugin: function(name, html) {
-      var title = $('<h1 />')
-        .text(name)
-        .click(function(){
-          $(this).next().toggle();
-        });
-      var section = $('<div />')
-        .html(html)
-        .hide();
-      this.$(".plugins")
-        .append(title)
-        .append(section);
+      this.plugins[name] = {};
+      if (html) {
+        var title = $('<h1 />')
+          .text(name)
+          .click(function(){
+            $(this).next().toggle();
+          });
+        var section = $('<div />')
+          .html(html)
+          .hide();
+        this.$(".plugins")
+          .append(title)
+          .append(section);
+      }
     },
     loadGraph: function(source) {
       if (this.graph) {
