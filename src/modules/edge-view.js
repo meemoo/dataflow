@@ -90,6 +90,21 @@
       this.el.setAttribute("class", "edge");
     },
     highlight: function(){
+      var topZ = 0;
+      var thisModel = this.model;
+      this.model.parentGraph.edges.each(function(edge){
+        if (edge !== thisModel) {
+          var thisZ = edge.get("z");
+          if (thisZ > topZ) {
+            topZ = thisZ;
+          }
+          if (edge.view){
+            edge.view.unhighlight();
+          }
+        }
+      });
+      this.model.set("z", topZ+1);
+      this.model.collection.sort();
       this.el.setAttribute("class", "edge highlight");
     },
     unhighlight: function(){
@@ -123,29 +138,29 @@
     },
     showEdit: function(event){
       // Hide others
-      $(".modal-bg").remove();
+      // $(".modal-bg").remove();
 
       // Highlight
       this.highlight();
       this.bringToTop();
 
       // Show box 
-      var self = this;
-      var modalBox = $('<div class="modal-bg" style="width:'+$(document).width()+'px; height:'+$(document).height()+'px;" />')
-        .click(function(){
-          $(".modal-bg").remove();
-          self.unhighlight();
-        });
-      var editBox = $('<div class="edge-edit-box" style="left:'+event.pageX+'px; top:'+event.pageY+'px;" />');
-      editBox.append(this.model.id+"<br />");
-      var deleteButton = $('<button>delete</button>')
-        .click(function(){
-          self.removeModel();
-          $(".modal-bg").remove();
-        });
-      editBox.append(deleteButton);
-      modalBox.append(editBox);
-      this.model.parentGraph.view.$el.append(modalBox);
+      // var self = this;
+      // var modalBox = $('<div class="modal-bg" style="width:'+$(document).width()+'px; height:'+$(document).height()+'px;" />')
+      //   .click(function(){
+      //     $(".modal-bg").remove();
+      //     self.unhighlight();
+      //   });
+      // var editBox = $('<div class="edge-edit-box" style="left:'+event.pageX+'px; top:'+event.pageY+'px;" />');
+      // editBox.append(this.model.id+"<br />");
+      // var deleteButton = $('<button>delete</button>')
+      //   .click(function(){
+      //     self.removeModel();
+      //     $(".modal-bg").remove();
+      //   });
+      // editBox.append(deleteButton);
+      // modalBox.append(editBox);
+      // this.model.parentGraph.view.$el.append(modalBox);
     },
     bringToTop: function(){
       var parent = this.el.parentNode;

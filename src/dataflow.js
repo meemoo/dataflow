@@ -1,5 +1,3 @@
-// Structure with guidance from http://weblog.bocoup.com/organizing-your-backbone-js-application-with-modules/
-
 (function(){
   var App = Backbone.Model.extend({
     // "$el": $("#app"),

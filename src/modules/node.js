@@ -13,13 +13,12 @@
       label: "",
       type: "test",
       x: 200,
-      y: 100
+      y: 100,
+      state: {}
     },
     initialize: function() {
       this.parentGraph = this.get("parentGraph");
       this.type = this.get("type");
-
-      this.set("state", {});
 
       // Default label to type
       if (this.get("label")===""){
@@ -34,6 +33,13 @@
       this.inputs.parentNode = this;
       for(var i=0; i<inputArray.length; i++) {
         var input = inputArray[i];
+
+        // Save defaults to state
+        var state = this.get("state");
+        if (input.value !== undefined && state[input.id] === undefined) {
+          state[input.id] = input.value;
+        }
+
         input.parentNode = this;
         input = new Input.Model(input);
         this.inputs.add(input);
@@ -50,6 +56,19 @@
         this.outputs.add(output);
       }
 
+    },
+    setState: function(name, value){
+      var state = this.get("state");
+      state[name] = value;
+      if (this["input"+name]){
+        this["input"+name](value);
+      }
+      this.trigger("change:state:"+name); //TODO: design this
+    },
+    setBang: function(name){
+      if (this["input"+name]){
+        this["input"+name]();
+      }
     },
     remove: function(){
       // Node removed from graph's nodes collection

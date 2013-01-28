@@ -5,6 +5,7 @@
   var template = 
     '<span class="plug in" title="drag to edit wire"></span>'+ //i18n
     '<span class="hole in" title="drag to make new wire"></span>'+ //i18n
+    '<span class="input-container in"></span>'+
     '<span class="label in"><%= label %></span>';
  
   Input.View = Backbone.View.extend({
@@ -19,7 +20,12 @@
       "dragstart .plug":  "changeEdgeStart",
       "drag      .plug":  "changeEdgeDrag",
       "dragstop  .plug":  "changeEdgeStop",
-      "drop":             "connectEdge"
+      "drop":             "connectEdge",
+      "change .input-int":     "inputInt",
+      "change .input-float":   "inputFloat",
+      "change .input-string":  "inputString",
+      "change .input-boolean": "inputBoolean",
+      "click  .input-bang":    "inputBang"
     },
     initialize: function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -29,7 +35,10 @@
         helper: function(){
           return $('<span class="plug in helper" />');
         },
-        disabled: true
+        disabled: true,
+        // To prevent accidental disconnects
+        distance: 10,
+        delay: 100
       });
       this.$(".hole").draggable({
         helper: function(){
@@ -41,6 +50,71 @@
         accept: ".plug.in, .hole.out",
         activeClassType: "droppable-hover"
       });
+
+      // Initialize direct input
+      var input;
+      var type = this.model.get("type");
+      var state = this.model.parentNode.get("state");
+      if (type === "int" || type === "float") {
+        var attributes = {};
+        if (this.model.get("min") !== undefined) {
+          attributes.min = this.model.get("min");
+        }
+        if (this.model.get("max") !== undefined) {
+          attributes.max = this.model.get("max");
+        }
+        if (type === "int") {
+          attributes.step = 1;
+        }
+        input = $('<input type="number" class="input input-number">')
+          .attr(attributes)
+          .addClass(type === "int" ? "input-int" : "input-float");
+        if (state[this.model.id] !== undefined){
+          // Use the stored state
+          input.val(state[this.model.id]);
+        } else if (this.model.get("value") !== undefined) {
+          // Use the default
+          input.val(this.model.get("value"));
+        }
+      } else if (type === "string") {
+        input = $('<input class="input input-string">');
+        if (state[this.model.id] !== undefined){
+          // Use the stored state
+          input.val(state[this.model.id]);
+        } else if (this.model.get("value") !== undefined) {
+          // Use the default
+          input.val(this.model.get("value"));
+        }
+      } else if (type === "boolean") {
+        input = $('<input type="checkbox" class="input input-boolean">');
+        if (state[this.model.id] !== undefined){
+          // Use the stored state
+          input.prop("checked", state[this.model.id]);
+        } else if (this.model.get("value") !== undefined) {
+          // Use the default
+          input.prop("checked", this.model.get("value"));
+        }
+      } else if (type === "bang") {
+        input = $('<button class="input input-bang">!</button>');
+      } 
+      if (input) {
+        this.$(".input-container").append(input);
+      }
+    },
+    inputInt: function(e){
+      this.model.parentNode.setState(this.model.id, parseInt($(e.target).val(), 10));
+    },
+    inputFloat: function(e){
+      this.model.parentNode.setState(this.model.id, parseFloat($(e.target).val()));
+    },
+    inputString: function(e){
+      this.model.parentNode.setState(this.model.id, $(e.target).val());
+    },
+    inputBoolean: function(e){
+      this.model.parentNode.setState(this.model.id, $(e.target).prop("checked"));
+    },
+    inputBang: function(){
+      this.model.parentNode.setBang(this.model.id);
     },
     render: function(){
       return this;
@@ -86,12 +160,18 @@
       event.stopPropagation();
 
       if (this.isConnected){
-        var changeEdge = this.model.parentNode.parentGraph.edges.find(function(edge){
-          return edge.target === this.model;
+        var changeEdge;
+        // Will get the last (top) matching edge
+        this.model.parentNode.parentGraph.edges.each(function(edge){
+          if(edge.target === this.model){
+            changeEdge = edge;
+          }
         }, this);
         if (changeEdge){
-          this.changeEdge = changeEdge;
-          this.changeEdge.view.fade();
+          // Remove edge
+          changeEdge.collection.remove(changeEdge);
+
+          // Make preview
           ui.helper.data({
             port: changeEdge.source
           });
@@ -124,15 +204,6 @@
       // Clean up preview edge
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.remove();
-        if (this.changeEdge) {
-          this.changeEdge.view.unfade();
-          if (ui.helper.data("removeChangeEdge")){
-            this.changeEdge.collection.remove(this.changeEdge);
-          } else {
-            //TODO delete edge confirm
-          }
-          this.changeEdge = null;
-        }
         delete this.previewEdgeChange;
         delete this.previewEdgeChangeView;
       }

@@ -28,7 +28,10 @@
         helper: function(){
           return $('<span class="plug out helper" />');
         },
-        disabled: true
+        disabled: true,
+        // To prevent accidental disconnects
+        distance: 10,
+        delay: 100
       });
       this.$(".hole").draggable({
         helper: function(){
@@ -83,12 +86,21 @@
       event.stopPropagation();
 
       if (this.isConnected){
-        var changeEdge = this.model.parentNode.parentGraph.edges.find(function(edge){
-          return edge.source === this.model;
+        // var changeEdge = this.model.parentNode.parentGraph.edges.find(function(edge){
+        //   return edge.source === this.model;
+        // }, this);
+        var changeEdge;
+        // Will get the last (top) matching edge
+        this.model.parentNode.parentGraph.edges.each(function(edge){
+          if(edge.source === this.model){
+            changeEdge = edge;
+          }
         }, this);
         if (changeEdge){
-          this.changeEdge = changeEdge;
-          this.changeEdge.view.fade();
+          // Remove edge
+          changeEdge.collection.remove(changeEdge);
+
+          // Make preview
           ui.helper.data({
             port: changeEdge.target
           });
@@ -121,15 +133,6 @@
       // Clean up preview edge
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.remove();
-        if (this.changeEdge) {
-          this.changeEdge.view.unfade();
-          if (ui.helper.data("removeChangeEdge")){
-            this.changeEdge.collection.remove(this.changeEdge);
-          } else {
-            //TODO delete edge confirm
-          }
-          this.changeEdge = null;
-        }
         delete this.previewEdgeChange;
         delete this.previewEdgeChangeView;
       }

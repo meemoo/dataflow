@@ -3,6 +3,9 @@
   // Dependencies
 
   Edge.Model = Backbone.Model.extend({
+    defaults: {
+      "z": 0
+    },
     initialize: function() {
       var nodes;
       var preview = this.get("preview");
@@ -46,7 +49,11 @@
   });
 
   Edge.Collection = Backbone.Collection.extend({
-    model: Edge.Model
+    model: Edge.Model,
+    comparator: function(edge) {
+      // Sort edges by z order
+      return edge.get("z");
+    }
   });
 
 }(Dataflow.module("edge")) );
