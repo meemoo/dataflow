@@ -5,11 +5,14 @@
   var Base = Dataflow.node("base");
 
   Base.Model = Node.Model.extend({
-    defaults: {
-      label: "",
-      type: "base",
-      x: 200,
-      y: 100
+    defaults: function(){
+      return {
+        label: "",
+        type: "base",
+        x: 200,
+        y: 100,
+        state: {}
+      };
     },
     initialize: function() {
       Node.Model.prototype.initialize.call(this);

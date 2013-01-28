@@ -5,13 +5,12 @@
   var BaseResizable = Dataflow.node("base-resizable");
 
   BaseResizable.Model = Base.Model.extend({
-    defaults: {
-      label: "",
-      type: "base-resizable",
-      x: 200,
-      y: 100,
-      w: 200,
-      h: 200
+    defaults: function(){
+      var defaults = Base.Model.prototype.defaults.call(this);
+      defaults.type = "base-resizable";
+      defaults.w = 200;
+      defaults.h = 200;
+      return defaults;
     },
     initialize: function() {
       Base.Model.prototype.initialize.call(this);

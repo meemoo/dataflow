@@ -69,7 +69,7 @@
         input = $('<input type="number" class="input input-number">')
           .attr(attributes)
           .addClass(type === "int" ? "input-int" : "input-float");
-        if (state[this.model.id] !== undefined){
+        if (state && state[this.model.id] !== undefined){
           // Use the stored state
           input.val(state[this.model.id]);
         } else if (this.model.get("value") !== undefined) {
@@ -78,7 +78,7 @@
         }
       } else if (type === "string") {
         input = $('<input class="input input-string">');
-        if (state[this.model.id] !== undefined){
+        if (state && state[this.model.id] !== undefined){
           // Use the stored state
           input.val(state[this.model.id]);
         } else if (this.model.get("value") !== undefined) {
@@ -87,7 +87,7 @@
         }
       } else if (type === "boolean") {
         input = $('<input type="checkbox" class="input input-boolean">');
-        if (state[this.model.id] !== undefined){
+        if (state && state[this.model.id] !== undefined){
           // Use the stored state
           input.prop("checked", state[this.model.id]);
         } else if (this.model.get("value") !== undefined) {

@@ -9,13 +9,12 @@
   var Test = Dataflow.node("test");
 
   Test.Model = BaseResizable.Model.extend({
-    defaults: {
-      label: "",
-      type: "test",
-      x: 200,
-      y: 100,
-      w: 200,
-      h: 200
+    defaults: function(){
+      var defaults = BaseResizable.Model.prototype.defaults.call(this);
+      defaults.type = "test";
+      defaults.w = 200;
+      defaults.h = 400;
+      return defaults;
     },
     inputs:[
       {
@@ -23,8 +22,24 @@
         type: "all"
       },
       {
-        id: "input2",
-        type: "all"
+        id: "string",
+        type: "string"
+      },
+      {
+        id: "int",
+        type: "int"
+      },
+      {
+        id: "float",
+        type: "float"
+      },
+      {
+        id: "boolean",
+        type: "boolean"
+      },
+      {
+        id: "bang",
+        type: "bang"
       }
     ],
     outputs:[
