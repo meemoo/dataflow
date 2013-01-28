@@ -4,7 +4,8 @@
     defaults: {
       id: "input",
       label: "",
-      type: "all"
+      type: "all",
+      description: ""
     },
     initialize: function() {
       this.parentNode = this.get("parentNode");

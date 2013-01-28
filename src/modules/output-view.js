@@ -3,7 +3,7 @@
   var Edge = Dataflow.module("edge");
  
   var template = 
-    '<span class="label out"><%= label %></span>'+
+    '<span class="label out" title="<%= description %>"><%= label %></span>'+
     '<span class="hole out" title="drag to make new wire"></span>'+
     '<span class="plug out" title="drag to edit wire"></span>';
 
