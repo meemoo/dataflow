@@ -194,9 +194,18 @@ input[type="submit"],
   z-index: 9999;
 }
 
-.input-string, .input-int, .input-float {
+.input-string, 
+.input-int, 
+.input-float, 
+.input-select {
   margin-left: 2px;
-  width: 3em;
+  width: 4em;
+  vertical-align: top;
+}
+.input-select {
+  width: 5em;
+}
+.input-bang {
   vertical-align: top;
 }
 

@@ -21,6 +21,7 @@
       "drag      .plug":  "changeEdgeDrag",
       "dragstop  .plug":  "changeEdgeStop",
       "drop":             "connectEdge",
+      "change .input-select":  "inputSelect",
       "change .input-int":     "inputInt",
       "change .input-float":   "inputFloat",
       "change .input-string":  "inputString",
@@ -55,7 +56,42 @@
       var input;
       var type = this.model.get("type");
       var state = this.model.parentNode.get("state");
-      if (type === "int" || type === "float") {
+      var options = this.model.get("options");
+      if (options !== undefined) {
+        // Select dropdown
+        // Find default
+        var val;
+        if (state && state[this.model.id] !== undefined){
+          // Use the stored state
+          val = state[this.model.id];
+        } else if (this.model.get("value") !== undefined) {
+          // Use the default
+          val = this.model.get("value");
+        }
+        // Convert options
+        if (typeof options === "string") {
+          options = options.split(" ");
+        }
+        if ($.isArray(options)){
+          // Convert array to object
+          var o = {};
+          for (var i=0; i<options.length; i++){
+            o[options[i]] = options[i];
+          }
+          options = o;
+        }
+        // Make select
+        input = $('<select class="input input-select">');
+        for (var name in options) {
+          var option = $('<option value="'+options[name]+'">'+name+'</option>')
+            .data("val", options[name]);
+          if (val && options[name] === val) {
+            option.prop("selected", true);
+          }
+          input.append(option);
+        }
+      } else if (type === "int" || type === "float") {
+        // Number input
         var attributes = {};
         if (this.model.get("min") !== undefined) {
           attributes.min = this.model.get("min");
@@ -77,6 +113,7 @@
           input.val(this.model.get("value"));
         }
       } else if (type === "string") {
+        // String input
         input = $('<input class="input input-string">');
         if (state && state[this.model.id] !== undefined){
           // Use the stored state
@@ -86,6 +123,7 @@
           input.val(this.model.get("value"));
         }
       } else if (type === "boolean") {
+        // Checkbox boolean
         input = $('<input type="checkbox" class="input input-boolean">');
         if (state && state[this.model.id] !== undefined){
           // Use the stored state
@@ -95,11 +133,16 @@
           input.prop("checked", this.model.get("value"));
         }
       } else if (type === "bang") {
+        // Button bang
         input = $('<button class="input input-bang">!</button>');
       } 
       if (input) {
         this.$(".input-container").append(input);
       }
+    },
+    inputSelect: function(e){
+      var val = $(e.target).find(":selected").data("val");
+      this.model.parentNode.setState(this.model.id, val);
     },
     inputInt: function(e){
       this.model.parentNode.setState(this.model.id, parseInt($(e.target).val(), 10));

@@ -40,6 +40,19 @@
       {
         id: "bang",
         type: "bang"
+      },
+      {
+        id: "select",
+        type: "string",
+        options: "January February March April",
+        value: "April"
+      },
+      {
+        id: "select2",
+        type: "int",
+        min: 0,
+        max: 3,
+        options: {sine:0, square:1, saw: 2, triangle: 3}
       }
     ],
     outputs:[
