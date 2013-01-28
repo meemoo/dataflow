@@ -151,13 +151,13 @@ input[type="submit"],
   text-align: left;
 }
   .in .label {
-    margin-left: .5em;
+    margin-left: 0.25em;
   }
 .outs {
   text-align: right;
 }
   .out .label {
-    margin-right: .5em;
+    margin-right: 0.25em;
   }
 .ports ul {
   list-style: none;
@@ -194,20 +194,23 @@ input[type="submit"],
   z-index: 9999;
 }
 
-.input-string, 
-.input-int, 
-.input-float, 
-.input-select {
-  margin-left: 2px;
-  width: 4em;
-  vertical-align: top;
+
+.input-container {
+  margin-left: 0.25em;
 }
-.input-select {
-  width: 5em;
-}
-.input-bang {
-  vertical-align: top;
-}
+  .input-string, 
+  .input-int, 
+  .input-float, 
+  .input-select {
+    width: 4em;
+    vertical-align: top;
+  }
+  .input-select {
+    width: 5em;
+  }
+  .input-bang {
+    vertical-align: top;
+  }
 
 
 /*jqui*/
