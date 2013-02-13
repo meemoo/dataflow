@@ -32,6 +32,8 @@
 
         this.source.connect(this);
         this.target.connect(this);
+
+        this.bringToTop();
       }
     },
     isConnectedToPort: function(port) {
@@ -63,7 +65,9 @@
         }
       }, this);
       this.set("z", topZ+1);
-      this.collection.sort();
+      if (this.collection) {
+        this.collection.sort();
+      }
     },
     remove: function(){
       this.source.disconnect(this);
