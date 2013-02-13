@@ -37,7 +37,7 @@
       return node.view.$el.hasClass("ui-selected");
     });
     _.each(toRemove, function(node){
-      node.collection.remove(node);
+      node.remove();
     });
   }
   buttons.children(".cut").click(cut);

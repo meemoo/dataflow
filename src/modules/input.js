@@ -12,17 +12,28 @@
       if (this.get("label")===""){
         this.set({label: this.id});
       }
+      this.connected = [];
+    },
+    connect: function(edge){
+      var unique = true;
+      for (var i=0; i<this.connected.length; i++){
+        if (this.connected[i].id === edge.id){
+          unique = false;
+        }
+      }
+      if (unique){
+        this.connected.push(edge);
+      }
+    },
+    disconnect: function(edge){
+      this.connected = _.without(this.connected, edge);
     },
     remove: function(){
       // Port removed from node's inputs collection
       // Remove related edges
-      var relatedEdges = this.parentNode.parentGraph.edges.filter(function(edge){
-        // Find connected edges
-        return edge.isConnectedToPort(this);
-      }, this);
-      _.each(relatedEdges, function(edge){
-        edge.collection.remove(edge);
-      }, this);
+      while (this.connected.length > 0) {
+        this.connected[0].remove();
+      }
     }
 
   });

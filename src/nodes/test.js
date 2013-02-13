@@ -16,6 +16,18 @@
       defaults.h = 400;
       return defaults;
     },
+    inputinput: function(value){
+      this.view.$(".inner").text(value);
+    },
+    inputstring: function(value){
+      this.send("output", value);
+    },
+    inputint: function(value){
+      this.send("output", value);
+    },
+    inputfloat: function(value){
+      this.send("output", value);
+    },
     inputs:[
       {
         id: "input",

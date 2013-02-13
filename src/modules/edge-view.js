@@ -56,7 +56,7 @@
       // Click handler
       var self = this;
       this.el.addEventListener("click", function(event){
-        self.showEdit(event);
+        self.click(event);
       });
     },
     render: function(previewPosition){
@@ -90,21 +90,6 @@
       this.el.setAttribute("class", "edge");
     },
     highlight: function(){
-      var topZ = 0;
-      var thisModel = this.model;
-      this.model.parentGraph.edges.each(function(edge){
-        if (edge !== thisModel) {
-          var thisZ = edge.get("z");
-          if (thisZ > topZ) {
-            topZ = thisZ;
-          }
-          if (edge.view){
-            edge.view.unhighlight();
-          }
-        }
-      });
-      this.model.set("z", topZ+1);
-      this.model.collection.sort();
       this.el.setAttribute("class", "edge highlight");
     },
     unhighlight: function(){
@@ -136,41 +121,18 @@
       // Remove element
       this.el.parentNode.removeChild(this.el);
     },
-    showEdit: function(event){
-      // Hide others
-      // $(".modal-bg").remove();
-
+    click: function(event){
       // Highlight
       this.highlight();
       this.bringToTop();
-
-      // Show box 
-      // var self = this;
-      // var modalBox = $('<div class="modal-bg" style="width:'+$(document).width()+'px; height:'+$(document).height()+'px;" />')
-      //   .click(function(){
-      //     $(".modal-bg").remove();
-      //     self.unhighlight();
-      //   });
-      // var editBox = $('<div class="edge-edit-box" style="left:'+event.pageX+'px; top:'+event.pageY+'px;" />');
-      // editBox.append(this.model.id+"<br />");
-      // var deleteButton = $('<button>delete</button>')
-      //   .click(function(){
-      //     self.removeModel();
-      //     $(".modal-bg").remove();
-      //   });
-      // editBox.append(deleteButton);
-      // modalBox.append(editBox);
-      // this.model.parentGraph.view.$el.append(modalBox);
     },
     bringToTop: function(){
+      this.model.bringToTop();
       var parent = this.el.parentNode;
       if(parent){
         parent.removeChild(this.el);
         parent.appendChild(this.el);
       }
-    },
-    removeModel: function(){
-      this.model.collection.remove(this.model);
     }
   });
 

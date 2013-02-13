@@ -13,14 +13,15 @@
     tagName: "li",
     className: "port in",
     events: {
+      "click":            "getTopEdge",
+      "drop":             "connectEdge",
       "dragstart .hole":  "newEdgeStart",
       "drag      .hole":  "newEdgeDrag",
       "dragstop  .hole":  "newEdgeStop",
-      "click     .plug":  "highlightEdge",
       "dragstart .plug":  "changeEdgeStart",
       "drag      .plug":  "changeEdgeDrag",
       "dragstop  .plug":  "changeEdgeStop",
-      "drop":             "connectEdge",
+
       "change .input-select":  "inputSelect",
       "change .input-int":     "inputInt",
       "change .input-float":   "inputFloat",
@@ -194,25 +195,33 @@
       delete this.previewEdgeNew;
       delete this.previewEdgeNewView;
     },
-    highlightEdge: function() {
+    getTopEdge: function() {
+      var topEdge;
       if (this.isConnected){
+        // Will get the last (top) matching edge
+        this.model.parentNode.parentGraph.edges.each(function(edge){
+          if(edge.target === this.model){
+            topEdge = edge;
+          }
+          if (edge.view) {
+            edge.view.unhighlight();
+          }
+        }, this);
+        if (topEdge && topEdge.view) {
+          topEdge.view.click();
+        }
       }
+      return topEdge;
     },
     changeEdgeStart: function(event, ui){
       // Don't drag node
       event.stopPropagation();
 
       if (this.isConnected){
-        var changeEdge;
-        // Will get the last (top) matching edge
-        this.model.parentNode.parentGraph.edges.each(function(edge){
-          if(edge.target === this.model){
-            changeEdge = edge;
-          }
-        }, this);
+        var changeEdge = this.getTopEdge();
         if (changeEdge){
           // Remove edge
-          changeEdge.collection.remove(changeEdge);
+          changeEdge.remove();
 
           // Make preview
           ui.helper.data({

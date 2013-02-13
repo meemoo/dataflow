@@ -192,7 +192,7 @@
       this.hideControls();
     },
     removeModel: function(){
-      this.model.collection.remove(this.model);
+      this.model.remove();
     },
     select: function(event){
       if (event) {

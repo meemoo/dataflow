@@ -47,12 +47,12 @@
 
       // Convert outputs array to backbone collection
       var outputArray = this.outputs;
-      this.outputs = new Input.Collection();
+      this.outputs = new Output.Collection();
       this.outputs.parentNode = this;
       for(i=0; i<outputArray.length; i++) {
         var output = outputArray[i];
         output.parentNode = this;
-        output = new Input.Model(output);
+        output = new Output.Model(output);
         this.outputs.add(output);
       }
 
@@ -70,19 +70,41 @@
         this["input"+name]();
       }
     },
+    send: function(name, value){
+      // This isn't the only way that values are sent, see dataflow-webaudio
+      // Values sent here will not be `set()` on the recieving node
+      // Send value to connected nodes
+      var output = this.outputs.get(name);
+      if (output) {
+        output.send(value);
+      }
+    },
     remove: function(){
       // Node removed from graph's nodes collection
       // Remove related edges
-      var relatedEdges = this.parentGraph.edges.filter(function(edge){
-        // Find connected edges
-        return edge.isConnectedToNode(this);
-      }, this);
-      for (var i=0; i<relatedEdges.length; i++) {
-        // Remove connected edges
-        var edge = relatedEdges[i];
-        edge.collection.remove(edge);
-      }
+      // while(this.inputs.length>0) {
+      //   this.inputs.at(0).remove();
+      // }
+      // while(this.outputs.length>0) {
+      //   this.outputs.at(0).remove();
+      // }
+      this.inputs.each(function(input){
+        input.remove();
+      });
+      this.outputs.each(function(output){
+        output.remove();
+      });
+      // var relatedEdges = this.parentGraph.edges.filter(function(edge){
+      //   // Find connected edges
+      //   return edge.isConnectedToNode(this);
+      // }, this);
+      // for (var i=0; i<relatedEdges.length; i++) {
+      //   // Remove connected edges
+      //   var edge = relatedEdges[i];
+      //   edge.remove();
+      // }
       this.unload();
+      this.collection.remove(this);
     },
     unload: function(){
       // Stop any processes that need to be stopped

@@ -1,34 +1,34 @@
-( function(Output) {
+( function(Dataflow) {
+
+  var Input = Dataflow.module("input");
+  var Output = Dataflow.module("output");
  
-  Output.Model = Backbone.Model.extend({
+  // Output extends input
+  Output.Model = Input.Model.extend({
     defaults: {
       id: "output",
       label: "",
       type: "all",
       description: ""
     },
-    initialize: function() {
-      this.parentNode = this.get("parentNode");
-      if (this.get("label")===""){
-        this.set({label: this.id});
+    send: function(value){
+      for (var i=0; i<this.connected.length; i++){
+        var edge = this.connected[i];
+        var targetNode = edge.target.parentNode;
+        var name = edge.target.id;
+        if (targetNode["input"+name]){
+          // function defined, call it with value
+          targetNode["input"+name](value);
+        } else {
+          // no function defined, set variable
+          targetNode["_"+name] = value;
+        }
       }
-    },
-    remove: function(){
-      // Port removed from node's outputs collection
-      // Remove related edges
-      var relatedEdges = this.parentNode.parentGraph.edges.filter(function(edge){
-        // Find connected edges
-        return edge.isConnectedToPort(this);
-      }, this);
-      _.each(relatedEdges, function(edge){
-        edge.collection.remove(edge);
-      }, this);
     }
-
   });
 
   Output.Collection = Backbone.Collection.extend({
     model: Output.Model
   });
 
-}(Dataflow.module("output")) );
+}(Dataflow) );

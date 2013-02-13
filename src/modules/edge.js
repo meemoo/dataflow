@@ -29,6 +29,9 @@
         }catch(e){
           Dataflow.log("node or port not found for edge", this);
         }
+
+        this.source.connect(this);
+        this.target.connect(this);
       }
     },
     isConnectedToPort: function(port) {
@@ -45,13 +48,36 @@
         source: this.get("source"),
         target: this.get("target")
       };
+    },
+    bringToTop: function(){
+      var topZ = 0;
+      this.parentGraph.edges.each(function(edge){
+        if (edge !== this) {
+          var thisZ = edge.get("z");
+          if (thisZ > topZ) {
+            topZ = thisZ;
+          }
+          if (edge.view){
+            edge.view.unhighlight();
+          }
+        }
+      }, this);
+      this.set("z", topZ+1);
+      this.collection.sort();
+    },
+    remove: function(){
+      this.source.disconnect(this);
+      this.target.disconnect(this);
+      if (this.collection) {
+        this.collection.remove(this);
+      }
     }
   });
 
   Edge.Collection = Backbone.Collection.extend({
     model: Edge.Model,
     comparator: function(edge) {
-      // Sort edges by z order
+      // Sort edges by z order (z set by clicking; not saved to JSON)
       return edge.get("z");
     }
   });
