@@ -66,6 +66,13 @@
       });
       this.inputs.add(newInput);
     },
+    recieve: function (name, value) {
+      // Forward data to subgraph
+      var inputNode = this.inputs.get(name).get("inputNode");
+      if (inputNode) {
+        inputNode.send("data", value);
+      }
+    },
     addOutput: function(output){
       var newOutput = new Output.Model({
         id: output.id,
@@ -75,6 +82,7 @@
         outputNode: output
       });
       this.outputs.add(newOutput);
+      output.set("parentNode", this);
     },
     removeInput: function(node){
       var input = this.inputs.get(node.id);

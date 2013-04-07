@@ -57,7 +57,7 @@
       }
 
     },
-    setState: function(name, value){
+    setState: function (name, value) {
       var state = this.get("state");
       state[name] = value;
       if (this["input"+name]){
@@ -65,44 +65,41 @@
       }
       this.trigger("change:state:"+name); //TODO: design this
     },
-    setBang: function(name){
+    setBang: function (name) {
       if (this["input"+name]){
         this["input"+name]();
       }
     },
-    send: function(name, value){
-      // This isn't the only way that values are sent, see dataflow-webaudio
+    send: function (name, value) {
+      // This isn't the only way that values are sent, see github.com/forresto/dataflow-webaudio
       // Values sent here will not be `set()` on the recieving node
-      // Send value to connected nodes
-      var output = this.outputs.get(name);
-      if (output) {
-        output.send(value);
+      // The listener is set up in Edge/initialize
+
+      // To make this synchronous
+      // this.trigger("send:"+name, value);
+
+      // Otherwise, to make this safe for infinite loops
+      var self = this;
+      _.defer(function(){
+        self.trigger("send:"+name, value);
+      });
+    },
+    recieve: function (name, value) {
+      // The listener is set up in Edge/initialize
+      if ( typeof this["input"+name] === "function" ) {
+        this["input"+name](value);
+      } else {
+        this["_"+name] = value;
       }
     },
     remove: function(){
       // Node removed from graph's nodes collection
-      // Remove related edges
-      // while(this.inputs.length>0) {
-      //   this.inputs.at(0).remove();
-      // }
-      // while(this.outputs.length>0) {
-      //   this.outputs.at(0).remove();
-      // }
       this.inputs.each(function(input){
         input.remove();
       });
       this.outputs.each(function(output){
         output.remove();
       });
-      // var relatedEdges = this.parentGraph.edges.filter(function(edge){
-      //   // Find connected edges
-      //   return edge.isConnectedToNode(this);
-      // }, this);
-      // for (var i=0; i<relatedEdges.length; i++) {
-      //   // Remove connected edges
-      //   var edge = relatedEdges[i];
-      //   edge.remove();
-      // }
       this.unload();
       this.collection.remove(this);
     },

@@ -16,6 +16,7 @@
   <!-- Third-Party Libraries -->
   <script src="libs/jquery.js"></script>
   <script src="libs/jquery-ui.js"></script>
+  <script src="libs/jquery.ui.touch-punch.js"></script>
   <script src="libs/underscore.js"></script>
   <script src="libs/backbone.js"></script>
 
@@ -60,7 +61,157 @@
 
       // Load test graph
       var g = Dataflow.loadGraph(
-        {"nodes":[{"id":1,"label":"test","type":"test","x":551,"y":73,"state":{"select":"April"},"w":200,"h":400},{"id":2,"label":"test","type":"test","x":872,"y":67,"state":{"select":"April"},"w":200,"h":400}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}}]}
+{
+  "nodes": [
+    {
+      "id": 1,
+      "label": "test",
+      "type": "test",
+      "x": 178,
+      "y": 28,
+      "state": {
+        "select": "April"
+      },
+      "w": 213,
+      "h": 362
+    },
+    {
+      "id": 2,
+      "label": "test",
+      "type": "test",
+      "x": 433,
+      "y": 28,
+      "state": {
+        "select": "April"
+      },
+      "w": 200,
+      "h": 400
+    },
+    {
+      "id": 3,
+      "label": "subgraph",
+      "type": "dataflow-subgraph",
+      "x": 679,
+      "y": 131,
+      "graph": {
+        "nodes": [
+          {
+            "id": "1",
+            "label": "in",
+            "type": "dataflow-input",
+            "x": 180,
+            "y": 15,
+            "input-type": "all"
+          },
+          {
+            "id": 3,
+            "label": "in2",
+            "type": "dataflow-input",
+            "x": 196,
+            "y": 132,
+            "input-type": "all"
+          },
+          {
+            "id": 2,
+            "label": "test",
+            "type": "test",
+            "x": 566,
+            "y": 74,
+            "state": {
+              "select": "April"
+            },
+            "w": 200,
+            "h": 400
+          },
+          {
+            "id": "99",
+            "label": "out",
+            "type": "dataflow-output",
+            "x": 947,
+            "y": 120,
+            "output-type": "all"
+          }
+        ],
+        "edges": [
+          {
+            "source": {
+              "node": 2,
+              "port": "output"
+            },
+            "target": {
+              "node": "99",
+              "port": "data"
+            }
+          },
+          {
+            "source": {
+              "node": "1",
+              "port": "data"
+            },
+            "target": {
+              "node": 2,
+              "port": "input"
+            }
+          },
+          {
+            "source": {
+              "node": 3,
+              "port": "data"
+            },
+            "target": {
+              "node": 2,
+              "port": "string"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "label": "test",
+      "type": "test",
+      "x": 928,
+      "y": 33,
+      "state": {
+        "select": "April"
+      },
+      "w": 213,
+      "h": 362
+    }
+  ],
+  "edges": [
+    {
+      "source": {
+        "node": 1,
+        "port": "output"
+      },
+      "target": {
+        "node": 2,
+        "port": "input"
+      }
+    },
+    {
+      "source": {
+        "node": 2,
+        "port": "output"
+      },
+      "target": {
+        "node": 3,
+        "port": "1"
+      }
+    },
+    {
+      "source": {
+        "node": 3,
+        "port": "99"
+      },
+      "target": {
+        "node": 4,
+        "port": "input"
+      }
+    }
+  ]
+}
       );
       g.trigger("change");
 

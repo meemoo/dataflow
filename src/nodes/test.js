@@ -1,7 +1,3 @@
-/*
-*   NOTE: this has nothing to do with server-side Node.js (so far at least)
-*/
-
 ( function(Dataflow) {
  
   // Dependencies
@@ -20,13 +16,16 @@
       this.view.$(".inner").text(value);
     },
     inputstring: function(value){
-      this.send("output", value);
+      this.send("output", value + " test");
     },
     inputint: function(value){
       this.send("output", value);
     },
     inputfloat: function(value){
       this.send("output", value);
+    },
+    inputboolean: function(value){
+      this.send("output", !value);
     },
     inputs:[
       {

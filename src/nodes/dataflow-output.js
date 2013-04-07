@@ -19,6 +19,10 @@
       // super
       Base.Model.prototype.initialize.call(this);
     },
+    inputdata: function (data) {
+      // Forward data to parent graph
+      this.get("parentNode").send(this.id, data);
+    },
     toJSON: function(){
       var json = Base.Model.prototype.toJSON.call(this);
       json["output-type"] = this.get("output-type");

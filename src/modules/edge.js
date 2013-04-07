@@ -7,7 +7,7 @@
       "z": 0
     },
     initialize: function() {
-      var nodes;
+      var nodes, sourceNode, targetNode;
       var preview = this.get("preview");
       if (preview) {
         // Preview edge
@@ -15,17 +15,21 @@
         var source = this.get("source");
         var target = this.get("target");
         if (source) {
-          this.source = nodes.get(this.get("source").node).outputs.get(this.get("source").port);
+          sourceNode = nodes.get( this.get("source").node );
+          this.source = sourceNode.outputs.get( this.get("source").port );
         } else if (target) {
-          this.target = nodes.get(this.get("target").node).inputs.get(this.get("target").port);
+          targetNode = nodes.get( this.get("target").node );
+          this.target = targetNode.inputs.get( this.get("target").port );
         }
       } else {
         // Real edge
         this.parentGraph = this.get("parentGraph");
         nodes = this.parentGraph.nodes;
         try{
-          this.source = nodes.get(this.get("source").node).outputs.get(this.get("source").port);
-          this.target = nodes.get(this.get("target").node).inputs.get(this.get("target").port);
+          sourceNode = nodes.get( this.get("source").node );
+          this.source = sourceNode.outputs.get( this.get("source").port );
+          targetNode = nodes.get( this.get("target").node );
+          this.target = targetNode.inputs.get( this.get("target").port );
         }catch(e){
           Dataflow.log("node or port not found for edge", this);
         }
@@ -33,8 +37,14 @@
         this.source.connect(this);
         this.target.connect(this);
 
+        // Set up listener
+        sourceNode.on("send:"+this.source.id, this.send, this);
+
         this.bringToTop();
       }
+    },
+    send: function (value) {
+      this.target.parentNode.recieve( this.target.id, value );
     },
     isConnectedToPort: function(port) {
       return ( this.source === port || this.target === port );
@@ -75,6 +85,9 @@
       if (this.collection) {
         this.collection.remove(this);
       }
+
+      // Remove listener
+      this.source.parentNode.off("send:"+this.source.id, this.send, this);
     }
   });
 
