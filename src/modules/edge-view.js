@@ -33,10 +33,10 @@
         this.model.target.parentNode.on("change:x change:y", this.render, this);
       }
       // Set port plug active
-      if (this.model.source) {
+      if (this.model.source && this.model.source.view) {
         this.model.source.view.plugSetActive();
       }
-      if (this.model.target) {
+      if (this.model.target && this.model.target.view) {
         this.model.target.view.plugSetActive();
       }
       // Made SVG elements

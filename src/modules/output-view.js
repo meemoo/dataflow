@@ -178,7 +178,9 @@
     //   this._holePosition = null;
     // },
     plugSetActive: function(){
-      this.$(".plug").draggable("enable");
+      try {
+        this.$(".plug").draggable("enable");
+      } catch (e) { }
       this.$(".plug").addClass("active");
       this.isConnected = true;
     },
@@ -187,7 +189,9 @@
         return (edge.source === this.model);
       }, this);
       if (!isConnected) {
-        this.$(".plug").draggable("disable");
+        try {
+          this.$(".plug").draggable("disable");
+        } catch (e) { }
         this.$(".plug").removeClass("active");
         this.isConnected = false;
       }
