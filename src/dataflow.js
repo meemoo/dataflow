@@ -10,6 +10,19 @@
       this.$el = $(this.el);
       this.$el.append('<div class="plugins"/>');
       this.$el.append('<div class="navigation"/>');
+
+      // Debug mode
+      this.debug = this.get("debug");
+
+      // Add plugins
+      for (var name in this.plugins) {
+        this.plugins[name].initialize(this);
+      }
+
+      // Add the main element to the page
+      var appendTo = this.get("appendTo");
+      appendTo = appendTo ? appendTo : "body";
+      $(appendTo).append(this.el);
     },
     // Create the object to contain the modules
     modules: {},
@@ -34,6 +47,12 @@
       return this.nodes[name] = {};
     },
     plugins: {},
+    plugin: function(name) {
+      if (this.plugins[name]) {
+        return this.plugins[name];
+      }
+      return this.plugins[name] = {};
+    },
     addPlugin: function(name, html) {
       this.plugins[name] = {};
       if (html) {
@@ -61,6 +80,8 @@
         this.graph.remove();
       }
       var Graph = this.module("graph");
+
+      source.dataflow = this;
       var newGraph = new Graph.Model(source);
       newGraph.view = new Graph.View({model: newGraph});
       this.$el.append(newGraph.view.render().el);
@@ -98,12 +119,7 @@
   });
 
   // Our global
-  window.Dataflow = new App();
-
-  // Append main el to page body when ready
-  jQuery(function($) {
-    $('body').append(Dataflow.el);
-  });
+  window.Dataflow = App;
 
   // Backbone hacks
   // Discussed here http://stackoverflow.com/a/13075845/592125
@@ -134,18 +150,18 @@
 }());
 
 // All code has been downloaded and evaluated and app is ready to be initialized.
-jQuery(function($) {
+// jQuery(function($) {
 
-  // Router
-  var DataflowRouter = Backbone.Router.extend({
-    routes: {
-      "": "index"
-    },
-    index: function() {
+//   // Router
+//   var DataflowRouter = Backbone.Router.extend({
+//     routes: {
+//       "": "index"
+//     },
+//     index: function() {
 
-    }
-  });
-  Dataflow.router = new DataflowRouter();
-  Backbone.history.start();
+//     }
+//   });
+//   Dataflow.router = new DataflowRouter();
+//   Backbone.history.start();
 
-});
+// });

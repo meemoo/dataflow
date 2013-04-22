@@ -1,6 +1,6 @@
-( function(Edge) {
- 
-  // Dependencies
+( function(Dataflow) {
+
+  var Edge = Dataflow.prototype.module("edge");
 
   Edge.Model = Backbone.Model.extend({
     defaults: {
@@ -99,4 +99,4 @@
     }
   });
 
-}(Dataflow.module("edge")) );
+}(Dataflow) );

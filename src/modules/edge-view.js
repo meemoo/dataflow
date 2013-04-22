@@ -1,4 +1,6 @@
-( function(Edge) {
+( function(Dataflow) {
+
+  var Edge = Dataflow.prototype.module("edge");
 
   // Thanks bobince http://stackoverflow.com/a/3642265/592125
   var makeSvgElement = function(tag, attrs) {
@@ -136,4 +138,4 @@
     }
   });
 
-}(Dataflow.module("edge")) );
+}(Dataflow) );

@@ -1,4 +1,10 @@
-( function(Node) {
+( function(Dataflow) {
+
+  var Node = Dataflow.prototype.module("node");
+
+  // Dependencies
+  var Input = Dataflow.prototype.module("input");
+  var Output = Dataflow.prototype.module("output");
 
   var template = 
     '<div class="outer" />'+
@@ -14,10 +20,6 @@
     '<div class="inner" />';
 
   var innerTemplate = "";
-
-  // Dependencies
-  var Input = Dataflow.module("input");
-  var Output = Dataflow.module("output");
  
   Node.View = Backbone.View.extend({
     template: _.template(template),
@@ -119,7 +121,7 @@
     drag: function(event, ui){
       // Drag other helpers
       if (this._alsoDrag.length) {
-        var self = $(event.target).data("draggable");
+        var self = $(event.target).data("ui-draggable");
         var op = self.originalPosition;
         var delta = {
           top: (self.position.top - op.top) || 0, 
@@ -221,4 +223,4 @@
     }
   });
 
-}(Dataflow.module("node")) );
+}(Dataflow) );

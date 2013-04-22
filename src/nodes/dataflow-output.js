@@ -1,8 +1,8 @@
 ( function(Dataflow) {
  
   // Dependencies
-  var Base = Dataflow.node("base");
-  var DataflowOutput = Dataflow.node("dataflow-output");
+  var Base = Dataflow.prototype.node("base");
+  var DataflowOutput = Dataflow.prototype.node("dataflow-output");
 
   DataflowOutput.Model = Base.Model.extend({
     defaults: {

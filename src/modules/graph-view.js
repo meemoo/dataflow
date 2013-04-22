@@ -1,4 +1,10 @@
-(function(Graph) {
+(function(Dataflow) {
+
+  var Graph = Dataflow.prototype.module("graph");
+
+  // Dependencies
+  var Node = Dataflow.prototype.module("node");
+  var Edge = Dataflow.prototype.module("edge");
  
   var template = 
     '<div class="edges">'+
@@ -13,10 +19,6 @@
     '</div>'+
     '<div class="nodes" />'+
     '<div class="graph-controls" />';
-
-  // Dependencies
-  var Node = Dataflow.module("node");
-  var Edge = Dataflow.module("edge");
 
   Graph.View = Backbone.View.extend({
     template: _.template(template),
@@ -46,11 +48,13 @@
         this.$(".graph-controls")
           .text( parentNode.get("label") );
 
+        var self = this;
+
         // Buttons up
         var parentGraph, upButton, upLabel;
         var showGraph = function(graph) {
           return function () {
-            Dataflow.showGraph(graph);
+            self.model.dataflow.showGraph(graph);
             return false;
           };
         };
@@ -82,11 +86,11 @@
     },
     addNode: function(node){
       // Initialize
-      var CustomType = Dataflow.nodes[node.type];
+      var CustomType = this.model.dataflow.nodes[node.type];
       if (CustomType && CustomType.View) {
         node.view = new CustomType.View({model:node});
       } else {
-        var BaseNode = Dataflow.node("base");
+        var BaseNode = this.model.dataflow.node("base");
         node.view = new BaseNode.View({model:node});
       }
       // Save to local collection
@@ -130,4 +134,4 @@
     }
   });
 
-}(Dataflow.module("graph")) );
+}(Dataflow) );

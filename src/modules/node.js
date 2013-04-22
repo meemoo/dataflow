@@ -2,11 +2,13 @@
 *   NOTE: this has nothing to do with server-side Node.js (so far at least)
 */
 
-( function(Node) {
+( function(Dataflow) {
+
+  var Node = Dataflow.prototype.module("node");
  
   // Dependencies
-  var Input = Dataflow.module("input");
-  var Output = Dataflow.module("output");
+  var Input = Dataflow.prototype.module("input");
+  var Output = Dataflow.prototype.module("output");
 
   Node.Model = Backbone.Model.extend({
     defaults: {
@@ -141,4 +143,4 @@
     }
   });
 
-}(Dataflow.module("node")) );
+}(Dataflow) );

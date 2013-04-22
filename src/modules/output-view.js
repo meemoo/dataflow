@@ -1,6 +1,9 @@
-( function(Output) {
+( function(Dataflow) {
 
-  var Edge = Dataflow.module("edge");
+  var Output = Dataflow.prototype.module("output");
+
+  // Dependencies
+  var Edge = Dataflow.prototype.module("edge");
  
   var template = 
     '<span class="label out" title="<%= description %>"><%= label %></span>'+
@@ -203,4 +206,4 @@
     itemView: Output.View
   }); 
 
-}(Dataflow.module("output")) );
+}(Dataflow) );

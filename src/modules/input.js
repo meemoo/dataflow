@@ -1,4 +1,6 @@
-( function(Input) {
+( function(Dataflow) {
+
+  var Input = Dataflow.prototype.module("input");
  
   Input.Model = Backbone.Model.extend({
     defaults: {
@@ -42,4 +44,4 @@
     model: Input.Model
   });
 
-}(Dataflow.module("input")) );
+}(Dataflow) );

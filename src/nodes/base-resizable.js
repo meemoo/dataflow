@@ -1,8 +1,8 @@
 ( function(Dataflow) {
  
   // Dependencies
-  var Base = Dataflow.node("base");
-  var BaseResizable = Dataflow.node("base-resizable");
+  var Base = Dataflow.prototype.node("base");
+  var BaseResizable = Dataflow.prototype.node("base-resizable");
 
   BaseResizable.Model = Base.Model.extend({
     defaults: function(){

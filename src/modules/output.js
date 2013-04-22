@@ -1,7 +1,7 @@
 ( function(Dataflow) {
 
-  var Input = Dataflow.module("input");
-  var Output = Dataflow.module("output");
+  var Input = Dataflow.prototype.module("input");
+  var Output = Dataflow.prototype.module("output");
  
   // Output extends input
   Output.Model = Input.Model.extend({

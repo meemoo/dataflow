@@ -1,7 +1,7 @@
-( function(Port) {
- 
-  // Dependencies
+( function(Dataflow) {
 
+  var Port = Dataflow.prototype.module("port");
+ 
   Port.Model = Backbone.Model.extend({
     initialize: function() {
     }
@@ -11,4 +11,4 @@
     model: Port.Model
   });
 
-}(Dataflow.module("port")) );
+}(Dataflow) );

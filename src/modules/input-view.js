@@ -1,6 +1,9 @@
-( function(Input) {
+( function(Dataflow) {
 
-  var Edge = Dataflow.module("edge");
+  var Input = Dataflow.prototype.module("input");
+
+  // Dependencies
+  var Edge = Dataflow.prototype.module("edge");
 
   var template = 
     '<span class="plug in" title="drag to edit wire"></span>'+ //i18n
@@ -311,4 +314,4 @@
     itemView: Input.View
   }); 
 
-}(Dataflow.module("input")) );
+}(Dataflow) );

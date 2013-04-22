@@ -1,8 +1,10 @@
-(function(Graph) {
+(function(Dataflow) {
  
+  var Graph = Dataflow.prototype.module("graph");
+
   // Dependencies
-  var Node = Dataflow.module("node");
-  var Edge = Dataflow.module("edge");
+  var Node = Dataflow.prototype.module("node");
+  var Edge = Dataflow.prototype.module("edge");
 
   Graph.Model = Backbone.Model.extend({
     defaults: {
@@ -10,6 +12,8 @@
       edges: []
     },
     initialize: function() {
+      this.dataflow = this.get("dataflow");
+
       var i;
 
       // Set up nodes 
@@ -20,23 +24,23 @@
         this.trigger("change");
       }, this);
       nodes.on("add", function(node){
-        Dataflow.trigger("node:add", this, node);
+        this.dataflow.trigger("node:add", this, node);
       }, this);
       nodes.on("remove", function(node){
         // Remove related edges and unload running processes if defined
         node.remove();
-        Dataflow.trigger("node:remove", this, node);
+        this.dataflow.trigger("node:remove", this, node);
       }, this);
       // Convert nodes array to backbone collection
       var nodesArray = this.get("nodes");
       for(i=0; i<nodesArray.length; i++) {
         var node = nodesArray[i];
         node.parentGraph = this;
-        if (node.type && Dataflow.nodes[node.type]) {
-          node = new Dataflow.nodes[node.type].Model(node);
+        if (node.type && this.dataflow.nodes[node.type]) {
+          node = new this.dataflow.nodes[node.type].Model(node);
           nodes.add(node);
         } else {
-          Dataflow.log("node "+node.id+" not added: node type ("+node.type+") not found", node);
+          this.dataflow.log("node "+node.id+" not added: node type ("+node.type+") not found", node);
         }
       }
 
@@ -48,10 +52,10 @@
         this.trigger("change");
       }, this);
       edges.on("add", function(edge){
-        Dataflow.trigger("edge:add", this, edge);
+        this.dataflow.trigger("edge:add", this, edge);
       }, this);
       edges.on("remove", function(edge){
-        Dataflow.trigger("edge:remove", this, edge);
+        this.dataflow.trigger("edge:remove", this, edge);
       }, this);
       // Convert edges array to backbone collection
       var edgesArray = this.get("edges");
@@ -66,7 +70,7 @@
           edge = new Edge.Model(edge);
           edges.add(edge);
         } else {
-          Dataflow.log("edge "+edge.id+" not added: node or port not found", edge);
+          this.dataflow.log("edge "+edge.id+" not added: node or port not found", edge);
         }
       }
       // Attach collections to graph
@@ -77,7 +81,7 @@
 
       // Pass events up to Dataflow global
       this.on("change", function(){
-        Dataflow.trigger("change", this);
+        this.dataflow.trigger("change", this);
       }, this);
     },
     remove: function(){
@@ -93,4 +97,4 @@
     }
   });
 
-}(Dataflow.module("graph")) );
+}(Dataflow));

@@ -1,12 +1,12 @@
 ( function(Dataflow) {
  
   // Dependencies
-  var BaseResizable = Dataflow.node("base-resizable");
-  var DataflowSubgraph = Dataflow.node("dataflow-subgraph");
+  var BaseResizable = Dataflow.prototype.node("base-resizable");
+  var DataflowSubgraph = Dataflow.prototype.node("dataflow-subgraph");
 
-  var Graph = Dataflow.module("graph");
-  var Input = Dataflow.module("input");
-  var Output = Dataflow.module("output");
+  var Graph = Dataflow.prototype.module("graph");
+  var Input = Dataflow.prototype.module("input");
+  var Output = Dataflow.prototype.module("output");
 
   DataflowSubgraph.Model = BaseResizable.Model.extend({
     defaults: {
@@ -26,6 +26,7 @@
 
       var graph = this.get("graph");
       graph.parentNode = this;
+      graph.dataflow = this.parentGraph.dataflow;
       this.graph = new Graph.Model(graph);
 
       // Initialize i/o from subgraph
@@ -141,7 +142,7 @@
       }, this);
     },
     showSubgraph: function(){
-      Dataflow.showGraph(this.model.graph);
+      this.model.graph.dataflow.showGraph(this.model.graph);
     }
   });
 
