@@ -285,7 +285,12 @@
       ui.helper.data("removeChangeEdge", (oldLength < this.model.parentNode.parentGraph.edges.length));
     },
     holePosition: function(){
-      return this.$(".hole").offset();
+      var nodePos = this.model.parentNode.view.$el.position();
+      var holePos = this.$(".hole").position();
+      return {
+        left: nodePos.left + holePos.left + 10,
+        top: nodePos.top + holePos.top + 10
+      };
     },
     isConnected: false,
     plugSetActive: function(){

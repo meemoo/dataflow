@@ -171,15 +171,13 @@
     },
     // _holePosition: null,
     holePosition: function () {
-      // if (!this._holePosition){
-      //   this._holePosition = this.$(".hole").offset();
-      // }
-      // return this._holePosition;
-      return this.$(".hole").offset();
+      var nodePos = this.model.parentNode.view.$el.position();
+      var holePos = this.$(".hole").position();
+      return {
+        left: nodePos.left + holePos.left + 10,
+        top: nodePos.top + holePos.top + 10
+      };
     },
-    // movedHole: function(){
-    //   this._holePosition = null;
-    // },
     plugSetActive: function(){
       try {
         this.$(".plug").draggable("enable");

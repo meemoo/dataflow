@@ -47,8 +47,8 @@ input[type="submit"],
 }
 .edges {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 0px;
+  left: 0px;
   z-index: 1;
 }
 .svg-edges {
@@ -91,7 +91,7 @@ input[type="submit"],
     background-color: rgba(255, 255, 255, 0.9);  
   }
 .nodes {
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;  
   z-index: 3;
