@@ -65,7 +65,7 @@
 
     dataflow.addPlugin("library", library);
 
-    dataflow.plugins.library.update = update;
+    Library.update = update;
 
   };
 

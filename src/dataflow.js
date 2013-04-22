@@ -15,8 +15,11 @@
       this.debug = this.get("debug");
 
       // Add plugins
+      console.log(this.plugins);
       for (var name in this.plugins) {
-        this.plugins[name].initialize(this);
+        if (this.plugins[name].initialize) {
+          this.plugins[name].initialize(this);
+        }
       }
 
       // Add the main element to the page
@@ -54,7 +57,6 @@
       return this.plugins[name] = {};
     },
     addPlugin: function(name, html) {
-      this.plugins[name] = {};
       if (html) {
         var title = $('<h1 />')
           .text(name)
