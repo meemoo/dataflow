@@ -31,5 +31,15 @@
     "backbone": ">= 0.9.2",
     "underscore": ">= 1.4.1"
   },
-  "keywords": []
+  "keywords": [],
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-cli": "~0.1.7",
+    "grunt-contrib-concat": "~0.2.0",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-jshint": "~0.4.3"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/grunt test"
+  }
 }
