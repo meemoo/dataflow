@@ -36,7 +36,8 @@
         return this.modules[name];
       }
       // Create a module scaffold and save it under this name
-      return this.modules[name] = {};
+      this.modules[name] = {};
+      return this.modules[name];
     },
     // Create the object to contain the nodes
     nodes: {},
@@ -47,14 +48,16 @@
         return this.nodes[name];
       }
       // Create a node scaffold and save it under this name
-      return this.nodes[name] = {};
+      this.nodes[name] = {};
+      return this.nodes[name];
     },
     plugins: {},
     plugin: function(name) {
       if (this.plugins[name]) {
         return this.plugins[name];
       }
-      return this.plugins[name] = {};
+      this.plugins[name] = {};
+      return this.plugins[name];
     },
     addPlugin: function(name, html) {
       if (html) {
