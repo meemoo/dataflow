@@ -55,15 +55,19 @@
         }
       },
       jshint: {
-        all: ['src/*.js', 'src/**/*.js']
+        all: ['Gruntfile.js', 'src/*.js', 'src/**/*.js'],
+        force: {
+          options: { force: true },
+          files: { src: ['Gruntfile.js', 'src/*.js', 'src/**/*.js'] }
+        }
       },
       connect: {
         uses_defaults: {}
       },
       watch: {
         scripts: {
-          files: ['src/*.js', 'src/**/*.js'],
-          tasks: ['jshint'],
+          files: ['Gruntfile.js', 'src/*.js', 'src/**/*.js'],
+          tasks: ['jshint:force'],
           options: {
             nospawn: true
           }
