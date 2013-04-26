@@ -9,7 +9,6 @@
       this.el.className = "dataflow";
       this.$el = $(this.el);
       this.$el.append('<div class="plugins"/>');
-      this.$el.append('<div class="navigation"/>');
 
       // Debug mode
       this.debug = this.get("debug");

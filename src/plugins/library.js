@@ -15,13 +15,9 @@
         while (dataflow.currentGraph.nodes.get(id)){
           id++;
         }
-        // Position
-        if (x===undefined) {
-          x = window.scrollX - 100 + Math.floor($(window).width()/2);
-        }
-        if (y===undefined) {
-          y = window.scrollY - 100 + Math.floor($(window).height()/2);
-        }
+        // Position if button clicked
+        x = x===undefined ? 200 : x;
+        y = y===undefined ? 200 : y;
         // Add node
         var newNode = new node.Model({
           id: id,
