@@ -123,6 +123,10 @@
 
   // Our global
   window.Dataflow = App;
+  if (typeof exports === 'object') {
+    // CommonJS export
+    exports.Dataflow = App;
+  }
 
   // Backbone hacks
   // Discussed here http://stackoverflow.com/a/13075845/592125
