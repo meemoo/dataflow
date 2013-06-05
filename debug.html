@@ -4,14 +4,6 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>Dataflow graph editor</title>
-  <link rel="stylesheet" href="dataflow.css">
-</head>
-
-<body>
-  <!-- Hello Dataflow -->
-  <div style="font-size:small; position:fixed; top:0; right:0;">
-    <a href="https://github.com/meemoo/dataflow">meemoo/dataflow</a>
-  </div>
 
   <!-- Third-Party Libraries -->
   <script src="libs/jquery.js"></script>
@@ -19,6 +11,7 @@
   <script src="libs/jquery.ui.touch-punch.js"></script>
   <script src="libs/underscore.js"></script>
   <script src="libs/backbone.js"></script>
+  <script src="libs/actionbar/js/actionbar.js"></script>
 
   <!-- Dataflow core -->
   <script src="src/dataflow.js"></script>
@@ -47,9 +40,21 @@
 
   <!-- Plugins -->
   <script src="src/plugins/edit.js"></script>
+  <script src="src/plugins/elements.js"></script>
   <script src="src/plugins/library.js"></script>
   <script src="src/plugins/view-source.js"></script>
   <script src="src/plugins/log.js"></script>
+
+  <!-- Style -->
+  <link rel="stylesheet" href="dataflow.css">
+</head>
+
+<body>
+  <!-- Hello Dataflow 
+  <div style="font-size:small; position:fixed; top:0; right:0; font-family: verdana;">
+    <a href="https://github.com/meemoo/dataflow">meemoo/dataflow</a>
+  </div>
+  -->
 
   <!-- Testing -->
   <script>

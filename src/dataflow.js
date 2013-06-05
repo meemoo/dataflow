@@ -20,10 +20,41 @@
         }
       }
 
+      // Setup actionbar
+      this.prepareActionBar();
+      this.renderActionBar();
+
       // Add the main element to the page
       var appendTo = this.get("appendTo");
       appendTo = appendTo ? appendTo : "body";
       $(appendTo).append(this.el);
+    },
+    prepareActionBar: function () {
+      this.actionBar = new ActionBar({}, this);
+      this.actionBar.get('control').set('label', 'Dataflow');
+      this.actionBar.get('actions').add({
+        id: 'edit',
+        icon: 'edit',
+        label: 'edit'
+      });
+      this.actionBar.get('actions').add({
+        id: 'library',
+        icon: 'plus',
+        label: 'library'
+      });
+      this.actionBar.get('actions').add({
+        id: 'viewsource',
+        icon: 'cog',
+        label: 'source'
+      });
+      this.actionBar.get('actions').add({
+        id: 'log',
+        icon: 'log',
+        label: 'log'
+      });
+    },
+    renderActionBar: function () {
+      this.$el.append( this.actionBar.render() );
     },
     // Create the object to contain the modules
     modules: {},

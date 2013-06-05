@@ -31,6 +31,28 @@
       };
     };
 
+    var addElement = function (info) {
+
+    };
+
+    var addLibraryItem = function(node, name) {
+      var addButton = $('<a class="button">+</a>')
+        .attr("title", "click or drag")
+        .draggable({
+          helper: function(){
+            return $('<div class="node helper" style="width:100px; height:100px">'+name+'</div>');
+          },
+          stop: function(event, ui) {
+            addNode(node, ui.position.left, ui.position.top).call();
+          }
+        })
+        .click(addNode(node));
+      var item = $("<li />")
+        .append(addButton)
+        .append(name);
+      library.append(item);
+    };
+
     var update = function(options){
       options = options ? options : {};
       options.exclude = options.exclude ? options.exclude : ["base", "base-resizable"];
@@ -38,22 +60,7 @@
       library.empty();
       _.each(dataflow.nodes, function(node, index){
         if (options.exclude.indexOf(index) === -1) {
-          var addButton = $('<a class="button">+</a>')
-            .attr("title", "click or drag")
-            .draggable({
-              helper: function(){
-                return $('<div class="node helper" style="width:100px; height:100px">'+index+'</div>');
-              },
-              stop: function(event, ui) {
-                addNode(node, ui.position.left, ui.position.top).call();
-              }
-            })
-            .click(addNode(node));
-          var item = $("<li />")
-            .append(addButton)
-            .append(index);
-            // .append(drag);
-          library.append(item);
+          addLibraryItem(node, index);
         }
       });
     };
