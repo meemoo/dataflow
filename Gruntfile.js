@@ -1,8 +1,8 @@
 (function() {
   module.exports = function() {
-    var banner;
 
-    banner = "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> (<%= grunt.template.date('longTime') %>)\n* Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>; Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n";
+    var banner = "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> (<%= grunt.template.date('longTime') %>)\n* Copyright (c) <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>; Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n";
+
     this.initConfig({
       pkg: this.file.readJSON('package.json'),
       concat: {
@@ -36,6 +36,7 @@
             "src/nodes/dataflow-subgraph.js",
             // Plugins
             "src/plugins/edit.js",
+            "src/plugins/elements.js",
             "src/plugins/library.js",
             "src/plugins/view-source.js",
             "src/plugins/log.js"
@@ -62,6 +63,10 @@
         }
       },
       connect: {
+        options : {
+          port : 8000,
+          hostname : '*' // available from ipaddress:8000 on same network (or name.local:8000)
+        },
         uses_defaults: {}
       },
       watch: {
