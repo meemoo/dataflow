@@ -269,6 +269,12 @@
       // Dropped to this el
       var otherPort = ui.helper.data("port");
       var oldLength = this.model.parentNode.parentGraph.edges.length;
+
+      if (otherPort.parentNode.parentGraph.dataflow !== this.model.parentNode.parentGraph.dataflow) {
+        // from another widget
+        return false;
+      }
+
       this.model.parentNode.parentGraph.edges.add({
         id: otherPort.parentNode.id+":"+otherPort.id+"→"+this.model.parentNode.id+":"+this.model.id,
         parentGraph: this.model.parentNode.parentGraph,
