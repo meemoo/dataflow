@@ -13,7 +13,12 @@
       '</div>'
     );
 
-    dataflow.addPlugin("edit", buttons);
+    dataflow.addPlugin({
+      id: "edit", 
+      name: "edit", 
+      menu: buttons, 
+      icon: "edit"
+    });
 
     //
     // A

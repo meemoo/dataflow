@@ -28,21 +28,6 @@ input[type="submit"],
     padding-right: 5px;
   }
 
-.plugins {
-  position: absolute; 
-  margin-top: 40px;
-  top: 0; 
-  left: 0;
-  z-index: 2;
-}
-  .plugins h1 {
-    cursor: pointer;
-    font-size: 20px;
-    font-weight: normal;
-    margin: 10px 0 5px 0;
-    padding: 0;
-  }
-
 .graph {
   position: relative;
   margin-top: 40px;
@@ -215,6 +200,52 @@ input[type="submit"],
     vertical-align: top;
   }
 
+/* right menu */
+
+.dataflow.menu-shown .graph {
+  position: fixed;
+  margin-top: 0;
+  top: 40px;
+  right: 300px;
+  bottom: 0px;
+  left: 0px;
+  overflow: auto;
+}
+
+.dataflow .menu {
+  display: none;
+
+  z-index: 2;
+  position: fixed;
+  top: 40px;
+  right: 0px;
+  bottom: 0px;
+  width: 300px;
+  overflow: auto;
+
+  box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgb(250, 250, 250);
+  background-image: linear-gradient(to left, rgb(255, 255, 255), rgb(242, 242, 242));
+}
+.dataflow.menu-shown .menu {
+  display: block;
+}
+
+.menuitem {
+  display: none;
+  padding: 5px;
+}
+.menuitem.shown {
+  display: block;
+}
+
+.menu-close {
+  position: fixed;
+  top: 45px;
+  right: 5px;
+  z-index: 2;
+}
+
 
 /* actionbar's bootstrap styles */
 
@@ -295,6 +326,8 @@ a {
     color: rgb(119, 119, 119);
     text-decoration: none;
     text-shadow: 0px 1px 0px rgb(255, 255, 255);
+
+    cursor: pointer;
 }
 
 .navbar-inverse .brand, .navbar-inverse .nav > li > a {
@@ -303,15 +336,15 @@ a {
 }
 
 .navbar .brand {
+    padding: 10px 20px;
+    margin-left: -20px;
+
     padding-right: 10px;
     padding-left: 10px;
     margin: 0px 0px 0px -5px;
-}
-.navbar .brand {
+
     display: block;
     float: left;
-    padding: 10px 20px;
-    margin-left: -20px;
     font-size: 20px;
     font-weight: 200;
     color: rgb(119, 119, 119);

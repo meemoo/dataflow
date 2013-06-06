@@ -1,17 +1,25 @@
 (function(){
   var App = Backbone.Model.extend({
-    // "$el": $("#app"),
     "$": function(query) {
-      return this.$el.children(query);
+      return this.$el.find(query);
     },
     initialize: function(q){
       this.el = document.createElement("div");
       this.el.className = "dataflow";
       this.$el = $(this.el);
-      this.$el.append('<div class="plugins"/>');
+      var menu = $('<div class="menu">');
+      var self = this;
+      var menuClose = $('<button class="btn menu-close"><i class="icon-remove"></i></button>')
+        .click( function(){ self.hideMenu(); } )
+        .appendTo(menu);
+      this.$el.append(menu);
 
       // Debug mode
       this.debug = this.get("debug");
+
+      // Setup actionbar
+      this.prepareActionBar();
+      this.renderActionBar();
 
       // Add plugins
       for (var name in this.plugins) {
@@ -20,10 +28,6 @@
         }
       }
 
-      // Setup actionbar
-      this.prepareActionBar();
-      this.renderActionBar();
-
       // Add the main element to the page
       var appendTo = this.get("appendTo");
       appendTo = appendTo ? appendTo : "body";
@@ -31,30 +35,17 @@
     },
     prepareActionBar: function () {
       this.actionBar = new ActionBar({}, this);
-      this.actionBar.get('control').set('label', 'Dataflow');
-      this.actionBar.get('actions').add({
-        id: 'edit',
-        icon: 'edit',
-        label: 'edit'
-      });
-      this.actionBar.get('actions').add({
-        id: 'library',
-        icon: 'plus',
-        label: 'library'
-      });
-      this.actionBar.get('actions').add({
-        id: 'viewsource',
-        icon: 'cog',
-        label: 'source'
-      });
-      this.actionBar.get('actions').add({
-        id: 'log',
-        icon: 'log',
-        label: 'log'
+      this.actionBar.get('control').set({
+        label: 'Dataflow',
+        icon: 'retweet'
       });
     },
     renderActionBar: function () {
       this.$el.append( this.actionBar.render() );
+      this.$(".brand").attr({
+        href: "https://github.com/meemoo/dataflow",
+        target: "_blank"
+      });
     },
     // Create the object to contain the modules
     modules: {},
@@ -88,19 +79,28 @@
       this.plugins[name] = {};
       return this.plugins[name];
     },
-    addPlugin: function(name, html) {
-      if (html) {
-        var title = $('<h1 />')
-          .text(name)
-          .click(function(){
-            $(this).next().toggle();
-          });
-        var section = $('<div />')
-          .html(html)
-          .hide();
-        this.$(".plugins")
-          .append(title)
-          .append(section);
+    hideMenu: function () {
+      this.$el.removeClass("menu-shown");
+    },
+    showMenu: function (id) {
+      this.$el.addClass("menu-shown");
+      this.$(".menuitem").removeClass("shown");
+      this.plugins[id].menu.addClass("shown");
+    },
+    addPlugin: function(info) {
+      if (info.menu) {
+        var menu = $("<div>")
+          .addClass("menuitem menuitem-"+info.id)
+          .append(info.menu);
+        this.$(".menu").append( menu );
+        this.plugins[info.id].menu = menu;
+
+        this.actionBar.get('actions').add({
+          id: info.id,
+          icon: info.icon,
+          label: info.name,
+          action: function(){ this.showMenu(info.id); }
+        });
       }
     },
     loadGraph: function(source) {

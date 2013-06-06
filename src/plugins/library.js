@@ -18,6 +18,10 @@
         // Position if button clicked
         x = x===undefined ? 200 : x;
         y = y===undefined ? 200 : y;
+        x += dataflow.currentGraph.view.$el.scrollLeft();
+        y += dataflow.currentGraph.view.$el.scrollTop();
+        x = Math.max(x, 0);
+        y = Math.max(y, 0);
         // Add node
         var newNode = new node.Model({
           id: id,
@@ -40,7 +44,9 @@
         .attr("title", "click or drag")
         .draggable({
           helper: function(){
-            return $('<div class="node helper" style="width:100px; height:100px">'+name+'</div>');
+            var helper = $('<div class="node helper" style="width:100px; height:100px">'+name+'</div>');
+            dataflow.$el.append(helper);
+            return helper;
           },
           stop: function(event, ui) {
             addNode(node, ui.position.left, ui.position.top).call();
@@ -66,7 +72,12 @@
     };
     update();
 
-    dataflow.addPlugin("library", library);
+    dataflow.addPlugin({
+      id: "library", 
+      name: "library", 
+      menu: library, 
+      icon: "book"
+    });
 
     Library.update = update;
 

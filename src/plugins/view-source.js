@@ -5,14 +5,21 @@
   Source.initialize = function(dataflow){
 
     var $form = $( 
-      '<form class="dataflow-plugin-view-source" style="width: 330px;">'+
-        '<textarea class="code" style="width: 100%; height: 400px;"></textarea><br/>'+
-        '<input class="apply" type="submit" value="apply changes" />'+
+      '<form class="dataflow-plugin-view-source">'+
+        '<div style="position: absolute; top:5px; left:5px; bottom:35px; right:5px;">'+
+          '<textarea class="code" style="width:100%; height:100%; margin:0; padding: 0;"></textarea><br/>'+
+        '</div>'+
+        '<input class="apply" type="submit" value="apply changes" style="position: absolute; right:5px; bottom:5px;" />'+
       '</form>'
     );
-    var $code = $form.children(".code");
+    var $code = $form.find(".code");
 
-    dataflow.addPlugin("view source", $form);
+    dataflow.addPlugin({
+      id: "source", 
+      name: "view source", 
+      menu: $form, 
+      icon: "cog"
+    });
 
     // On change update code view
     dataflow.on("change", function(graph){

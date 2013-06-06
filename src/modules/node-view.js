@@ -160,6 +160,8 @@
       }
     },
     moveToPosition: function(x, y){
+      x = Math.max(x, 0);
+      y = Math.max(y, 0);
       this.$el.css({
         left: x,
         top: y
