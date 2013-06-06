@@ -64,18 +64,29 @@
     render: function(previewPosition){
       var source = this.model.source;
       var target = this.model.target;
+      var dataflowParent, graphPos;
       if (source) {
         this.positions.from = source.view.holePosition();
       }
       else {
         // Preview 
-        this.positions.from = previewPosition;
+        dataflowParent = this.model.parentGraph.dataflow.$el.parent().position();
+        graph = this.model.parentGraph.view.$el;
+        this.positions.from = {
+          left: graph.scrollLeft() + previewPosition.left - 10 - dataflowParent.left,
+          top:  graph.scrollTop()  + previewPosition.top  - 30 - dataflowParent.top
+        };
       }
       if (target) {
         this.positions.to = target.view.holePosition();
       } else {
         // Preview
-        this.positions.to = previewPosition;
+        dataflowParent = this.model.parentGraph.dataflow.$el.parent().position();
+        graph = this.model.parentGraph.view.$el;
+        this.positions.to = {
+          left: graph.scrollLeft() + previewPosition.left + 25 - dataflowParent.left,
+          top:  graph.scrollTop()  + previewPosition.top  - 30 - dataflowParent.top
+        };
       }
       var pathD = this.edgePath(this.positions);
       this.elEdge.setAttribute("d", pathD);

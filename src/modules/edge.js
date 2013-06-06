@@ -9,6 +9,7 @@
     initialize: function() {
       var nodes, sourceNode, targetNode;
       var preview = this.get("preview");
+      this.parentGraph = this.get("parentGraph");
       if (preview) {
         // Preview edge
         nodes = this.get("parentGraph").nodes;
@@ -23,7 +24,7 @@
         }
       } else {
         // Real edge
-        this.parentGraph = this.get("parentGraph");
+        // this.parentGraph = this.get("parentGraph");
         nodes = this.parentGraph.nodes;
         try{
           sourceNode = nodes.get( this.get("source").node );

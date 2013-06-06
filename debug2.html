@@ -3,18 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Dataflow graph editor</title>
-  <link rel="stylesheet" href="dataflow.css">
-</head>
-
-<body>
-  <!-- Hello Dataflow -->
-  <div style="font-size:small; position:fixed; top:0; right:0;">
-    <a href="https://github.com/meemoo/dataflow">meemoo/dataflow</a>
-  </div>
-
-  <div id="graph1" style="position:absolute; overflow:auto; top:10px; width: 500px; bottom: 10px; left: 10px; border: 1px grey dotted;"></div>
-  <div id="graph2" style="position:absolute; overflow:auto; top:10px; right: 10px; bottom: 10px; left: 520px; border: 1px grey dotted;"></div>
+  <title>debug2: Dataflow graph editor</title>
 
   <!-- Third-Party Libraries -->
   <script src="libs/jquery.js"></script>
@@ -22,6 +11,7 @@
   <script src="libs/jquery.ui.touch-punch.js"></script>
   <script src="libs/underscore.js"></script>
   <script src="libs/backbone.js"></script>
+  <script src="libs/actionbar/js/actionbar.js"></script>
 
   <!-- Dataflow core -->
   <script src="src/dataflow.js"></script>
@@ -53,6 +43,19 @@
   <script src="src/plugins/library.js"></script>
   <script src="src/plugins/view-source.js"></script>
   <script src="src/plugins/log.js"></script>
+
+  <!-- Style -->
+  <link rel="stylesheet" href="dataflow.css">
+  <link rel="stylesheet" href="libs/actionbar/vendor/css/font-awesome.min.css">
+
+</head>
+
+<body>
+
+  <div id="graph1" style="position:absolute; overflow:auto; top:10px; width: 500px; bottom: 10px; left: 10px; border: 1px grey dotted;"></div>
+  <div id="graph2" style="position:absolute; overflow:auto; top:10px; right: 10px; bottom: 10px; left: 520px; border: 1px grey dotted;"></div>
+
+
 
   <!-- Testing -->
   <script>

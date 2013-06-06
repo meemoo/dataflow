@@ -85,7 +85,7 @@
     showMenu: function (id) {
       this.$el.addClass("menu-shown");
       this.$(".menuitem").removeClass("shown");
-      this.plugins[id].menu.addClass("shown");
+      this.$(".menuitem-"+id).addClass("shown");
     },
     addPlugin: function(info) {
       if (info.menu) {
@@ -93,7 +93,6 @@
           .addClass("menuitem menuitem-"+info.id)
           .append(info.menu);
         this.$(".menu").append( menu );
-        this.plugins[info.id].menu = menu;
 
         this.actionBar.get('actions').add({
           id: info.id,

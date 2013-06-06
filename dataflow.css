@@ -1,3 +1,10 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .dataflow {
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 14px;
@@ -7,6 +14,11 @@
   position: relative;
   top: 0;
   left: 0;
+
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
 button, 
@@ -29,9 +41,15 @@ input[type="submit"],
   }
 
 .graph {
-  position: relative;
-  margin-top: 40px;
   z-index: 1;
+
+  position: absolute;
+  margin-top: 0;
+  top: 40px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  overflow: auto;
 }
 .edges {
   position: absolute;
@@ -95,7 +113,7 @@ input[type="submit"],
   position: absolute;
   display: inline-block;
   width: 200px;
-  border: 1px black solid;
+  border: 1px #aaa solid;
   background-color: rgba(255, 255, 255, 0.8);
   z-index: 0;
 }
@@ -108,8 +126,8 @@ input[type="submit"],
       background-color: white;
     }
     .node.ui-selected .outer {
-      border: 3px black solid;
-      top:-3px;right:-3px;bottom:-3px;left:-3px;
+      border: 2px #666 solid;
+      top:-2px;right:-2px;bottom:-2px;left:-2px;
     }
   .node.helper {
     border-style: dotted;
@@ -203,20 +221,14 @@ input[type="submit"],
 /* right menu */
 
 .dataflow.menu-shown .graph {
-  position: fixed;
-  margin-top: 0;
-  top: 40px;
   right: 300px;
-  bottom: 0px;
-  left: 0px;
-  overflow: auto;
 }
 
 .dataflow .menu {
   display: none;
 
   z-index: 2;
-  position: fixed;
+  position: absolute;
   top: 40px;
   right: 0px;
   bottom: 0px;
@@ -240,8 +252,8 @@ input[type="submit"],
 }
 
 .menu-close {
-  position: fixed;
-  top: 45px;
+  position: absolute;
+  top: 5px;
   right: 5px;
   z-index: 2;
 }
@@ -251,7 +263,7 @@ input[type="submit"],
 
 .navbar-fixed-top {
   z-index: 3;
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   left: 0;
