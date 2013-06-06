@@ -1,4 +1,4 @@
-dataflow
+dataflow [![Build Status](https://travis-ci.org/meemoo/dataflow.png?branch=master)](https://travis-ci.org/meemoo/dataflow)
 ========
 
 a common HTML5 graph editor for various data flow projects
