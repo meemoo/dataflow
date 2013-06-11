@@ -21,12 +21,18 @@
       icon: "cog"
     });
 
+    var show = function(source) {
+      var scrollBackTop = $code.prop("scrollTop");
+      $code.val( source );
+      $code.scrollTop( scrollBackTop );
+    };
+
+    Source.show = show;
+
     // On change update code view
     dataflow.on("change", function(graph){
       if (dataflow.graph) {
-        var scrollBackTop = $code.prop("scrollTop");
-        $code.val( JSON.stringify(dataflow.graph.toJSON(), null, "  ") );
-        $code.scrollTop( scrollBackTop );
+        show( JSON.stringify(dataflow.graph.toJSON(), null, "  ") );
       }
     });
 

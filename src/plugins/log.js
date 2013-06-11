@@ -24,6 +24,8 @@
       $log.scrollTop( $log.prop("scrollHeight") );
     }
 
+    Log.add = log;
+
     // Log
     dataflow.on("log", function(message){
       log("log: " + message);
