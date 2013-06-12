@@ -55,8 +55,7 @@
       var self = this;
       this.$el.draggable({
         handle: "h1",
-        grid: [ 5, 5 ],
-        // helper: "node helper"
+        // grid: [ 5, 5 ],
         helper: function(){
           var node = self.$el;
           var width = node.width();
