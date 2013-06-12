@@ -29,6 +29,7 @@
 
       "change .input-select":  "inputSelect",
       "change .input-int":     "inputInt",
+      "change .input-number":  "inputFloat",
       "change .input-float":   "inputFloat",
       "change .input-string":  "inputString",
       "change .input-boolean": "inputBoolean",
@@ -96,7 +97,7 @@
           }
           input.append(option);
         }
-      } else if (type === "int" || type === "float") {
+      } else if (type === "int" || type === "float" || type === "number") {
         // Number input
         var attributes = {};
         if (this.model.get("min") !== undefined) {
