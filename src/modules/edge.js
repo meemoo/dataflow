@@ -32,7 +32,7 @@
           targetNode = nodes.get( this.get("target").node );
           this.target = targetNode.inputs.get( this.get("target").port );
         }catch(e){
-          Dataflow.log("node or port not found for edge", this);
+          // Dataflow.log("node or port not found for edge", this);
         }
 
         this.source.connect(this);
