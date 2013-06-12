@@ -8,7 +8,7 @@
 
   var template = 
     '<div class="outer" />'+
-    '<h1 class="title"><%- id %>: <span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
+    '<h1 class="title"><span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
     '<div class="controls">'+
       '<button class="delete">delete</button>'+
       '<button class="save">save</button>'+
