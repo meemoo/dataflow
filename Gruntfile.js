@@ -12,6 +12,8 @@
         },
         dist: {
           src: [
+            // Libs
+            'libs/actionbar/js/actionbar.js',
             // Main
             'src/dataflow.js',
             // Models
@@ -77,16 +79,32 @@
             nospawn: true
           }
         }
+      },
+      cssmin: {
+        dist: {
+          options: {
+            banner: '/* meemoo/dataflow compressed styles. See debug.html for uncompressed. */',
+            keepSpecialComments: 0
+          },
+          files: {
+            'build/dataflow.min.css': [
+              'dataflow.css',
+              'libs/actionbar/vendor/css/font-awesome.min.css'
+            ]
+          }
+        }
       }
     });
+
     this.loadNpmTasks('grunt-contrib-concat');
     this.loadNpmTasks('grunt-contrib-uglify');
     this.loadNpmTasks('grunt-contrib-jshint');
     this.loadNpmTasks('grunt-contrib-connect');
     this.loadNpmTasks('grunt-contrib-watch');
+    this.loadNpmTasks('grunt-contrib-cssmin');
 
     this.registerTask('dev', ['connect', 'watch']);
-    this.registerTask('build', ['concat:dist', 'uglify:dist']);
+    this.registerTask('build', ['concat:dist', 'uglify:dist', 'cssmin:dist']);
     this.registerTask('test', ['jshint']);
     this.registerTask('default', ['test', 'build']);
   };
