@@ -28,14 +28,6 @@
             "src/modules/input-view.js",
             "src/modules/output-view.js",
             "src/modules/edge-view.js",
-            // Nodes
-            "src/nodes/base.js",
-            "src/nodes/base-resizable.js",
-            "src/nodes/test.js",
-            // Nodes (for subgraphs)
-            "src/nodes/dataflow-input.js",
-            "src/nodes/dataflow-output.js",
-            "src/nodes/dataflow-subgraph.js",
             // Plugins
             "src/plugins/edit.js",
             "src/plugins/elements.js",
@@ -88,7 +80,11 @@
           },
           files: {
             'build/dataflow.min.css': [
-              'dataflow.css',
+              'style/dataflow.css',
+              'style/modules/node.css',
+              'style/modules/port.css',
+              'style/modules/actionbar.css',
+              'style/modules/jqui.css',
               'libs/actionbar/vendor/css/font-awesome.min.css'
             ]
           }
