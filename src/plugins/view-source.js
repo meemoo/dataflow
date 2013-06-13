@@ -29,12 +29,22 @@
 
     Source.show = show;
 
-    // On change update code view
-    dataflow.on("change", function(graph){
+    var showGraph = function(graph){
       if (dataflow.graph) {
         show( JSON.stringify(dataflow.graph.toJSON(), null, "  ") );
       }
-    });
+    };
+
+    Source.listeners = function(boo){
+      if (boo) {
+        // On change update code view
+        dataflow.on("change", showGraph);
+      } else {
+        // Custom
+        dataflow.off("change", showGraph);
+      }
+    };
+    Source.listeners(true);
 
     // Apply source to test graph
     $form.submit(function(){

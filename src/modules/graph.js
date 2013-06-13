@@ -62,7 +62,7 @@
       for(i=0; i<edgesArray.length; i++) {
         var edge = edgesArray[i];
         edge.parentGraph = this;
-        edge.id = edge.source.node+":"+edge.source.port+"→"+edge.target.node+":"+edge.target.port;
+        edge.id = edge.source.node+":"+edge.source.port+"::"+edge.target.node+":"+edge.target.port;
         // Check that nodes and ports exist
         var sourceNode = nodes.get(edge.source.node);
         var targetNode = nodes.get(edge.target.node);

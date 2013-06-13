@@ -123,7 +123,7 @@
           edge = JSON.parse(JSON.stringify(edge));
           // Add it
           edge.parentGraph = dataflow.currentGraph;
-          edge.id = edge.source.node+":"+edge.source.port+"→"+edge.target.node+":"+edge.target.port;
+          edge.id = edge.source.node+":"+edge.source.port+"::"+edge.target.node+":"+edge.target.port;
           var newEdge = new dataflow.modules.edge.Model(edge);
           dataflow.currentGraph.edges.add(newEdge);
         });

@@ -277,7 +277,7 @@
       }
 
       this.model.parentNode.parentGraph.edges.add({
-        id: otherPort.parentNode.id+":"+otherPort.id+"→"+this.model.parentNode.id+":"+this.model.id,
+        id: otherPort.parentNode.id+":"+otherPort.id+"::"+this.model.parentNode.id+":"+this.model.id,
         parentGraph: this.model.parentNode.parentGraph,
         source: {
           node: otherPort.parentNode.id,
