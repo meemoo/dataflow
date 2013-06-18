@@ -133,14 +133,17 @@
         this.contextBar.get('control').set({
           label: selected.length + ' selected'
         });
-        this.contextBar.set('actions', this.contexts.twoplus);
+        this.contextBar.get('actions').reset();
+        this.contextBar.get('actions').add(this.contexts.twoplus);
+
         this.showContextBar();
       } else if (selected.length === 1) {
         // One selected: Remove node, Rename node, Change component, Cut/Copy
         this.contextBar.get('control').set({
           label: '1 selected'
         });
-        this.contextBar.set('actions', this.contexts.one);
+        this.contextBar.get('actions').reset();
+        this.contextBar.get('actions').add(this.contexts.one);
         this.showContextBar();
       } else {
         // None selected: hide contextBar

@@ -141,10 +141,24 @@
     // Add context actions for actionbar
 
     dataflow.addContext({
+      id: "cut",
+      icon: "cut",
+      label: "cut",
+      action: cut,
+      contexts: ["one", "twoplus"]
+    });
+    dataflow.addContext({
       id: "copy",
       icon: "copy",
       label: "copy",
       action: copy,
+      contexts: ["one", "twoplus"]
+    });
+    dataflow.addContext({
+      id: "paste",
+      icon: "paste",
+      label: "paste",
+      action: paste,
       contexts: ["one", "twoplus"]
     });
 
