@@ -210,6 +210,8 @@
     },
     select: function(event){
       if (event) {
+        // Don't click graph
+        event.stopPropagation();
         // Called from click
         if (event.ctrlKey || event.metaKey) {
           // Command key is pressed, toggle selection

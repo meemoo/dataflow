@@ -23,6 +23,9 @@
   Graph.View = Backbone.View.extend({
     template: _.template(template),
     className: "graph",
+    events: {
+      "click": "deselect"
+    },
     initialize: function() {
       // Graph container
       this.$el.html(this.template(this.model.toJSON()));
@@ -131,6 +134,10 @@
         svg.setAttribute("width", Math.round(rect.x+rect.width+50));
         svg.setAttribute("height", Math.round(rect.y+rect.height+50));
       } catch (error) {}
+    },
+    deselect: function () {
+      this.$(".node").removeClass("ui-selected");
+      this.model.trigger("selectionChanged");
     }
   });
 
