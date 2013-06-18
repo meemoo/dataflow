@@ -1,0 +1,58 @@
+.nodes {
+  position: relative;
+  top: 0;
+  left: 0;  
+  z-index: 3;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.node {
+  position: absolute;
+  display: inline-block;
+  width: 200px;
+  border: 1px #aaa solid;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 0;
+}
+  .node .outer {
+    position: absolute;
+    top:0;right:0;bottom:0;left:0;
+    z-index: -1;
+  }
+    .node.ui-selected .outer {
+      background-color: white;
+    }
+    .node.ui-selected .outer {
+      border: 2px #666 solid;
+      top:-2px;right:-2px;bottom:-2px;left:-2px;
+    }
+  .node.helper {
+    border-style: dotted;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+  .node h1 {
+    cursor: move;
+    font-size: 20px;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+  }
+  .node .controls {
+  }
+    .node .controls .delete {
+      margin-right: 10px;
+    }
+
+
+.graph-controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+}

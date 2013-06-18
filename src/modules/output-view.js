@@ -29,8 +29,11 @@
       this.$el.addClass(this.model.get("type"));
       var self = this;
       this.$(".plug").draggable({
+        cursor: "pointer",
         helper: function(){
-          return $('<span class="plug out helper" />');
+          var helper = $('<span class="plug out helper" />');
+          $(document.body).append(helper);
+          return helper;
         },
         disabled: true,
         // To prevent accidental disconnects
@@ -38,9 +41,12 @@
         delay: 100
       });
       this.$(".hole").draggable({
+        cursor: "pointer",
         helper: function(){
-          return $('<span class="plug in helper" />')
+          var helper = $('<span class="plug in helper" />')
             .data({port: self.model});
+          $(document.body).append(helper);
+          return helper;
         }
       });
       this.$el.droppable({

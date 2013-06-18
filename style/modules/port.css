@@ -1,0 +1,59 @@
+.ins {
+  text-align: left;
+}
+  .in .label {
+    margin-left: 0.25em;
+  }
+.outs {
+  text-align: right;
+}
+  .out .label {
+    margin-right: 0.25em;
+  }
+.ports ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+  .port {
+    border: 1px gray solid;
+    margin: 0;
+    padding: 0;
+  }
+    .port.droppable-hover {
+      border-color: black;
+    }
+    .port .hole {
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+      display: inline-block;
+      border: 1px black solid;
+    }
+    .plug {
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+    }
+      .plug.active,
+      .plug.helper {
+        cursor: pointer;
+        background-color: #AAA;
+      }
+
+.input-container {
+  margin-right: 0.25em;
+}
+  .input-string, 
+  .input-int, 
+  .input-float, 
+  .input-select {
+    width: 4em;
+    vertical-align: top;
+  }
+  .input-select {
+    width: 5em;
+  }
+  .input-bang {
+    vertical-align: top;
+  }
