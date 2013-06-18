@@ -141,4 +141,26 @@ a {
     font-weight: 200;
     color: rgb(119, 119, 119);
     text-shadow: 0px 1px 0px rgb(255, 255, 255);
+
+    cursor: pointer;
+}
+
+
+
+
+.navbar-inverse .navbar-inner {
+    background-color: rgb(27, 27, 27);
+    background-image: linear-gradient(to bottom, rgb(34, 34, 34), rgb(17, 17, 17));
+    background-repeat: repeat-x;
+    border-color: rgb(37, 37, 37);
+}
+
+.navbar-inverse .brand {
+    color: rgb(153, 153, 153);
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+}
+
+.navbar-inverse .brand, .navbar-inverse .nav > li > a {
+    color: rgb(153, 153, 153);
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
 }

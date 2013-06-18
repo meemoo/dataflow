@@ -42,7 +42,12 @@
       this.contextBar = new ContextBar({}, this);
       this.contextBar.get('control').set({
         label: '1 selected',
-        icon: 'ok'
+        icon: 'ok',
+        action: function () {
+          if (this.currentGraph && this.currentGraph.view) {
+            this.currentGraph.view.deselect();
+          }
+        }
       });
     },
     renderActionBar: function () {
