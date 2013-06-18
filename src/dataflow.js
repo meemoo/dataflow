@@ -39,6 +39,11 @@
         label: 'Dataflow',
         icon: 'retweet'
       });
+      this.contextBar = new ContextBar({}, this);
+      this.contextBar.get('control').set({
+        label: '1 selected',
+        icon: 'ok'
+      });
     },
     renderActionBar: function () {
       this.$el.append( this.actionBar.render() );
@@ -46,6 +51,8 @@
         href: "https://github.com/meemoo/dataflow",
         target: "_blank"
       });
+      this.$el.append( this.contextBar.render() );
+      this.contextBar.view.$el.hide();
     },
     // Create the object to contain the modules
     modules: {},
@@ -87,7 +94,7 @@
       this.$(".menuitem").removeClass("shown");
       this.$(".menuitem-"+id).addClass("shown");
     },
-    addPlugin: function(info) {
+    addPlugin: function (info) {
       if (info.menu) {
         var menu = $("<div>")
           .addClass("menuitem menuitem-"+info.id)
@@ -102,7 +109,45 @@
         });
       }
     },
-    loadGraph: function(source) {
+    showContextBar: function () {
+      this.actionBar.view.$el.hide();
+      this.contextBar.view.$el.show();
+    },
+    hideContextBar: function () {
+      this.contextBar.view.$el.hide();
+      this.actionBar.view.$el.show();
+    },
+    contexts: {},
+    addContext: function (info) {
+      for (var i=0; i<info.contexts.length; i++){
+        var c = info.contexts[i];
+        if (!this.contexts[c]) {
+          this.contexts[c] = [];
+        }
+        this.contexts[c].push(info);
+      }
+    },
+    changeContext: function (selected) {
+      if (selected.length > 1) {
+        // More than one selected: Move to subgraph, Cut/Copy
+        this.contextBar.get('control').set({
+          label: selected.length + ' selected'
+        });
+        this.contextBar.set('actions', this.contexts.twoplus);
+        this.showContextBar();
+      } else if (selected.length === 1) {
+        // One selected: Remove node, Rename node, Change component, Cut/Copy
+        this.contextBar.get('control').set({
+          label: '1 selected'
+        });
+        this.contextBar.set('actions', this.contexts.one);
+        this.showContextBar();
+      } else {
+        // None selected: hide contextBar
+        this.hideContextBar();
+      }
+    },
+    loadGraph: function (source) {
       if (this.graph) {
         if (this.currentGraph.view) {
           this.currentGraph.view.remove();

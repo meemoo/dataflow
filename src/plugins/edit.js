@@ -13,12 +13,13 @@
       '</div>'
     );
 
-    dataflow.addPlugin({
-      id: "edit", 
-      name: "edit", 
-      menu: buttons, 
-      icon: "edit"
-    });
+    // dataflow.addPlugin({
+    //   id: "edit", 
+    //   name: "edit", 
+    //   menu: buttons, 
+    //   icon: "edit"
+    // });
+
 
     //
     // A
@@ -134,6 +135,19 @@
       });
     }
     buttons.children(".paste").click(paste);
+
+
+
+    // Add context actions for actionbar
+
+    dataflow.addContext({
+      id: "copy",
+      icon: "copy",
+      label: "copy",
+      action: copy,
+      contexts: ["one", "twoplus"]
+    });
+
 
   };
 

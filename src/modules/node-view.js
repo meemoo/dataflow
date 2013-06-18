@@ -198,6 +198,16 @@
     removeModel: function(){
       this.model.remove();
     },
+    bringToTop: function () {
+      var topZ = 0;
+      this.model.collection.each(function(node){
+        var thisZ = parseInt(node.view.el.style.zIndex, 10);
+        if (thisZ > topZ) {
+          topZ = thisZ;
+        }
+      }, this);
+      this.el.style.zIndex = topZ+1;
+    },
     select: function(event){
       if (event) {
         // Called from click
@@ -210,18 +220,14 @@
           this.$el.addClass("ui-selected");
         }
         // Bring to top
-        var topZ = 0;
-        this.model.collection.each(function(node){
-          var thisZ = parseInt(node.view.el.style.zIndex, 10);
-          if (thisZ > topZ) {
-            topZ = thisZ;
-          }
-        }, this);
-        this.el.style.zIndex = topZ+1;
+        this.bringToTop();
       } else {
         // Called from code
         this.$el.addClass("ui-selected");
+        this.bringToTop();
       }
+      // Trigger
+      this.model.parentGraph.trigger("selectionChanged");
     }
   });
 

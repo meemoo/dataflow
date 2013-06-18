@@ -79,10 +79,27 @@
         edges: edges
       });
 
-      // Pass events up to Dataflow global
+      // Listen for un/select
+      this.on("selectionChanged", this.selectionChanged);
+
+      // Pass graph change events up to dataflow
       this.on("change", function(){
         this.dataflow.trigger("change", this);
       }, this);
+    },
+    selectionChanged: function () {
+      this.selected = [];
+      if (!this.view) {
+        return;
+      }
+
+      this.nodes.each( function (node) {
+        if (node.view && node.view.$el.hasClass("ui-selected")) {
+          this.selected.push(node);
+        }
+      }, this);
+
+      this.dataflow.changeContext(this.selected);
     },
     remove: function(){
       while(this.nodes.length > 0){
