@@ -1,0 +1,38 @@
+<!-- Custom elements -->
+<link rel="import" href="dataflow-edge.html">
+<link rel="import" href="dataflow-node.html">
+
+<element name="dataflow-graph" attributes="graph">
+  <template>
+
+    <div id="edges">
+      <template repeat="{{edges}}">
+        <dataflow-edge sourcenode="{{source.node}}" sourceport="{{source.port}}" targetnode="{{target.node}}" targetport="{{target.port}}"></dataflow-edge>
+      </template>
+    </div>
+    <div id="nodes">
+      <template repeat="{{nodes}}">
+        <dataflow-node id="{{id}}" type="{{type}}" label="{{label}}"></dataflow-node>
+      </template>
+    </div>
+
+  </template>
+  <script>
+    Polymer.register(this, {
+      ready: function() {
+        if (this.graph) {
+          this.graphChanged();
+        }
+      },
+      graphChanged: function () {
+        if (typeof this.graph === "string") {
+          this.parsedGraph = JSON.parse( this.graph );
+        } else {
+          this.parsedGraph = this.graph;
+        }
+        this.nodes = this.parsedGraph.nodes;
+        this.edges = this.parsedGraph.edges;
+      }
+    });
+  </script>
+</element>
