@@ -3,85 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>debug: Dataflow graph editor</title>
-
-  <!-- Third-Party Libraries -->
-  <script src="libs/jquery.js"></script>
-  <script src="libs/jquery-ui.js"></script>
-  <script src="libs/jquery.ui.touch-punch.js"></script>
-  <script src="libs/underscore.js"></script>
-  <script src="libs/backbone.js"></script>
-
-  <!-- Built-in Libraries -->
-  <script src="libs/actionbar/js/actionbar.js"></script>
-
-  <!-- Dataflow core -->
-  <script src="src/dataflow.js"></script>
-
-  <!-- Dataflow Modules -->
-  <script src="src/modules/graph.js"></script>
-  <script src="src/modules/node.js"></script>
-  <script src="src/modules/input.js"></script>
-  <script src="src/modules/output.js"></script>
-  <script src="src/modules/edge.js"></script>
-
-  <script src="src/modules/graph-view.js"></script>
-  <script src="src/modules/node-view.js"></script>
-  <script src="src/modules/input-view.js"></script>
-  <script src="src/modules/output-view.js"></script>
-  <script src="src/modules/edge-view.js"></script>
-
-  <!-- Nodes (some basics to extend) -->
-  <script src="src/nodes/base.js"></script>
-  <script src="src/nodes/base-resizable.js"></script>
-  <script src="src/nodes/test.js"></script>
-  <!-- Nodes (subgraph functionality) -->
-  <script src="src/nodes/dataflow-input.js"></script>
-  <script src="src/nodes/dataflow-output.js"></script>
-  <script src="src/nodes/dataflow-subgraph.js"></script>
-
-  <!-- Plugins -->
-  <script src="src/plugins/edit.js"></script>
-  <script src="src/plugins/elements.js"></script>
-  <script src="src/plugins/library.js"></script>
-  <script src="src/plugins/view-source.js"></script>
-  <script src="src/plugins/log.js"></script>
-
-  <!-- Style -->
-  <link rel="stylesheet" href="style/dataflow.css">
-  <link rel="stylesheet" href="style/modules/node.css">
-  <link rel="stylesheet" href="style/modules/port.css">
-  <link rel="stylesheet" href="style/modules/actionbar.css">
-  <link rel="stylesheet" href="style/modules/jqui.css">
-  <link rel="stylesheet" href="libs/actionbar/vendor/css/font-awesome.min.css">
+  <title>debug: Dataflow web components</title>
+  <script src="http://www.polymer-project.org/polymer-all/polymer/polymer.js"></script>
+  <link rel="import" href="src/elements/dataflow-app.html">
 </head>
-
 <body>
-  <!-- Hello Dataflow 
-  <div style="font-size:small; position:fixed; top:0; right:0; font-family: verdana;">
-    <a href="https://github.com/meemoo/dataflow">meemoo/dataflow</a>
-  </div>
-  -->
-
-  <!-- Testing -->
-  <script>
-    $(function($) {
-      // Everything should be loaded now
-
-      // Log to console
-      var dataflow = new window.Dataflow({
-        appendTo: "body",
-        debug: "true"
-      });
-
-      // Load test graph
-      var g = dataflow.loadGraph(
-{"nodes":[{"id":1,"label":"test","type":"test","x":178,"y":28,"state":{"select":"April"},"w":213,"h":362},{"id":2,"label":"test","type":"test","x":433,"y":28,"state":{"select":"April"},"w":200,"h":400},{"id":3,"label":"subgraph","type":"dataflow-subgraph","x":679,"y":131,"graph":{"nodes":[{"id":"1","label":"in","type":"dataflow-input","x":180,"y":15,"input-type":"all"},{"id":3,"label":"in2","type":"dataflow-input","x":196,"y":132,"input-type":"all"},{"id":2,"label":"test","type":"test","x":566,"y":74,"state":{"select":"April"},"w":200,"h":400},{"id":"99","label":"out","type":"dataflow-output","x":947,"y":120,"output-type":"all"}],"edges":[{"source":{"node":2,"port":"output"},"target":{"node":"99","port":"data"}},{"source":{"node":"1","port":"data"},"target":{"node":2,"port":"input"}},{"source":{"node":3,"port":"data"},"target":{"node":2,"port":"string"}}]}},{"id":4,"label":"test","type":"test","x":928,"y":33,"state":{"select":"April"},"w":213,"h":362}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}},{"source":{"node":2,"port":"output"},"target":{"node":3,"port":"1"}},{"source":{"node":3,"port":"99"},"target":{"node":4,"port":"input"}},{"source":{"node":2,"port":"output"},"target":{"node":3,"port":3}}]}
-      );
-      g.trigger("change");
-
-    });
-  </script>
-
+  <dataflow-app 
+    style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px;" 
+    graph='{"nodes":[{"id":1,"label":"test","type":"test","x":178,"y":28,"state":{"select":"April"},"w":213,"h":362},{"id":2,"label":"test","type":"test","x":433,"y":28,"state":{"select":"April"},"w":200,"h":400},{"id":3,"label":"subgraph","type":"dataflow-subgraph","x":679,"y":131,"graph":{"nodes":[{"id":"1","label":"in","type":"dataflow-input","x":180,"y":15,"input-type":"all"},{"id":3,"label":"in2","type":"dataflow-input","x":196,"y":132,"input-type":"all"},{"id":2,"label":"test","type":"test","x":566,"y":74,"state":{"select":"April"},"w":200,"h":400},{"id":"99","label":"out","type":"dataflow-output","x":947,"y":120,"output-type":"all"}],"edges":[{"source":{"node":2,"port":"output"},"target":{"node":"99","port":"data"}},{"source":{"node":"1","port":"data"},"target":{"node":2,"port":"input"}},{"source":{"node":3,"port":"data"},"target":{"node":2,"port":"string"}}]}},{"id":4,"label":"test","type":"test","x":928,"y":33,"state":{"select":"April"},"w":213,"h":362}],"edges":[{"source":{"node":1,"port":"output"},"target":{"node":2,"port":"input"}},{"source":{"node":2,"port":"output"},"target":{"node":3,"port":"1"}},{"source":{"node":3,"port":"99"},"target":{"node":4,"port":"input"}},{"source":{"node":2,"port":"output"},"target":{"node":3,"port":3}}]}'
+  >
+  </dataflow-app>
 </body>
 </html>

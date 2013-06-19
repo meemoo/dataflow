@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Third-Party Libraries -->
+    <script src="../../libs/jquery.js"></script>
+    <script src="../../libs/jquery-ui.js"></script>
+    <script src="../../libs/jquery.ui.touch-punch.js"></script>
+    <script src="../../libs/underscore.js"></script>
+    <script src="../../libs/backbone.js"></script>
+
+    <!-- Built-in Libraries -->
+    <script src="../../libs/actionbar/js/actionbar.js"></script>
+
+    <!-- Dataflow core -->
+    <script src="../dataflow.js"></script>
+
+    <!-- Dataflow Modules -->
+    <script src="../modules/graph.js"></script>
+    <script src="../modules/node.js"></script>
+    <script src="../modules/input.js"></script>
+    <script src="../modules/output.js"></script>
+    <script src="../modules/edge.js"></script>
+
+    <script src="../modules/graph-view.js"></script>
+    <script src="../modules/node-view.js"></script>
+    <script src="../modules/input-view.js"></script>
+    <script src="../modules/output-view.js"></script>
+    <script src="../modules/edge-view.js"></script>
+
+    <!-- Nodes (some basics to extend) -->
+    <script src="../nodes/base.js"></script>
+    <script src="../nodes/base-resizable.js"></script>
+    <script src="../nodes/test.js"></script>
+    <!-- Nodes (subgraph functionality) -->
+    <script src="../nodes/dataflow-input.js"></script>
+    <script src="../nodes/dataflow-output.js"></script>
+    <script src="../nodes/dataflow-subgraph.js"></script>
+
+    <!-- Plugins -->
+    <script src="../plugins/edit.js"></script>
+    <script src="../plugins/library.js"></script>
+    <script src="../plugins/view-source.js"></script>
+    <script src="../plugins/log.js"></script>
+
+</head>
+<body>
+
+<element name="dataflow-app" attributes="graph">
+  <template>
+
+    <!-- Style -->
+    <link rel="stylesheet" href="../../style/dataflow.css">
+    <link rel="stylesheet" href="../../style/modules/node.css">
+    <link rel="stylesheet" href="../../style/modules/port.css">
+    <link rel="stylesheet" href="../../style/modules/actionbar.css">
+    <link rel="stylesheet" href="../../style/modules/jqui.css">
+    <link rel="stylesheet" href="../../libs/actionbar/vendor/css/font-awesome.min.css">
+
+    <div id="app" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px;"></div>
+
+  </template>
+  <script>
+    Polymer.register(this, {
+      ready: function() {
+
+        var dataflow = new Dataflow({
+          debug: "true"
+        });
+
+        this.$.app.appendChild( dataflow.el );
+
+        if (this.graph) {
+          var g = dataflow.loadGraph( JSON.parse(this.graph) );
+          g.trigger("change");
+        }
+
+      },
+      changeGraph: function (graph) {
+        console.log("change", graph, this.graph);
+      }
+    });
+  </script>
+</element>
+
+</body>
+</html>
