@@ -18,6 +18,13 @@
   "styles": [
     "build/dataflow.min.css"
   ],
+  "files": [
+    "libs/jquery.js",
+    "libs/jquery-ui.js",
+    "libs/jquery.ui.touch-punch.js",
+    "libs/underscore.js",
+    "libs/backbone.js"
+  ],
   "images": [
     "font/fontawesome-webfont.eot",
     "font/fontawesome-webfont.svg",
