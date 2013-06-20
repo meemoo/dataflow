@@ -4,23 +4,25 @@
   "description": "jQueryUI-based data flow graph editor",
   "version": "0.0.1",
   "homepage": "https://github.com/meemoo/dataflow",
+  "demo": "http://meemoo.org/dataflow/",
   "author": {
     "name": "Forrest Oliphant",
     "email": "forrest@sembiki.com",
     "url": "http://meemoo.org/"
   },
   "repo": "meemoo/dataflow",
-  "dependencies": {
-    "solutionio/backbone": "*",
-    "component/underscore": "*",
-    "component/jquery": "*",
-    "kelonye/jquery-ui": "*"
-  },
   "main": "build/dataflow.min.js",
   "scripts": [
     "build/dataflow.min.js"
   ],
   "styles": [
     "build/dataflow.min.css"
+  ],
+  "images": [
+    "font/fontawesome-webfont.eot",
+    "font/fontawesome-webfont.svg",
+    "font/fontawesome-webfont.ttf",
+    "font/fontawesome-webfont.woff",
+    "font/FontAwesome.otf"
   ]
 }
