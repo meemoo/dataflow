@@ -14,8 +14,7 @@
     "solutionio/backbone": "*",
     "component/underscore": "*",
     "component/jquery": "*",
-    "kelonye/jquery-ui": "*",
-    "bergie/actionbar": "*"
+    "kelonye/jquery-ui": "*"
   },
   "main": "build/dataflow.min.js",
   "scripts": [
