@@ -14,13 +14,14 @@
     "solutionio/backbone": "*",
     "component/underscore": "*",
     "component/jquery": "*",
-    "kelonye/jquery-ui": "*"
+    "kelonye/jquery-ui": "*",
+    "bergie/actionbar": "*"
   },
   "main": "build/dataflow.min.js",
   "scripts": [
     "build/dataflow.min.js"
-    ],
+  ],
   "styles": [
-    "dataflow.css"
-    ]
+    "build/dataflow.min.css"
+  ]
 }
