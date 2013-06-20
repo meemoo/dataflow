@@ -65,7 +65,7 @@
       if (this["input"+name]){
         this["input"+name](value);
       }
-      this.trigger("change:state:"+name); //TODO: design this
+      this.trigger("change:state", name, value); //TODO: design this
     },
     setBang: function (name) {
       if (this["input"+name]){

@@ -25,7 +25,7 @@
     "libs/underscore.js",
     "libs/backbone.js"
   ],
-  "images": [
+  "fonts": [
     "font/fontawesome-webfont.eot",
     "font/fontawesome-webfont.svg",
     "font/fontawesome-webfont.ttf",
