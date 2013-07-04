@@ -65,6 +65,10 @@
         activeClassType: "droppable-hover"
       });
 
+      if (!this.model.parentNode.parentGraph.dataflow.inputs) {
+        return;
+      }
+
       // Initialize direct input
       var input;
       var type = this.model.get("type");

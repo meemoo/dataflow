@@ -17,15 +17,31 @@
       // Debug mode
       this.debug = this.get("debug");
 
-      // Setup actionbar
-      this.prepareActionBar();
-      this.renderActionBar();
+      // Show controls?
+      this.controls = this.get("controls");
+      if (this.controls !== false) {
+        // Default to true
+        this.controls = true;
+      }
 
-      // Add plugins
-      for (var name in this.plugins) {
-        if (this.plugins[name].initialize) {
-          this.plugins[name].initialize(this);
+      if (this.controls) {
+        // Setup actionbar
+        this.prepareActionBar();
+        this.renderActionBar();
+
+        // Add plugins
+        for (var name in this.plugins) {
+          if (this.plugins[name].initialize) {
+            this.plugins[name].initialize(this);
+          }
         }
+      }
+
+      // Show form fields on inputs?
+      this.inputs = this.get("inputs");
+      if (this.inputs !== false) {
+        // Default to true
+        this.inputs = true;
       }
 
       // Add the main element to the page
@@ -133,6 +149,7 @@
       }
     },
     changeContext: function (selected) {
+      if (!this.contextBar) { return false; }
       if (selected.length > 1) {
         // More than one selected: Move to subgraph, Cut/Copy
         this.contextBar.get('control').set({
