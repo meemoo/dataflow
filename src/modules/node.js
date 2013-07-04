@@ -1,5 +1,5 @@
 /*
-*   NOTE: this has nothing to do with server-side Node.js (so far at least)
+*   NOTE: this node.js has nothing to do with server-side Node.js
 */
 
 ( function(Dataflow) {
@@ -65,7 +65,7 @@
       if (this["input"+name]){
         this["input"+name](value);
       }
-      this.trigger("change:state:"+name); //TODO: design this
+      this.trigger("change:state", name, value); //TODO: design this
     },
     setBang: function (name) {
       if (this["input"+name]){

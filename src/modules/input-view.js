@@ -125,7 +125,7 @@
           // Use the default
           input.val(this.model.get("value"));
         }
-      } else if (type === "string") {
+      } else if (type === "string" || type === "all") {
         // String input
         input = $('<input class="input input-string">');
         if (state && state[this.model.id] !== undefined){
