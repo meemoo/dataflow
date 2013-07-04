@@ -1,5 +1,5 @@
 /*
-*   NOTE: this has nothing to do with server-side Node.js (so far at least)
+*   NOTE: this node.js has nothing to do with server-side Node.js
 */
 
 ( function(Dataflow) {
