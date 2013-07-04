@@ -76,6 +76,10 @@
           left: graph.scrollLeft() + previewPosition.left - 10 - dataflowParent.left,
           top:  graph.scrollTop()  + previewPosition.top  - 30 - dataflowParent.top
         };
+        // No chrome
+        if (!this.model.parentGraph.dataflow.controls) {
+          this.positions.from.top += 40;
+        }
       }
       if (target) {
         this.positions.to = target.view.holePosition();
@@ -87,6 +91,10 @@
           left: graph.scrollLeft() + previewPosition.left + 25 - dataflowParent.left,
           top:  graph.scrollTop()  + previewPosition.top  - 30 - dataflowParent.top
         };
+        // No chrome
+        if (!this.model.parentGraph.dataflow.controls) {
+          this.positions.to.top += 40;
+        }
       }
       var pathD = this.edgePath(this.positions);
       this.elEdge.setAttribute("d", pathD);
