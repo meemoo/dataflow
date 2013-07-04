@@ -44,6 +44,13 @@
         this.inputs = true;
       }
 
+      // Wires and names editable?
+      this.editable = this.get("editable");
+      if (this.editable !== false) {
+        // Default to true
+        this.editable = true;
+      }
+
       // Add the main element to the page
       var appendTo = this.get("appendTo");
       appendTo = appendTo ? appendTo : "body";

@@ -43,6 +43,11 @@
       // Add type class
       this.$el.addClass(this.model.type);
 
+      if (!this.model.parentGraph.dataflow.editable) {
+        // No edit name
+        this.$(".edit").hide();
+      }
+
       // Initialize i/o views
       this.inputs = this.model.inputs.view = new Input.CollectionView({
         collection: this.model.inputs

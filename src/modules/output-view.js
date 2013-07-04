@@ -27,6 +27,12 @@
     initialize: function () {
       this.$el.html(this.template(this.model.toJSON()));
       this.$el.addClass(this.model.get("type"));
+
+      if (!this.model.parentNode.parentGraph.dataflow.editable) {
+        // No drag and drop
+        return;
+      }
+
       var self = this;
       this.$(".plug").draggable({
         cursor: "pointer",
@@ -53,8 +59,6 @@
         accept: ".plug.out, .hole.in",
         activeClassType: "droppable-hover"
       });
-
-      // this.model.parentNode.on("change:x change:y change:w", this.movedHole, this);
     },
     render: function () {
       return this;

@@ -38,6 +38,12 @@
     initialize: function() {
       this.$el.html(this.template(this.model.toJSON()));
       this.$el.addClass(this.model.get("type"));
+
+      if (!this.model.parentNode.parentGraph.dataflow.editable) {
+        // No drag and drop
+        return;
+      }
+
       var self = this;
       this.$(".plug").draggable({
         cursor: "pointer",
@@ -66,6 +72,7 @@
       });
 
       if (!this.model.parentNode.parentGraph.dataflow.inputs) {
+        // No direct inputs
         return;
       }
 
