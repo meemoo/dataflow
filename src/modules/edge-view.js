@@ -117,9 +117,54 @@
       this.el.setAttribute("class", "edge");
     },
     edgePath: function(positions){
+      var x = (positions.to.left-40) - (positions.from.left+40);
+      var y = positions.to.top - positions.from.top;
+
+      var control1 = "";
+      var control2 = "";
+
+      if (Math.abs(y) > Math.abs(x)) {
+        if (y > 0) {
+          if (x > 0) {
+            control1 = " L " + (positions.from.left+40+x/2) + " " + (positions.from.top+x/2);
+            control2 = " L " + (positions.to.left-40-x/2) + " " + (positions.to.top-x/2);
+          } else if (x < 0) {
+            control1 = " L " + (positions.from.left+40+x/2) + " " + (positions.from.top-x/2);
+            control2 = " L " + (positions.to.left-40-x/2) + " " + (positions.to.top+x/2);
+          }
+        } else if (y < 0) {
+          if (x > 0) {
+            control1 = " L " + (positions.from.left+40+x/2) + " " + (positions.from.top-x/2);
+            control2 = " L " + (positions.to.left-40-x/2) + " " + (positions.to.top+x/2);
+          } else if (x < 0) {
+            control1 = " L " + (positions.from.left+40+x/2) + " " + (positions.from.top+x/2);
+            control2 = " L " + (positions.to.left-40-x/2) + " " + (positions.to.top-x/2);
+          }          
+        }
+      } else if (Math.abs(y) < Math.abs(x)) {
+        if (x > 0) {
+          if (y > 0) {
+            control1 = " L " + (positions.from.left+40+y/2) + " " + (positions.from.top+y/2);
+            control2 = " L " + (positions.to.left-40-y/2) + " " + (positions.to.top-y/2);
+          } else if (y < 0) {
+            control1 = " L " + (positions.from.left+40-y/2) + " " + (positions.from.top+y/2);
+            control2 = " L " + (positions.to.left-40+y/2) + " " + (positions.to.top-y/2);
+          }
+        } else if (x < 0) {
+          if (y > 0) {
+            control1 = " L " + (positions.from.left+40-y/2) + " " + (positions.from.top+y/2);
+            control2 = " L " + (positions.to.left-40+y/2) + " " + (positions.to.top-y/2);
+          } else if (y < 0) {
+            control1 = " L " + (positions.from.left+40+y/2) + " " + (positions.from.top+y/2);
+            control2 = " L " + (positions.to.left-40-y/2) + " " + (positions.to.top-y/2);
+          }          
+        }
+      } 
+
       return "M " + positions.from.left + " " + positions.from.top + 
-        " L " + (positions.from.left+50) + " " + positions.from.top +
-        " L " + (positions.to.left-50) + " " + positions.to.top +
+        " L " + (positions.from.left+40) + " " + positions.from.top +
+        control1 + control2 +
+        " L " + (positions.to.left-40) + " " + positions.to.top +
         " L " + positions.to.left + " " + positions.to.top;
     },
     remove: function(){
