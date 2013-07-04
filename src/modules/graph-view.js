@@ -77,6 +77,11 @@
             .prepend(upButton);
         }
       }
+
+      // If no controls, move up
+      if (!this.model.dataflow.controls){
+        this.$el.css("top", "0px");
+      }
     },
     render: function() {
       // HACK to get them to show correct positions on load
