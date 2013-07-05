@@ -82,6 +82,7 @@
             'build/dataflow.min.css': [
               'style/dataflow.css',
               'style/modules/node.css',
+              'style/modules/edge.css',
               'style/modules/port.css',
               'style/modules/actionbar.css',
               'style/modules/jqui.css',
