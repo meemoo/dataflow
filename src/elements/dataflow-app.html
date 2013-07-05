@@ -40,18 +40,22 @@
 <script src="../../src/plugins/log.js"></script>
 
 <!-- Custom elements -->
-<link rel="import" href="dataflow-graph.html">
+<!-- <link rel="import" href="dataflow-graph.html"> -->
 
-<element name="dataflow-app" attributes="graph">
+<element name="dataflow-app" attributes="graph src">
   <template>
 
     <!-- Style -->
     <link rel="stylesheet" href="../../style/dataflow.css">
+    <link rel="stylesheet" href="../../style/modules/node.css">
+    <link rel="stylesheet" href="../../style/modules/edge.css">
+    <link rel="stylesheet" href="../../style/modules/port.css">
     <link rel="stylesheet" href="../../style/modules/actionbar.css">
     <link rel="stylesheet" href="../../style/modules/jqui.css">
     <link rel="stylesheet" href="../../libs/actionbar/vendor/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="../../build/dataflow.min.css"> -->
 
-    <dataflow-graph id="base"></dataflow-graph>
+    <!-- <dataflow-graph id="base"></dataflow-graph> -->
 
   </template>
   <script>
@@ -59,20 +63,21 @@
 
     Polymer.register(this, {
       ready: function() {
-        // dataflow = new Dataflow({
-        //   debug: "true"
-        // });
-        // if (this.graph) {
-        //   this.graphChanged();
-        // }
+        dataflow = new Dataflow({
+          debug: "true"
+        });
+        this.shadowRoot.appendChild( dataflow.el );
       },
       graphChanged: function () {
-        if (typeof this.graph === "string") {
-          this.parsedGraph = JSON.parse( this.graph );
-        } else {
-          this.parsedGraph = this.graph;
+        var parsedGraph = this.graph;
+        if (typeof parsedGraph === "string") {
+          parsedGraph = JSON.parse( this.graph );
         }
-        this.$.base.graph = this.parsedGraph;
+        dataflow.loadGraph( parsedGraph );
+        // this.$.base.graph = this.parsedGraph;
+      },
+      srcChanged: function () {
+        // Load JSON via AJAX and load graph
       }
     });
   </script>
