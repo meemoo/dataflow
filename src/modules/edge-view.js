@@ -96,6 +96,10 @@
           this.positions.to.top += 40;
         }
       }
+      this.positions.from.left = Math.floor(this.positions.from.left);
+      this.positions.from.top = Math.floor(this.positions.from.top);
+      this.positions.to.left = Math.floor(this.positions.to.left);
+      this.positions.to.top = Math.floor(this.positions.to.top);
       var pathD = this.edgePath(this.positions);
       this.elEdge.setAttribute("d", pathD);
       this.elShadow.setAttribute("d", pathD);
@@ -118,45 +122,53 @@
     },
     edgePath: function(positions){
       var x = (positions.to.left-40) - (positions.from.left+40);
+      var halfX = Math.floor(x/2);
+      var halfX2 = x-halfX;
       var y = positions.to.top - positions.from.top;
+      var halfY = Math.floor(y/2);
+      var halfY2 = y-halfY;
+
+      // Todo: check if this wire path is occupied, if so shift it over
 
       var control1 = "";
       var control2 = "";
 
       if (Math.abs(y) > Math.abs(x)) {
+        // More vertical travel
         if (y > 0) {
           if (x > 0) {
-            control1 = " L " + (positions.from.left+40+x/2) + " " + (positions.from.top+x/2);
-            control2 = " L " + (positions.to.left-40-x/2) + " " + (positions.to.top-x/2);
+            control1 = " L " + (positions.from.left+40+halfX) + " " + (positions.from.top+halfX);
+            control2 = " L " + (positions.to.left-40-halfX2) + " " + (positions.to.top-halfX2);
           } else if (x < 0) {
-            control1 = " L " + (positions.from.left+40+x/2) + " " + (positions.from.top-x/2);
-            control2 = " L " + (positions.to.left-40-x/2) + " " + (positions.to.top+x/2);
+            control1 = " L " + (positions.from.left+40+halfX) + " " + (positions.from.top-halfX);
+            control2 = " L " + (positions.to.left-40-halfX2) + " " + (positions.to.top+halfX2);
           }
         } else if (y < 0) {
           if (x > 0) {
-            control1 = " L " + (positions.from.left+40+x/2) + " " + (positions.from.top-x/2);
-            control2 = " L " + (positions.to.left-40-x/2) + " " + (positions.to.top+x/2);
+            control1 = " L " + (positions.from.left+40+halfX) + " " + (positions.from.top-halfX);
+            control2 = " L " + (positions.to.left-40-halfX2) + " " + (positions.to.top+halfX2);
           } else if (x < 0) {
-            control1 = " L " + (positions.from.left+40+x/2) + " " + (positions.from.top+x/2);
-            control2 = " L " + (positions.to.left-40-x/2) + " " + (positions.to.top-x/2);
+            control1 = " L " + (positions.from.left+40+halfX) + " " + (positions.from.top+halfX);
+            control2 = " L " + (positions.to.left-40-halfX2) + " " + (positions.to.top-halfX2);
           }          
         }
       } else if (Math.abs(y) < Math.abs(x)) {
+        // More horizontal travel
         if (x > 0) {
           if (y > 0) {
-            control1 = " L " + (positions.from.left+40+y/2) + " " + (positions.from.top+y/2);
-            control2 = " L " + (positions.to.left-40-y/2) + " " + (positions.to.top-y/2);
+            control1 = " L " + (positions.from.left+40+halfY) + " " + (positions.from.top+halfY);
+            control2 = " L " + (positions.to.left-40-halfY2) + " " + (positions.to.top-halfY2);
           } else if (y < 0) {
-            control1 = " L " + (positions.from.left+40-y/2) + " " + (positions.from.top+y/2);
-            control2 = " L " + (positions.to.left-40+y/2) + " " + (positions.to.top-y/2);
+            control1 = " L " + (positions.from.left+40-halfY) + " " + (positions.from.top+halfY);
+            control2 = " L " + (positions.to.left-40+halfY2) + " " + (positions.to.top-halfY2);
           }
         } else if (x < 0) {
           if (y > 0) {
-            control1 = " L " + (positions.from.left+40-y/2) + " " + (positions.from.top+y/2);
-            control2 = " L " + (positions.to.left-40+y/2) + " " + (positions.to.top-y/2);
+            control1 = " L " + (positions.from.left+40-halfY) + " " + (positions.from.top+halfY);
+            control2 = " L " + (positions.to.left-40+halfY2) + " " + (positions.to.top-halfY2);
           } else if (y < 0) {
-            control1 = " L " + (positions.from.left+40+y/2) + " " + (positions.from.top+y/2);
-            control2 = " L " + (positions.to.left-40-y/2) + " " + (positions.to.top-y/2);
+            control1 = " L " + (positions.from.left+40+halfY) + " " + (positions.from.top+halfY);
+            control2 = " L " + (positions.to.left-40-halfY2) + " " + (positions.to.top-halfY2);
           }          
         }
       } 
