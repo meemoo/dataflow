@@ -80,12 +80,20 @@
       });
 
       // Listen for un/select
-      this.on("selectionChanged", this.selectionChanged);
+      this.on("selectionChanged", this.selectionChanged, this);
+      this.on("select:node", this.selectNode, this);
+      this.on("select:edge", this.selectEdge, this);
 
       // Pass graph change events up to dataflow
       this.on("change", function(){
         this.dataflow.trigger("change", this);
       }, this);
+    },
+    selectNode: function (node) {
+      this.dataflow.trigger("select:node", this, node);
+    },
+    selectEdge: function (edge) {
+      this.dataflow.trigger("select:edge", this, edge);
     },
     selectionChanged: function () {
       this.selected = [];

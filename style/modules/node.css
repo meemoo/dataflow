@@ -4,11 +4,13 @@
   width: 200px;
   border: 1px #aaa solid;
   background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 3px;
   z-index: 0;
 }
   .node .outer {
     position: absolute;
     top:0;right:0;bottom:0;left:0;
+    border-radius: 3px;
     z-index: -1;
   }
     .node.ui-selected .outer {

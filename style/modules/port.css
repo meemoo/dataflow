@@ -25,14 +25,14 @@
     }
     .port .hole {
       cursor: pointer;
-      width: 18px;
-      height: 18px;
+      width: 10px;
+      height: 10px;
       display: inline-block;
       border: 1px black solid;
     }
     .plug {
-      width: 20px;
-      height: 20px;
+      width: 12px;
+      height: 12px;
       display: inline-block;
     }
       .plug.active,
@@ -40,6 +40,11 @@
         cursor: pointer;
         background-color: #AAA;
       }
+
+.menuitem-inspector label {
+  display: block;
+  margin-bottom: 5px;
+}
 
 .input-container {
   margin-right: 0.25em;

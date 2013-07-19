@@ -6,11 +6,11 @@
   }
   g.edge path.edge-wire {
     stroke: #CCC;
-    stroke-width: 10px;
+    stroke-width: 8px;
   }
     g.edge path.edge-shadow {
       stroke: #AAA;
-      stroke-width: 12px;
+      stroke-width: 10px;
     }
   g.edge.highlight path.edge-wire {
     stroke: #AAA;

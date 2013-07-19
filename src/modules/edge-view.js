@@ -96,14 +96,16 @@
           this.positions.to.top += 40;
         }
       }
+      // No half-pixels
       this.positions.from.left = Math.floor(this.positions.from.left);
       this.positions.from.top = Math.floor(this.positions.from.top);
       this.positions.to.left = Math.floor(this.positions.to.left);
       this.positions.to.top = Math.floor(this.positions.to.top);
+      // Make and apply the path
       var pathD = this.edgePath(this.positions);
       this.elEdge.setAttribute("d", pathD);
       this.elShadow.setAttribute("d", pathD);
-      // Bounding box
+      // Reset bounding box
       if (this.model.parentGraph && this.model.parentGraph.view){
         this.model.parentGraph.view.sizeSVG();
       }
@@ -128,10 +130,10 @@
       var halfY = Math.floor(y/2);
       var halfY2 = y-halfY;
 
-      // Todo: check if this wire path is occupied, if so shift it over
-
       var control1 = "";
       var control2 = "";
+
+      // Todo: check if this wire path is occupied, if so shift it over
 
       if (Math.abs(y) > Math.abs(x)) {
         // More vertical travel
@@ -203,6 +205,7 @@
       // Highlight
       this.highlight();
       this.bringToTop();
+      this.model.trigger("select");
     },
     bringToTop: function(){
       this.model.bringToTop();

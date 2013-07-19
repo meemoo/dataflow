@@ -9,9 +9,8 @@
     '<span class="plug in" title="drag to edit wire"></span>'+ //i18n
     '<span class="hole in" title="drag to make new wire"></span>'+ //i18n
     '<label class="label in" title="<%= description %>">'+
-      '<span class="input-container in"></span>'+
       '<%= label %>'+
-    '</label>';
+    '</label>';  
  
   Input.View = Backbone.View.extend({
     template: _.template(template),
@@ -25,16 +24,9 @@
       "dragstop  .hole":  "newEdgeStop",
       "dragstart .plug":  "changeEdgeStart",
       "drag      .plug":  "changeEdgeDrag",
-      "dragstop  .plug":  "changeEdgeStop",
-
-      "change .input-select":  "inputSelect",
-      "change .input-int":     "inputInt",
-      "change .input-number":  "inputFloat",
-      "change .input-float":   "inputFloat",
-      "change .input-string":  "inputString",
-      "change .input-boolean": "inputBoolean",
-      "click  .input-bang":    "inputBang"
+      "dragstop  .plug":  "changeEdgeStop"
     },
+    $input: null,
     initialize: function() {
       this.$el.html(this.template(this.model.toJSON()));
       this.$el.addClass(this.model.get("type"));
@@ -114,6 +106,10 @@
           }
           input.append(option);
         }
+        // Change event
+        input.change(function(event){
+          self.inputSelect(event);
+        });
       } else if (type === "int" || type === "float" || type === "number") {
         // Number input
         var attributes = {};
@@ -136,6 +132,16 @@
           // Use the default
           input.val(this.model.get("value"));
         }
+        // Change event
+        if (type === "int") {
+          input.change(function(event){
+            self.inputInt(event);
+          });
+        } else {
+          input.change(function(event){
+            self.inputFloat(event);
+          });
+        }
       } else if (type === "string" || type === "all") {
         // String input
         input = $('<input class="input input-string">');
@@ -146,6 +152,10 @@
           // Use the default
           input.val(this.model.get("value"));
         }
+        // Change event
+        input.change(function(event){
+          self.inputString(event);
+        });
       } else if (type === "boolean") {
         // Checkbox boolean
         input = $('<input type="checkbox" class="input input-boolean">');
@@ -156,12 +166,23 @@
           // Use the default
           input.prop("checked", this.model.get("value"));
         }
+        // Change event
+        input.change(function(event){
+          self.inputBoolean(event);
+        });
       } else if (type === "bang") {
         // Button bang
         input = $('<button class="input input-bang">!</button>');
+        // Change event
+        input.click(function(event){
+          self.inputBang(event);
+        });
       } 
       if (input) {
-        this.$(".input-container").append(input);
+        var label = $("<label>")
+          .append( input )
+          .append( " " + this.model.get("label") );
+        this.$input = label;
       }
     },
     inputSelect: function(e){

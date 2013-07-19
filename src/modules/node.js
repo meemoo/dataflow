@@ -58,6 +58,12 @@
         this.outputs.add(output);
       }
 
+      // Selection event
+      this.on("select", this.select, this);
+
+    },
+    select: function() {
+      this.parentGraph.trigger("select:node", this);
     },
     setState: function (name, value) {
       var state = this.get("state");

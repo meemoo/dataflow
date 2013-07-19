@@ -234,6 +234,9 @@
         this.bringToTop();
       }
       // Trigger
+      if ( this.$el.hasClass("ui-selected") ) {
+        this.model.trigger("select");
+      }
       this.model.parentGraph.trigger("selectionChanged");
     }
   });
