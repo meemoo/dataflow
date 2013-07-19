@@ -123,7 +123,8 @@
       this.el.setAttribute("class", "edge");
     },
     edgePath: function(positions){
-      var x = (positions.to.left-40) - (positions.from.left+40);
+      var extend = 20;
+      var x = (positions.to.left-extend) - (positions.from.left+extend);
       var halfX = Math.floor(x/2);
       var halfX2 = x-halfX;
       var y = positions.to.top - positions.from.top;
@@ -139,46 +140,46 @@
         // More vertical travel
         if (y > 0) {
           if (x > 0) {
-            control1 = " L " + (positions.from.left+40+halfX) + " " + (positions.from.top+halfX);
-            control2 = " L " + (positions.to.left-40-halfX2) + " " + (positions.to.top-halfX2);
+            control1 = " L " + (positions.from.left+extend+halfX) + " " + (positions.from.top+halfX);
+            control2 = " L " + (positions.to.left-extend-halfX2) + " " + (positions.to.top-halfX2);
           } else if (x < 0) {
-            control1 = " L " + (positions.from.left+40+halfX) + " " + (positions.from.top-halfX);
-            control2 = " L " + (positions.to.left-40-halfX2) + " " + (positions.to.top+halfX2);
+            control1 = " L " + (positions.from.left+extend+halfX) + " " + (positions.from.top-halfX);
+            control2 = " L " + (positions.to.left-extend-halfX2) + " " + (positions.to.top+halfX2);
           }
         } else if (y < 0) {
           if (x > 0) {
-            control1 = " L " + (positions.from.left+40+halfX) + " " + (positions.from.top-halfX);
-            control2 = " L " + (positions.to.left-40-halfX2) + " " + (positions.to.top+halfX2);
+            control1 = " L " + (positions.from.left+extend+halfX) + " " + (positions.from.top-halfX);
+            control2 = " L " + (positions.to.left-extend-halfX2) + " " + (positions.to.top+halfX2);
           } else if (x < 0) {
-            control1 = " L " + (positions.from.left+40+halfX) + " " + (positions.from.top+halfX);
-            control2 = " L " + (positions.to.left-40-halfX2) + " " + (positions.to.top-halfX2);
+            control1 = " L " + (positions.from.left+extend+halfX) + " " + (positions.from.top+halfX);
+            control2 = " L " + (positions.to.left-extend-halfX2) + " " + (positions.to.top-halfX2);
           }          
         }
       } else if (Math.abs(y) < Math.abs(x)) {
         // More horizontal travel
         if (x > 0) {
           if (y > 0) {
-            control1 = " L " + (positions.from.left+40+halfY) + " " + (positions.from.top+halfY);
-            control2 = " L " + (positions.to.left-40-halfY2) + " " + (positions.to.top-halfY2);
+            control1 = " L " + (positions.from.left+extend+halfY) + " " + (positions.from.top+halfY);
+            control2 = " L " + (positions.to.left-extend-halfY2) + " " + (positions.to.top-halfY2);
           } else if (y < 0) {
-            control1 = " L " + (positions.from.left+40-halfY) + " " + (positions.from.top+halfY);
-            control2 = " L " + (positions.to.left-40+halfY2) + " " + (positions.to.top-halfY2);
+            control1 = " L " + (positions.from.left+extend-halfY) + " " + (positions.from.top+halfY);
+            control2 = " L " + (positions.to.left-extend+halfY2) + " " + (positions.to.top-halfY2);
           }
         } else if (x < 0) {
           if (y > 0) {
-            control1 = " L " + (positions.from.left+40-halfY) + " " + (positions.from.top+halfY);
-            control2 = " L " + (positions.to.left-40+halfY2) + " " + (positions.to.top-halfY2);
+            control1 = " L " + (positions.from.left+extend-halfY) + " " + (positions.from.top+halfY);
+            control2 = " L " + (positions.to.left-extend+halfY2) + " " + (positions.to.top-halfY2);
           } else if (y < 0) {
-            control1 = " L " + (positions.from.left+40+halfY) + " " + (positions.from.top+halfY);
-            control2 = " L " + (positions.to.left-40-halfY2) + " " + (positions.to.top-halfY2);
+            control1 = " L " + (positions.from.left+extend+halfY) + " " + (positions.from.top+halfY);
+            control2 = " L " + (positions.to.left-extend-halfY2) + " " + (positions.to.top-halfY2);
           }          
         }
       } 
 
       return "M " + positions.from.left + " " + positions.from.top + 
-        " L " + (positions.from.left+40) + " " + positions.from.top +
+        " L " + (positions.from.left+extend) + " " + positions.from.top +
         control1 + control2 +
-        " L " + (positions.to.left-40) + " " + positions.to.top +
+        " L " + (positions.to.left-extend) + " " + positions.to.top +
         " L " + positions.to.left + " " + positions.to.top;
     },
     remove: function(){

@@ -191,7 +191,7 @@
       var holePos = this.$(".hole").position();
       return {
         left: nodePos.left + holePos.left + 10,
-        top: nodePos.top + holePos.top + 10
+        top: nodePos.top + holePos.top + 8
       };
     },
     plugSetActive: function(){
