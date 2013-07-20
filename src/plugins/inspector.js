@@ -5,9 +5,7 @@
   Inspector.initialize = function(dataflow){
 
     var $inspector = $(
-      '<div class="dataflow-plugin-inspector">'+
-        'hoi'+
-      '</div>'
+      '<div class="dataflow-plugin-inspector"></div>'
     );
 
     // dataflow.addPlugin({
@@ -31,12 +29,10 @@
 
     function updateInspector(){
       if (lastSelected) {
-        $menu.empty();
-        lastSelected.inputs.each(function(input){
-          if (input.view && input.view.$input) {
-            $menu.append(input.view.$input);
-          }
-        });
+        if (lastSelected.view) {
+          $inspector.children().detach();
+          $inspector.append( lastSelected.view.getInputList() );
+        }
       }
     }
 

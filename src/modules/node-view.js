@@ -73,6 +73,12 @@
 
       // Inner template
       this.$(".inner").append(this.innerTemplate);
+
+      // Listener to reset inputs list
+      // this.inputs.on("change", function(input){
+      //   this.$inputsList = null;
+      //   console.log("change");
+      // }, this);
     },
     render: function() {
       // Initial position
@@ -238,6 +244,18 @@
         this.model.trigger("select");
       }
       this.model.parentGraph.trigger("selectionChanged");
+    },
+    $inputList: null,
+    getInputList: function() {
+      if (!this.$inputList) {
+        this.$inputList = $("<div>");
+        this.model.inputs.each(function(input){
+          if (input.view && input.view.$input) {
+            this.$inputList.append( input.view.$input );
+          }
+        }, this);
+      }
+      return this.$inputList;
     }
   });
 
