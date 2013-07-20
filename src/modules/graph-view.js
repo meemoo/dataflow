@@ -7,22 +7,15 @@
   var Edge = Dataflow.prototype.module("edge");
  
   var template = 
-    '<div class="edges">'+
-      '<svg class="svg-edges" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="800" height="800">'+
-        // '<defs>'+  
-        //   '<filter id="drop-shadow" >'+ // FIXME Crops the edge when there is no slope
-        //     '<feOffset in="SourceAlpha" result="the-shadow" dx="1" dy="1"/>'+
-        //     '<feBlend in="SourceGraphic" in2="the-shadow" mode="normal" />'+
-        //   '</filter>'+
-        // '</defs>'+
-      '</svg>'+
+    '<div class="dataflow-edges">'+
+      '<svg class="dataflow-svg-edges" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="800" height="800"></svg>'+
     '</div>'+
-    '<div class="nodes" />'+
-    '<div class="graph-controls" />';
+    '<div class="dataflow-nodes" />'+
+    '<div class="dataflow-graph-controls" />';
 
   Graph.View = Backbone.View.extend({
     template: _.template(template),
-    className: "graph",
+    className: "dataflow-graph",
     events: {
       "click": "deselect"
     },
@@ -48,7 +41,7 @@
       var parentNode = this.model.get("parentNode");
       if (parentNode){
         // This subgraph's label
-        this.$(".graph-controls")
+        this.$(".dataflow-graph-controls")
           .text( parentNode.get("label") );
 
         var self = this;
@@ -72,7 +65,7 @@
           upButton = $('<a href="#">')
             .text( upLabel )
             .click( showGraph(parentGraph) );
-          this.$(".graph-controls")
+          this.$(".dataflow-graph-controls")
             .prepend(" / ")
             .prepend(upButton);
         }
@@ -105,7 +98,7 @@
       this.nodes[node.id] = node.view;
       // Render
       node.view.render();
-      this.$(".nodes").append(node.view.el);
+      this.$(".dataflow-nodes").append(node.view.el);
     },
     removeNode: function(node){
       node.view.remove();
@@ -119,7 +112,7 @@
       this.edges[edge.id] = edge.view;
       // Render
       edge.view.render();
-      this.$('.svg-edges')[0].appendChild(edge.view.el);
+      this.$('.dataflow-svg-edges')[0].appendChild(edge.view.el);
     },
     removeEdge: function(edge){
       edge.view.remove();
@@ -134,14 +127,14 @@
     sizeSVG: function(){
       // TODO timeout to not do this with many edge resizes at once
       try{
-        var svg = this.$('.svg-edges')[0];
+        var svg = this.$('.dataflow-svg-edges')[0];
         var rect = svg.getBBox();
         svg.setAttribute("width", Math.round(rect.x+rect.width+50));
         svg.setAttribute("height", Math.round(rect.y+rect.height+50));
       } catch (error) {}
     },
     deselect: function () {
-      this.$(".node").removeClass("ui-selected");
+      this.$(".dataflow-node").removeClass("ui-selected");
       this.model.trigger("selectionChanged");
     }
   });

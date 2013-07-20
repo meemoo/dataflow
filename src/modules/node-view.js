@@ -8,33 +8,33 @@
 
   var template = 
     '<div class="outer" />'+
-    '<h1 class="title"><span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
-    '<div class="controls">'+
-      '<button class="delete">delete</button>'+
-      '<button class="save">save</button>'+
-      '<button class="cancel">cancel</button>'+
+    '<h1 class="dataflow-node-title"><span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
+    '<div class="dataflow-node-controls">'+
+      '<button class="dataflow-node-delete">delete</button>'+
+      '<button class="dataflow-node-save">save</button>'+
+      '<button class="dataflow-node-cancel">cancel</button>'+
     '</div>'+
-    '<button class="edit">edit</button>'+
-    '<div class="ports ins" />'+
-    '<div class="ports outs" />'+
-    '<div class="inner" />';
+    '<button class="dataflow-node-edit">edit</button>'+
+    '<div class="dataflow-node-ports dataflow-node-ins" />'+
+    '<div class="dataflow-node-ports dataflow-node-outs" />'+
+    '<div class="dataflow-node-inner" />';
 
   var innerTemplate = "";
  
   Node.View = Backbone.View.extend({
     template: _.template(template),
     innerTemplate: _.template(innerTemplate),
-    className: "node",
+    className: "dataflow-node",
     events: function(){
       return {
-        "click .title": "select",
-        "click .delete": "removeModel",
+        "click .dataflow-node-title":  "select",
+        "click .dataflow-node-delete": "removeModel",
         "dragstart":     "dragStart",
         "drag":          "drag",
         "dragstop":      "dragStop",
-        "click .edit":   "showControls",
-        "click .cancel": "hideControls",
-        "click .save":   "saveLabel"
+        "click .dataflow-node-edit":   "showControls",
+        "click .dataflow-node-cancel": "hideControls",
+        "click .dataflow-node-save":   "saveLabel"
       };
     },
     initialize: function() {
@@ -45,7 +45,7 @@
 
       if (!this.model.parentGraph.dataflow.editable) {
         // No edit name
-        this.$(".edit").hide();
+        this.$(".dataflow-node-edit").hide();
       }
 
       // Initialize i/o views
@@ -65,14 +65,14 @@
           var node = self.$el;
           var width = node.width();
           var height = node.height();
-          return $('<div class="node helper" style="width:'+width+'px; height:'+height+'px">');
+          return $('<div class="dataflow-node helper" style="width:'+width+'px; height:'+height+'px">');
         }
       });
 
       this.$el.data("dataflow-node-view", this);
 
       // Inner template
-      this.$(".inner").append(this.innerTemplate);
+      this.$(".dataflow-node-inner").append(this.innerTemplate);
 
       // Listener to reset inputs list
       // this.inputs.on("change", function(input){
@@ -87,12 +87,12 @@
         top: this.model.get("y")
       });
 
-      this.$(".ins").html(this.inputs.el);
-      this.$(".outs").html(this.outputs.el);
+      this.$(".dataflow-node-ins").html(this.inputs.el);
+      this.$(".dataflow-node-outs").html(this.outputs.el);
 
       // Hide controls
-      this.$(".controls").hide();
-      this.$(".title .label-edit").hide();
+      this.$(".dataflow-node-controls").hide();
+      this.$(".label-edit").hide();
 
       return this;
     },
@@ -183,19 +183,19 @@
     },
     showControls: function(){
       // Show label edit
-      this.$(".title .label").hide();
-      this.$(".title .label-edit").show();
+      this.$(".dataflow-node-title .label").hide();
+      this.$(".dataflow-node-title .label-edit").show();
       // Show controls
-      this.$(".edit").hide();
-      this.$(".controls").show();
+      this.$(".dataflow-node-edit").hide();
+      this.$(".dataflow-node-controls").show();
     },
     hideControls: function(){
       // Hide label edit
-      this.$(".title .label-edit").hide();
-      this.$(".title .label").show();
+      this.$(".dataflow-node-title .label-edit").hide();
+      this.$(".dataflow-node-title .label").show();
       // Hide controls
-      this.$(".controls").hide();
-      this.$(".edit").show();
+      this.$(".dataflow-node-controls").hide();
+      this.$(".dataflow-node-edit").show();
     },
     saveLabel: function(){
       // Save new label

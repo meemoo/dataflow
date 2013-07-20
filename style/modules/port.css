@@ -1,42 +1,42 @@
-.ins {
+.dataflow-node-ins {
   text-align: left;
 }
-  .in .label {
+  .dataflow-in .label {
     margin-left: 0.25em;
   }
-.outs {
+.dataflow-node-outs {
   text-align: right;
 }
-  .out .label {
+  .dataflow-out .label {
     margin-right: 0.25em;
   }
-.ports ul {
+.dataflow-node-ports ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-  .port {
+  .dataflow-port {
     border: 1px gray solid;
     margin: 0;
     padding: 0;
   }
-    .port.droppable-hover {
+    .dataflow-port.droppable-hover {
       border-color: black;
     }
-    .port .hole {
+    .dataflow-port-hole {
       cursor: pointer;
       width: 10px;
       height: 10px;
       display: inline-block;
       border: 1px black solid;
     }
-    .plug {
+    .dataflow-port-plug {
       width: 12px;
       height: 12px;
       display: inline-block;
     }
-      .plug.active,
-      .plug.helper {
+      .dataflow-port-plug.active,
+      .dataflow-port-plug.helper {
         cursor: pointer;
         background-color: #AAA;
       }

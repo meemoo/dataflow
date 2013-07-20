@@ -18,7 +18,7 @@
   
   Edge.View = Backbone.View.extend({
     tagName: "div",
-    className: "edge",
+    className: "dataflow-edge",
     positions: null,
     initialize: function() {
       this.positions = {
@@ -43,13 +43,13 @@
       }
       // Made SVG elements
       this.el = makeSvgElement("g", {
-        "class": "edge"
+        "class": "dataflow-edge"
       });
       this.elEdge = makeSvgElement("path", {
-        "class": "edge-wire"
+        "class": "dataflow-edge-wire"
       });
       this.elShadow = makeSvgElement("path", {
-        "class": "edge-shadow"
+        "class": "dataflow-edge-shadow"
       });
 
       this.el.appendChild(this.elShadow);
@@ -73,8 +73,8 @@
         dataflowParent = this.model.parentGraph.dataflow.$el.parent().position();
         graph = this.model.parentGraph.view.$el;
         this.positions.from = {
-          left: graph.scrollLeft() + previewPosition.left - 10 - dataflowParent.left,
-          top:  graph.scrollTop()  + previewPosition.top  - 30 - dataflowParent.top
+          left: graph.scrollLeft() + previewPosition.left - 5 - dataflowParent.left,
+          top:  graph.scrollTop()  + previewPosition.top  - 35 - dataflowParent.top
         };
         // No chrome
         if (!this.model.parentGraph.dataflow.controls) {
@@ -88,8 +88,8 @@
         dataflowParent = this.model.parentGraph.dataflow.$el.parent().position();
         graph = this.model.parentGraph.view.$el;
         this.positions.to = {
-          left: graph.scrollLeft() + previewPosition.left + 25 - dataflowParent.left,
-          top:  graph.scrollTop()  + previewPosition.top  - 30 - dataflowParent.top
+          left: graph.scrollLeft() + previewPosition.left + 15 - dataflowParent.left,
+          top:  graph.scrollTop()  + previewPosition.top  - 35 - dataflowParent.top
         };
         // No chrome
         if (!this.model.parentGraph.dataflow.controls) {
@@ -111,16 +111,16 @@
       }
     },
     fade: function(){
-      this.el.setAttribute("class", "edge fade");
+      this.el.setAttribute("class", "dataflow-edge fade");
     },
     unfade: function(){
-      this.el.setAttribute("class", "edge");
+      this.el.setAttribute("class", "dataflow-edge");
     },
     highlight: function(){
-      this.el.setAttribute("class", "edge highlight");
+      this.el.setAttribute("class", "dataflow-edge highlight");
     },
     unhighlight: function(){
-      this.el.setAttribute("class", "edge");
+      this.el.setAttribute("class", "dataflow-edge");
     },
     edgePath: function(positions){
       var extend = 20;

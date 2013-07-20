@@ -6,23 +6,23 @@
   var Edge = Dataflow.prototype.module("edge");
  
   var template = 
-    '<span class="label out" title="<%= description %>"><%= label %></span>'+
-    '<span class="hole out" title="drag to make new wire"></span>'+
-    '<span class="plug out" title="drag to edit wire"></span>';
+    '<span class="dataflow-port-label out" title="<%= description %>"><%= label %></span>'+
+    '<span class="dataflow-port-hole out" title="drag to make new wire"></span>'+
+    '<span class="dataflow-port-plug out" title="drag to edit wire"></span>';
 
   Output.View = Backbone.View.extend({
     template: _.template(template),
     tagName: "li",
-    className: "port out",
+    className: "dataflow-port dataflow-out",
     events: {
-      "click":            "getTopEdge",
-      "drop":             "connectEdge",
-      "dragstart .hole":  "newEdgeStart",
-      "drag .hole":       "newEdgeDrag",
-      "dragstop .hole":   "newEdgeStop",
-      "dragstart .plug":  "changeEdgeStart",
-      "drag .plug":       "changeEdgeDrag",
-      "dragstop .plug":   "changeEdgeStop"
+      "click": "getTopEdge",
+      "drop":  "connectEdge",
+      "dragstart .dataflow-port-hole": "newEdgeStart",
+      "drag      .dataflow-port-hole": "newEdgeDrag",
+      "dragstop  .dataflow-port-hole": "newEdgeStop",
+      "dragstart .dataflow-port-plug": "changeEdgeStart",
+      "drag      .dataflow-port-plug": "changeEdgeDrag",
+      "dragstop  .dataflow-port-plug": "changeEdgeStop"
     },
     initialize: function () {
       this.$el.html(this.template(this.model.toJSON()));
@@ -34,10 +34,10 @@
       }
 
       var self = this;
-      this.$(".plug").draggable({
+      this.$(".dataflow-port-plug").draggable({
         cursor: "pointer",
         helper: function(){
-          var helper = $('<span class="plug out helper" />');
+          var helper = $('<span class="dataflow-port-plug out helper" />');
           $(document.body).append(helper);
           return helper;
         },
@@ -46,17 +46,17 @@
         distance: 10,
         delay: 100
       });
-      this.$(".hole").draggable({
+      this.$(".dataflow-port-hole").draggable({
         cursor: "pointer",
         helper: function(){
-          var helper = $('<span class="plug in helper" />')
+          var helper = $('<span class="dataflow-port-plug in helper" />')
             .data({port: self.model});
           $(document.body).append(helper);
           return helper;
         }
       });
       this.$el.droppable({
-        accept: ".plug.out, .hole.in",
+        accept: ".dataflow-port-plug.out, .dataflow-port-hole.in",
         activeClassType: "droppable-hover"
       });
     },
@@ -77,7 +77,7 @@
       this.previewEdgeView = new Edge.View({
         model: this.previewEdge
       });
-      var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
+      var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
       graphSVGElement.appendChild(this.previewEdgeView.el);
     },
     newEdgeDrag: function(event, ui){
@@ -135,7 +135,7 @@
           this.previewEdgeChangeView = new Edge.View({
             model: this.previewEdgeChange
           });
-          var graphSVGElement = this.model.parentNode.parentGraph.view.$('.svg-edges')[0];
+          var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
           graphSVGElement.appendChild(this.previewEdgeChangeView.el);
         }
       }
@@ -188,7 +188,7 @@
     // _holePosition: null,
     holePosition: function () {
       var nodePos = this.model.parentNode.view.$el.position();
-      var holePos = this.$(".hole").position();
+      var holePos = this.$(".dataflow-port-hole").position();
       return {
         left: nodePos.left + holePos.left + 10,
         top: nodePos.top + holePos.top + 8
@@ -196,9 +196,9 @@
     },
     plugSetActive: function(){
       try {
-        this.$(".plug").draggable("enable");
+        this.$(".dataflow-port-plug").draggable("enable");
       } catch (e) { }
-      this.$(".plug").addClass("active");
+      this.$(".dataflow-port-plug").addClass("active");
       this.isConnected = true;
     },
     plugCheckActive: function(){
@@ -207,9 +207,9 @@
       }, this);
       if (!isConnected) {
         try {
-          this.$(".plug").draggable("disable");
+          this.$(".dataflow-port-plug").draggable("disable");
         } catch (e) { }
-        this.$(".plug").removeClass("active");
+        this.$(".dataflow-port-plug").removeClass("active");
         this.isConnected = false;
       }
     }

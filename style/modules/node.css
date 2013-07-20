@@ -1,4 +1,4 @@
-.node {
+.dataflow-node {
   position: absolute;
   display: inline-block;
   width: 200px;
@@ -7,32 +7,30 @@
   border-radius: 3px;
   z-index: 0;
 }
-  .node .outer {
+  .dataflow-node .outer {
     position: absolute;
-    top:0;right:0;bottom:0;left:0;
+    top:0; right:0; bottom:0; left:0;
     border-radius: 3px;
     z-index: -1;
   }
-    .node.ui-selected .outer {
+    .dataflow-node.ui-selected .outer {
       background-color: white;
-    }
-    .node.ui-selected .outer {
       border: 2px #666 solid;
-      top:-2px;right:-2px;bottom:-2px;left:-2px;
+      top:-2px; right:-2px; bottom:-2px; left:-2px;
     }
-  .node.helper {
+  .dataflow-node.helper {
     border-style: dotted;
     background-color: rgba(255, 255, 255, 0.5);
   }
-  .node h1 {
+  .dataflow-node-title {
     cursor: move;
     font-size: 20px;
     font-weight: normal;
     margin: 0;
     padding: 0;
   }
-  .node .controls {
+  .dataflow-node .controls {
   }
-    .node .controls .delete {
+    .dataflow-node .controls .delete {
       margin-right: 10px;
     }

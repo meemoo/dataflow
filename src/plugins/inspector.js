@@ -8,17 +8,11 @@
       '<div class="dataflow-plugin-inspector"></div>'
     );
 
-    // dataflow.addPlugin({
-    //   id: "inspector", 
-    //   name: "inspector",
-    //   menu: $inspector, 
-    //   icon: "info-sign"
-    // });
-
+    // Doing this manually instead of dataflow.addPlugin()
     var $menu = $("<div>")
       .addClass("menuitem menuitem-inspector")
       .append($inspector);
-    dataflow.$(".menu").append( $menu );
+    dataflow.$(".menu").append($menu);
 
     var lastSelected = null;
 
@@ -49,7 +43,7 @@
         // Selection changes
         dataflow.on("select:node", function(graph, node){
           lastSelected = node;
-          if ($menu.is(':visible')) {
+          if ($menu.is(':visible')){
             updateInspector();
           }
         });

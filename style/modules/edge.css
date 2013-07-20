@@ -1,24 +1,22 @@
-.svg-edges {
+.dataflow-edge path {
+  fill: none;
+  stroke-linejoin: bevel;  
 }
-  svg g.edge path {
-    fill: none;
-    stroke-linejoin: bevel;
-  }
-  g.edge path.edge-wire {
-    stroke: #CCC;
-    stroke-width: 8px;
-  }
-    g.edge path.edge-shadow {
-      stroke: #AAA;
-      stroke-width: 10px;
-    }
-  g.edge.highlight path.edge-wire {
-    stroke: #AAA;
-  }
-  g.edge.highlight path.edge-shadow {
-    stroke: #666;
-  }
-  g.edge.fade path.edge-wire,
-  g.edge.fade path.edge-shadow {
-    stroke: #EEE;
-  }
+.dataflow-edge-wire {
+  stroke: #CCC;
+  stroke-width: 8px;
+}
+.dataflow-edge-shadow {
+  stroke: #AAA;
+  stroke-width: 10px;
+}
+g.dataflow-edge.highlight .dataflow-edge-wire {
+  stroke: #AAA;
+}
+g.dataflow-edge.highlight .dataflow-edge-shadow {
+  stroke: #666;
+}
+g.dataflow-edge.fade .dataflow-edge-wire,
+g.dataflow-edge.fade .dataflow-edge-shadow {
+  stroke: #EEE;
+}
