@@ -13,7 +13,7 @@
       return defaults;
     },
     inputinput: function(value){
-      this.view.$(".inner").text(value);
+      this.view.$inner.text(value);
     },
     inputstring: function(value){
       this.send("output", value + " test");
@@ -77,7 +77,7 @@
   Test.View = BaseResizable.View.extend({
     initialize: function(){
       BaseResizable.View.prototype.initialize.call(this);
-      this.$(".inner").text("the node view .inner div can be used for info, ui, etc...");
+      this.$inner.text("view.$inner");
     }
   });
 

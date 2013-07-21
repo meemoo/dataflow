@@ -16,11 +16,6 @@
 
     var lastSelected = null;
 
-    function showInspector(){
-      dataflow.showMenu("inspector");
-      updateInspector();
-    }
-
     function updateInspector(){
       if (lastSelected) {
         if (lastSelected.view) {
@@ -28,6 +23,12 @@
           $inspector.append( lastSelected.view.getInputList() );
         }
       }
+    }
+    // Inspector.updateInspector = updateInspector;
+
+    function showInspector(){
+      dataflow.showMenu("inspector");
+      updateInspector();
     }
 
     dataflow.addContext({
@@ -38,21 +39,25 @@
       contexts: ["one", "twoplus"]
     });
 
+    function selectNode (graph, node) {
+      if (lastSelected !== node) {
+        lastSelected = node;
+        if ($menu.is(':visible')){
+          updateInspector();
+        }
+      }
+    }
+
     Inspector.listeners = function(boo){
       if (boo) {
         // Selection changes
-        dataflow.on("select:node", function(graph, node){
-          lastSelected = node;
-          if ($menu.is(':visible')){
-            updateInspector();
-          }
-        });
-        dataflow.on("select:edge", function(graph, edge){
-        });
+        dataflow.on("select:node", selectNode);
+        // dataflow.on("select:edge", function(graph, edge){
+        // });
       } else {
         // Custom
-        dataflow.off("select:node");
-        dataflow.off("select:edge");
+        dataflow.off("select:node", selectNode);
+        // dataflow.off("select:edge");
       }
     };
     Inspector.listeners(true);

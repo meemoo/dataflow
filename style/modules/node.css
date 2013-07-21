@@ -34,9 +34,8 @@
       margin-right: 10px;
     }
 
-.dataflow-node-edit {
+.dataflow-node-inspect {
   position: absolute;
   top: 0;
   right: 0;
-  color: #666;
 }

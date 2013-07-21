@@ -14,10 +14,12 @@
     //   '<button class="dataflow-node-save">save</button>'+
     //   '<button class="dataflow-node-cancel">cancel</button>'+
     // '</div>'+
-    '<button title="properties" class="dataflow-node-edit icon-cog"></button>'+
+    '<button title="properties" class="dataflow-node-inspect icon-cog"></button>'+
     '<div class="dataflow-node-ports dataflow-node-ins" />'+
     '<div class="dataflow-node-ports dataflow-node-outs" />'+
     '<div class="dataflow-node-inner" />';
+
+  var inspectTemplate = '<div class="dataflow-node-inspector"></div>';
 
   var innerTemplate = "";
  
@@ -27,14 +29,14 @@
     className: "dataflow-node",
     events: function(){
       return {
-        "click .dataflow-node-title":  "select",
-        "click .dataflow-node-delete": "removeModel",
+        "click .dataflow-node-title":   "select",
+        "click .dataflow-node-inspect": "showInspector",
         "dragstart":     "dragStart",
         "drag":          "drag",
-        "dragstop":      "dragStop",
-        "click .dataflow-node-edit":   "showControls",
-        "click .dataflow-node-cancel": "hideControls",
-        "click .dataflow-node-save":   "saveLabel"
+        "dragstop":      "dragStop"
+        // "click .dataflow-node-delete": "removeModel",
+        // "click .dataflow-node-cancel": "hideControls",
+        // "click .dataflow-node-save":   "saveLabel"
       };
     },
     initialize: function() {
@@ -79,6 +81,8 @@
       //   this.$inputsList = null;
       //   console.log("change");
       // }, this);
+
+      this.$inner = this.$(".dataflow-node-inner");
     },
     render: function() {
       // Initial position
@@ -181,21 +185,13 @@
         y: y
       });
     },
-    showControls: function(){
-      // Show label edit
-      this.$(".dataflow-node-title .label").hide();
-      this.$(".dataflow-node-title .label-edit").show();
-      // Show controls
-      this.$(".dataflow-node-edit").hide();
-      this.$(".dataflow-node-controls").show();
+    showInspector: function(){
+      this.model.parentGraph.dataflow.showMenu("inspector");
+      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
+      $inspector.children().detach();
+      $inspector.append( this.getInputList() );
     },
     hideControls: function(){
-      // Hide label edit
-      this.$(".dataflow-node-title .label-edit").hide();
-      this.$(".dataflow-node-title .label").show();
-      // Hide controls
-      this.$(".dataflow-node-controls").hide();
-      this.$(".dataflow-node-edit").show();
     },
     saveLabel: function(){
       // Save new label

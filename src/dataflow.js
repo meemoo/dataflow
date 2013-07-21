@@ -9,7 +9,7 @@
       this.$el = $(this.el);
       var menu = $('<div class="dataflow-menu">');
       var self = this;
-      var menuClose = $('<button class="dataflow-menu-close"><i class="icon-remove"></i></button>')
+      var menuClose = $('<button class="dataflow-menu-close icon-remove"></button>')
         .click( function(){ self.hideMenu(); } )
         .appendTo(menu);
       this.$el.append(menu);

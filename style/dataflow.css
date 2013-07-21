@@ -26,12 +26,18 @@
   margin: 1px;
   padding: 0px 6px;
 }
+  .dataflow button:before, 
+  .dataflow .button:before {
+    color: #666;
+  }
   .dataflow button:active,
   .dataflow input[type="submit"]:active, 
   .dataflow .button:active {
     padding-left: 7px;
     padding-right: 5px;
   }
+
+  
 
 .dataflow-graph {
   z-index: 1;
