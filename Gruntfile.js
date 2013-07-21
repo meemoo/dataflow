@@ -85,6 +85,7 @@
               'style/modules/node.css',
               'style/modules/edge.css',
               'style/modules/port.css',
+              'style/modules/menu.css',
               'style/modules/actionbar.css',
               'style/modules/jqui.css',
               'libs/actionbar/vendor/css/font-awesome.min.css'

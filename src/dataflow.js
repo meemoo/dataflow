@@ -7,9 +7,9 @@
       this.el = document.createElement("div");
       this.el.className = "dataflow";
       this.$el = $(this.el);
-      var menu = $('<div class="menu">');
+      var menu = $('<div class="dataflow-menu">');
       var self = this;
-      var menuClose = $('<button class="btn menu-close"><i class="icon-remove"></i></button>')
+      var menuClose = $('<button class="dataflow-menu-close"><i class="icon-remove"></i></button>')
         .click( function(){ self.hideMenu(); } )
         .appendTo(menu);
       this.$el.append(menu);
@@ -54,6 +54,15 @@
       // Add the main element to the page
       var appendTo = this.get("appendTo");
       appendTo = appendTo ? appendTo : "body";
+      if (appendTo==="body") {
+        // Fill whole page
+        $("html, body").css({
+          margin: "0px",
+          padding: "0px",
+          width: "100%",
+          height: "100%"
+        });
+      }
       $(appendTo).append(this.el);
     },
     prepareActionBar: function () {
