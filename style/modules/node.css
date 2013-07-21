@@ -14,7 +14,6 @@
     z-index: -1;
   }
     .dataflow-node.ui-selected .outer {
-      background-color: white;
       border: 2px #666 solid;
       top:-2px; right:-2px; bottom:-2px; left:-2px;
     }
@@ -34,3 +33,10 @@
     .dataflow-node .controls .delete {
       margin-right: 10px;
     }
+
+.dataflow-node-edit {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #666;
+}

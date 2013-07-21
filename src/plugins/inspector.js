@@ -10,9 +10,9 @@
 
     // Doing this manually instead of dataflow.addPlugin()
     var $menu = $("<div>")
-      .addClass("menuitem menuitem-inspector")
+      .addClass("dataflow-menuitem dataflow-menuitem-inspector")
       .append($inspector);
-    dataflow.$(".menu").append($menu);
+    dataflow.$(".dataflow-menu").append($menu);
 
     var lastSelected = null;
 

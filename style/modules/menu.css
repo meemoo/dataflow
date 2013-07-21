@@ -36,3 +36,25 @@
   right: 5px;
   z-index: 2;
 }
+
+.dataflow-menuitem-inspector label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-container {
+  margin-right: 0.25em;
+}
+  .input-string, 
+  .input-int, 
+  .input-float, 
+  .input-select {
+    width: 4em;
+    vertical-align: top;
+  }
+  .input-select {
+    width: 5em;
+  }
+  .input-bang {
+    vertical-align: top;
+  }

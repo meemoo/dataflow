@@ -9,12 +9,12 @@
   var template = 
     '<div class="outer" />'+
     '<h1 class="dataflow-node-title"><span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
-    '<div class="dataflow-node-controls">'+
-      '<button class="dataflow-node-delete">delete</button>'+
-      '<button class="dataflow-node-save">save</button>'+
-      '<button class="dataflow-node-cancel">cancel</button>'+
-    '</div>'+
-    '<button class="dataflow-node-edit">edit</button>'+
+    // '<div class="dataflow-node-controls">'+
+    //   '<button class="dataflow-node-delete">delete</button>'+
+    //   '<button class="dataflow-node-save">save</button>'+
+    //   '<button class="dataflow-node-cancel">cancel</button>'+
+    // '</div>'+
+    '<button title="properties" class="dataflow-node-edit icon-cog"></button>'+
     '<div class="dataflow-node-ports dataflow-node-ins" />'+
     '<div class="dataflow-node-ports dataflow-node-outs" />'+
     '<div class="dataflow-node-inner" />';

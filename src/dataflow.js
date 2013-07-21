@@ -128,15 +128,15 @@
     },
     showMenu: function (id) {
       this.$el.addClass("menu-shown");
-      this.$(".menuitem").removeClass("shown");
-      this.$(".menuitem-"+id).addClass("shown");
+      this.$(".dataflow-menuitem").removeClass("shown");
+      this.$(".dataflow-menuitem-"+id).addClass("shown");
     },
     addPlugin: function (info) {
       if (info.menu) {
         var menu = $("<div>")
-          .addClass("menuitem menuitem-"+info.id)
+          .addClass("dataflow-menuitem dataflow-menuitem-"+info.id)
           .append(info.menu);
-        this.$(".menu").append( menu );
+        this.$(".dataflow-menu").append( menu );
 
         this.actionBar.get('actions').add({
           id: info.id,
