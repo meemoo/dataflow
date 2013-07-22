@@ -8,7 +8,9 @@
 
   var template = 
     '<div class="outer" />'+
-    '<h1 class="dataflow-node-title"><span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
+    '<div class="dataflow-node-header">'+
+      '<h1 class="dataflow-node-title"><span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
+    '</div>'+
     // '<div class="dataflow-node-controls">'+
     //   '<button class="dataflow-node-delete">delete</button>'+
     //   '<button class="dataflow-node-save">save</button>'+
@@ -19,13 +21,16 @@
     '<div class="dataflow-node-ports dataflow-node-outs" />'+
     '<div class="dataflow-node-inner" />';
 
-  var inspectTemplate = '<div class="dataflow-node-inspector"></div>';
+  var inspectTemplate = 
+    '<h1 class="dataflow-node-inspector-title"><%- label %></h1>'+
+    '<div class="dataflow-node-inspector-inputs"></div>';
 
   var innerTemplate = "";
  
   Node.View = Backbone.View.extend({
     template: _.template(template),
     innerTemplate: _.template(innerTemplate),
+    inspectTemplate: _.template(inspectTemplate),
     className: "dataflow-node",
     events: function(){
       return {
@@ -245,9 +250,15 @@
     getInputList: function() {
       if (!this.$inputList) {
         this.$inputList = $("<div>");
+        var model = this.model.toJSON();
+        this.$inputList.html( this.inspectTemplate(model) );
+        if (model.id !== model.label) {
+          this.$inputList.children(".dataflow-node-inspector-title").prepend(model.id + ": ");
+        }
+        var $inputs = this.$inputList.children(".dataflow-node-inspector-inputs");
         this.model.inputs.each(function(input){
           if (input.view && input.view.$input) {
-            this.$inputList.append( input.view.$input );
+            $inputs.append( input.view.$input );
           }
         }, this);
       }

@@ -181,7 +181,7 @@
       if (input) {
         var label = $("<label>")
           .append( input )
-          .append( " " + this.model.get("label") );
+          .prepend( '<span>' + this.model.get("label") + "</span> " );
         this.$input = label;
       }
     },

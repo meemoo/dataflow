@@ -1,13 +1,13 @@
 .dataflow-node-ins {
   text-align: left;
 }
-  .dataflow-in .label {
+  .dataflow-port-label.in {
     margin-left: 0.25em;
   }
 .dataflow-node-outs {
   text-align: right;
 }
-  .dataflow-out .label {
+  .dataflow-port-label.out {
     margin-right: 0.25em;
   }
 .dataflow-node-ports ul {

@@ -37,10 +37,15 @@
   z-index: 2;
 }
 
-.dataflow-menuitem-inspector label {
+.dataflow-node-inspector-inputs label {
   display: block;
   margin-bottom: 5px;
 }
+
+  .dataflow-node-inspector-inputs label span {
+    display: inline-block;
+    width: 100px;
+  }
 
 .input-container {
   margin-right: 0.25em;
