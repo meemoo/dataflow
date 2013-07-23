@@ -70,6 +70,25 @@
             .prepend(upButton);
         }
       }
+
+      // Handle zoom events
+      this.bindZoom();
+    },
+    bindZoom: function () {
+      if (this.zoomBound || !window.Hammer) {
+        return;
+      }
+      this.zoom = 1;
+      var self = this;
+      var lastScale;
+      Hammer(this.el).on('touch', function (event) {
+        lastScale = self.zoom;
+      });
+      Hammer(this.el).on('pinch', function (event) {
+        self.zoom = Math.max(0.5, Math.min(lastScale * event.gesture.scale, 10));
+        $(self.el).css('zoom', self.zoom);
+      });
+      this.zoomBound = true;
     },
     render: function() {
       // HACK to get them to show correct positions on load
