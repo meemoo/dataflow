@@ -78,20 +78,20 @@
       if (this.zoomBound || !window.Hammer) {
         return;
       }
-      this.zoom = 1;
+      window.dataflowZoom = 1;
       var self = this;
       var lastScale;
       var centerX, centerY;
       Hammer(this.el).on('touch', function (event) {
-        lastScale = self.zoom;
+        lastScale = window.dataflowZoom;
         centerX = event.gesture.center.pageX;
         centerY = event.gesture.center.pageY;
       });
       Hammer(this.el).on('pinch', function (event) {
-        self.zoom = Math.max(0.5, Math.min(lastScale * event.gesture.scale, 3));
-        var scrollX = centerX - (centerX / self.zoom);
-        var scrollY = centerY - (centerY / self.zoom);
-        $(self.el).css('zoom', self.zoom);
+        window.dataflowZoom = Math.max(0.5, Math.min(lastScale * event.gesture.scale, 3));
+        var scrollX = centerX - (centerX / window.dataflowZoom);
+        var scrollY = centerY - (centerY / window.dataflowZoom);
+        $(self.el).css('zoom', window.dataflowZoom);
         self.el.scrollTop = scrollY;
         self.el.scrollLeft = scrollX;
       });

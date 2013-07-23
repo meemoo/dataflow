@@ -41,7 +41,7 @@
         cursor: "pointer",
         helper: function(){
           var helper = $('<span class="dataflow-port-plug in helper" />');
-          $(document.body).append(helper);
+          $('.dataflow-graph').append(helper);
           return helper;
         },
         disabled: true,
@@ -54,13 +54,14 @@
         helper: function(){
           var helper = $('<span class="dataflow-port-plug out helper" />')
             .data({port: self.model});
-          $(document.body).append(helper);
+          $('.dataflow-graph').append(helper);
           return helper;
         }
       });
       this.$el.droppable({
         accept: ".dataflow-port-plug.in, .dataflow-port-hole.out",
-        activeClassType: "droppable-hover"
+        activeClassType: "droppable-hover",
+        refreshPositions: true
       });
 
       if (!this.model.parentNode.parentGraph.dataflow.inputs) {
@@ -227,7 +228,18 @@
     newEdgeDrag: function(event, ui){
       // Don't drag node
       event.stopPropagation();
-      this.previewEdgeNewView.render(ui.offset);
+      if (!this.previewEdgeNewView || !ui) {
+        return;
+      }
+      ui.position.top = event.clientY / window.dataflowZoom;
+      ui.position.left = event.clientX / window.dataflowZoom;
+      var df = $('.dataflow-graph').get(0);
+      ui.position.left += df.scrollLeft;
+      ui.position.top += df.scrollTop;
+      this.previewEdgeNewView.render({
+        left: ui.position.left - df.scrollLeft,
+        top: ui.position.top - df.scrollTop
+      });
       this.model.parentNode.parentGraph.view.sizeSVG();
     },
     newEdgeStop: function(event, ui){
