@@ -86,8 +86,9 @@
       if (!this.previewEdgeView || !ui) {
         return;
       }
-      ui.position.top = event.clientY / window.dataflowZoom;
-      ui.position.left = event.clientX / window.dataflowZoom;
+      var state = this.model.parentNode.parentGraph.dataflow.get('state');
+      ui.position.top = event.clientY / state.get('zoom');
+      ui.position.left = event.clientX / state.get('zoom');
       var df = $('.dataflow-graph').get(0);
       ui.position.left += df.scrollLeft;
       ui.position.top += df.scrollTop;
