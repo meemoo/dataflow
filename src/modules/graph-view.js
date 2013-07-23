@@ -81,14 +81,19 @@
       this.zoom = 1;
       var self = this;
       var lastScale;
+      var centerX, centerY;
       Hammer(this.el).on('touch', function (event) {
         lastScale = self.zoom;
+        centerX = event.gesture.center.pageX;
+        centerY = event.gesture.center.pageY;
       });
       Hammer(this.el).on('pinch', function (event) {
         self.zoom = Math.max(0.5, Math.min(lastScale * event.gesture.scale, 3));
+        var scrollX = centerX - (centerX / self.zoom);
+        var scrollY = centerY - (centerY / self.zoom);
         $(self.el).css('zoom', self.zoom);
-        // TODO: Calculate correct scroll position for this zoom level and
-        // gesture position
+        self.el.scrollTop = scrollY;
+        self.el.scrollLeft = scrollX;
       });
       this.zoomBound = true;
     },
