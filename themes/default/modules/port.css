@@ -11,6 +11,7 @@
   .dataflow-port-label.in {
     margin-left: 5px;
   
+    font-family: "proxima-nova-regular";
 }
 .dataflow-node-outs {
   top: 32px;
@@ -21,6 +22,7 @@
   text-align: right;
 }
   .dataflow-port-label.out {
+    font-family: "proxima-nova-regular";
     margin-right: 5px;
   }
 .dataflow-node-ports ul {

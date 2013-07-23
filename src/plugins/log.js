@@ -12,7 +12,7 @@
 
     dataflow.addPlugin({
       id: "log", 
-      name: "log", 
+      name: "", 
       menu: $log, 
       icon: "cog"
     });

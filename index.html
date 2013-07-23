@@ -51,7 +51,151 @@
 
       // Load test graph
       var g = dataflow.loadGraph(
-        {nodes:[{id:1, label:"test", type:"test", x:61, y:90, state:{select:"April"}, w:122, h:248}, {id:2, label:"test", type:"test", x:270, y:83, state:{select:"April"}, w:122, h:254}, {id:3, label:"subgraph", type:"dataflow-subgraph", x:453, y:78, w:134, h:111, graph:{nodes:[{id:"1", label:"in", type:"dataflow-input", x:180, y:15, 'input-type':"all"}, {id:3, label:"in2", type:"dataflow-input", x:196, y:132, 'input-type':"all"}, {id:2, label:"test", type:"test", x:566, y:74, state:{select:"April"}, w:200, h:400}, {id:"99", label:"out", type:"dataflow-output", x:947, y:120, 'output-type':"all"}], edges:[{source:{node:2, port:"output"}, target:{node:"99", port:"data"}}, {source:{node:"1", port:"data"}, target:{node:2, port:"input"}}, {source:{node:3, port:"data"}, target:{node:2, port:"string"}}]}}, {id:4, label:"test", type:"test", x:626, y:74, state:{select:"April"}, w:130, h:251}], edges:[{source:{node:1, port:"output"}, target:{node:2, port:"input"}}, {source:{node:2, port:"output"}, target:{node:3, port:"1"}}, {source:{node:3, port:"99"}, target:{node:4, port:"input"}}, {source:{node:2, port:"output"}, target:{node:3, port:3}}]}
+        {
+  nodes: [{
+    id: 1,
+    label: "test",
+    type: "test",
+    x: 361,
+    y: 90,
+    state: {
+      select: "April"
+    },
+    w: 122,
+    h: 248
+  }, {
+    id: 2,
+    label: "test",
+    type: "test",
+    x: 570,
+    y: 83,
+    state: {
+      select: "April"
+    },
+    w: 122,
+    h: 254
+  }, {
+    id: 3,
+    label: "subgraph",
+    type: "dataflow-subgraph",
+    x: 753,
+    y: 78,
+    w: 134,
+    h: 111,
+    graph: {
+      nodes: [{
+        id: "1",
+        label: "in",
+        type: "dataflow-input",
+        x: 180,
+        y: 15,
+        'input-type': "all"
+      }, {
+        id: 3,
+        label: "in2",
+        type: "dataflow-input",
+        x: 196,
+        y: 132,
+        'input-type': "all"
+      }, {
+        id: 2,
+        label: "test",
+        type: "test",
+        x: 566,
+        y: 74,
+        state: {
+          select: "April"
+        },
+        w: 200,
+        h: 400
+      }, {
+        id: "99",
+        label: "out",
+        type: "dataflow-output",
+        x: 947,
+        y: 120,
+        'output-type': "all"
+      }],
+      edges: [{
+        source: {
+          node: 2,
+          port: "output"
+        },
+        target: {
+          node: "99",
+          port: "data"
+        }
+      }, {
+        source: {
+          node: "1",
+          port: "data"
+        },
+        target: {
+          node: 2,
+          port: "input"
+        }
+      }, {
+        source: {
+          node: 3,
+          port: "data"
+        },
+        target: {
+          node: 2,
+          port: "string"
+        }
+      }]
+    }
+  }, {
+    id: 4,
+    label: "test",
+    type: "test",
+    x: 926,
+    y: 74,
+    state: {
+      select: "April"
+    },
+    w: 130,
+    h: 251
+  }],
+  edges: [{
+    source: {
+      node: 1,
+      port: "output"
+    },
+    target: {
+      node: 2,
+      port: "input"
+    }
+  }, {
+    source: {
+      node: 2,
+      port: "output"
+    },
+    target: {
+      node: 3,
+      port: "1"
+    }
+  }, {
+    source: {
+      node: 3,
+      port: "99"
+    },
+    target: {
+      node: 4,
+      port: "input"
+    }
+  }, {
+    source: {
+      node: 2,
+      port: "output"
+    },
+    target: {
+      node: 3,
+      port: 3
+    }
+  }]
+}
+
       );
       g.trigger("change");
 

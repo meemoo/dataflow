@@ -1,4 +1,5 @@
 .dataflow-node {
+  font-size: 12px;
   position: absolute;
   display: inline-block;
   width: 200px;
@@ -7,10 +8,10 @@
   border-radius: 3px;
   z-index: 0;
   border: 1px solid hsla(0, 0%, 0%, .8);
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  border-radius: 2px;
-  background-color: hsla(60, 11%, 96%, .95);
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background-color: hsla(220, 11%, 97%, 0.95);
   
 
   box-shadow: inset 0 1px 1px white, 0 2px 3px hsla(0, 0%, 0%, 0.7);
@@ -39,7 +40,8 @@
   .dataflow-node-title {
     cursor: move;
     font-size: 12px;
-    font-weight: bold;
+    font-weight: normal;
+    font-family: "proxima-nova-bold";
     margin: 0;
     padding: 6px 10px;
   }

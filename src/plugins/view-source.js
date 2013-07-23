@@ -16,9 +16,9 @@
 
     dataflow.addPlugin({
       id: "source", 
-      name: "view source", 
+      name: "", 
       menu: $form, 
-      icon: "cog"
+      icon: "globe"
     });
 
     var show = function(source) {
