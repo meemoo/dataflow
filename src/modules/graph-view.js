@@ -59,23 +59,41 @@
       if (this.zoomBound || !window.Hammer) {
         return;
       }
-      window.dataflowZoom = 1;
+      var state = this.model.dataflow.get('state');
+      if (!state.has('zoom')) {
+        // Initial zoom level
+        // TODO: calculate level where whole graph fits
+        state.set('zoom', 1);
+      }
       var self = this;
       var lastScale;
-      var centerX, centerY;
       Hammer(this.el).on('touch', function (event) {
-        lastScale = window.dataflowZoom;
-        centerX = event.gesture.center.pageX;
-        centerY = event.gesture.center.pageY;
+        lastScale = state.get('zoom');
+        state.set('centerX', event.gesture.center.pageX);
+        state.set('centerY', event.gesture.center.pageY);
       });
       Hammer(this.el).on('pinch', function (event) {
-        window.dataflowZoom = Math.max(0.5, Math.min(lastScale * event.gesture.scale, 3));
-        var scrollX = centerX - (centerX / window.dataflowZoom);
-        var scrollY = centerY - (centerY / window.dataflowZoom);
-        $(self.el).css('zoom', window.dataflowZoom);
-        self.el.scrollTop = scrollY;
-        self.el.scrollLeft = scrollX;
+        var zoom = Math.max(0.5, Math.min(lastScale * event.gesture.scale, 3));
+        var centerX = state.get('centerX');
+        var centerY = state.get('centerY');
+        var scrollX = centerX - (centerX / zoom);
+        var scrollY = centerY - (centerY / zoom);
+        state.set('zoom', zoom);
+        state.set('scrollY', scrollY);
+        state.set('scrollX', scrollX);
       });
+
+      var doZoom = function () {
+        $(self.el).css('zoom', state.get('zoom'));
+        self.el.scrollTop = state.get('scrollY');
+        self.el.scrollLeft = state.get('scrollX');
+      };
+      state.on('change:zoom', doZoom);
+
+      // Initial zoom state from localStorage
+      if (state.get('zoom') !== 1) {
+        doZoom();
+      }
       this.zoomBound = true;
     },
     render: function() {
