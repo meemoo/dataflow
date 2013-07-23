@@ -36,10 +36,16 @@
       }
       // Set port plug active
       if (this.model.source && this.model.source.view) {
+        // Port plug active
         this.model.source.view.plugSetActive();
+        // Port hole color
+        this.model.source.view.bringToTop(this.model);
       }
       if (this.model.target && this.model.target.view) {
+        // Port plug active
         this.model.target.view.plugSetActive();
+        // Port hole color
+        this.model.target.view.bringToTop(this.model);
       }
       // Made SVG elements
       this.el = makeSvgElement("g", {
@@ -52,6 +58,10 @@
         "class": "dataflow-edge-shadow"
       });
 
+      if (this.model.get("route") !== undefined) {
+        this.elEdge.setAttribute("class", "dataflow-edge-wire route"+this.model.get("route"));
+      }
+
       this.el.appendChild(this.elShadow);
       this.el.appendChild(this.elEdge);
 
@@ -60,6 +70,7 @@
       this.el.addEventListener("click", function(event){
         self.click(event);
       });
+
     },
     render: function(previewPosition){
       var source = this.model.source;
@@ -203,9 +214,13 @@
     bringToTop: function(){
       this.model.bringToTop();
       var parent = this.el.parentNode;
-      if(parent){
-        parent.removeChild(this.el);
+      if (parent) {
+        // parent.removeChild(this.el);
         parent.appendChild(this.el);
+      }
+      if (this.model.source.view && this.model.target.view) {
+        this.model.source.view.bringToTop(this.model);
+        this.model.target.view.bringToTop(this.model);
       }
     }
   });

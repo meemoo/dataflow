@@ -17,15 +17,8 @@
       this.connected = [];
     },
     connect: function(edge){
-      var unique = true;
-      for (var i=0; i<this.connected.length; i++){
-        if (this.connected[i].id === edge.id){
-          unique = false;
-        }
-      }
-      if (unique){
-        this.connected.push(edge);
-      }
+      this.connected.push(edge);
+      this.connected = _.uniq(this.connected);
     },
     disconnect: function(edge){
       this.connected = _.without(this.connected, edge);

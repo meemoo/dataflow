@@ -10,13 +10,13 @@
   stroke: #AAA;
   stroke-width: 10px;
 }
-g.dataflow-edge.highlight .dataflow-edge-wire {
+.dataflow-edge.highlight .dataflow-edge-wire {
   stroke: #AAA;
 }
-g.dataflow-edge.highlight .dataflow-edge-shadow {
+.dataflow-edge.highlight .dataflow-edge-shadow {
   stroke: #666;
 }
-g.dataflow-edge.fade .dataflow-edge-wire,
-g.dataflow-edge.fade .dataflow-edge-shadow {
+.dataflow-edge.fade .dataflow-edge-wire,
+.dataflow-edge.fade .dataflow-edge-shadow {
   stroke: #EEE;
 }

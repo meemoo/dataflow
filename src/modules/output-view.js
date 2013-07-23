@@ -139,6 +139,7 @@
           });
           this.previewEdgeChange = new Edge.Model({
             target: changeEdge.get("target"),
+            route: changeEdge.get("route"),
             parentGraph: this.model.parentNode.parentGraph,
             preview: true
           });
@@ -197,17 +198,18 @@
     },
     // _holePosition: null,
     holePosition: function () {
-      var holePos = this.$(".dataflow-port-hole").get(0).getBoundingClientRect();
+      var nodePos = this.model.parentNode.view.$el.position();
+      var holePos = this.$(".dataflow-port-hole").position();
       return {
-        left: holePos.left + 10,
-        top: holePos.top + 8
+        left: nodePos.left + holePos.left + 10,
+        top: nodePos.top + holePos.top + 8
       };
     },
     plugSetActive: function(){
       try {
         this.$(".dataflow-port-plug").draggable("enable");
       } catch (e) { }
-      this.$(".dataflow-port-plug").addClass("active");
+      this.$(".dataflow-port-plug, .dataflow-port-hole").addClass("active");
       this.isConnected = true;
     },
     plugCheckActive: function(){
@@ -218,8 +220,14 @@
         try {
           this.$(".dataflow-port-plug").draggable("disable");
         } catch (e) { }
-        this.$(".dataflow-port-plug").removeClass("active");
+        this.$(".dataflow-port-plug, .dataflow-port-hole").removeClass("active");
         this.isConnected = false;
+      }
+    },
+    bringToTop: function (edge) {
+      var route = edge.get("route");
+      if (route !== undefined) {
+        this.$(".dataflow-port-hole").addClass("route"+route);
       }
     }
   });

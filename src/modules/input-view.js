@@ -285,6 +285,7 @@
           });
           this.previewEdgeChange = new Edge.Model({
             source: changeEdge.get("source"),
+            route: changeEdge.get("route"),
             parentGraph: this.model.parentNode.parentGraph,
             preview: true
           });
@@ -354,7 +355,7 @@
       try {
         this.$(".dataflow-port-plug").draggable("enable");
       } catch (e) { }
-      this.$(".dataflow-port-plug").addClass("active");
+      this.$(".dataflow-port-plug, .dataflow-port-hole").addClass("active");
       this.isConnected = true;
     },
     plugCheckActive: function(){
@@ -365,8 +366,14 @@
         try {
           this.$(".dataflow-port-plug").draggable("disable");
         } catch (e) { }
-        this.$(".dataflow-port-plug").removeClass("active");
+        this.$(".dataflow-port-plug, .dataflow-port-hole").removeClass("active");
         this.isConnected = false;
+      }
+    },
+    bringToTop: function (edge) {
+      var route = edge.get("route");
+      if (route !== undefined) {
+        this.$(".dataflow-port-hole").addClass("route"+route);
       }
     }
   });

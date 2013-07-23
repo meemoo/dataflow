@@ -7,76 +7,36 @@
   stroke: hsl(0, 0%, 81%);
   stroke-width: 8px;
 }
-.dataflow-edge:nth-child(12n+1) .dataflow-edge-wire {
-  stroke: hsl(210, 66%, 66%);
-}
-.dataflow-edge:nth-child(12n+2) .dataflow-edge-wire {
-  stroke: hsl(240, 66%, 66%);
-}
-.dataflow-edge:nth-child(12n+3) .dataflow-edge-wire {
-  stroke: hsl(270, 66%, 66%);
-}
-.dataflow-edge:nth-child(12n+4) .dataflow-edge-wire {
-  stroke: hsl(300, 66%, 66%);
-}
-.dataflow-edge:nth-child(12n+5) .dataflow-edge-wire {
-  stroke: hsl(330, 66%, 66%);
-}
-.dataflow-edge:nth-child(12n+6) .dataflow-edge-wire {
-  stroke: hsl(360, 66%, 66%);
-}
-.dataflow-edge:nth-child(12n+7) .dataflow-edge-wire {
-  stroke: hsl(30, 66%, 66%);
-}
-.dataflow-edge:nth-child(12n+8) .dataflow-edge-wire {
-  stroke: hsl(60, 66%, 66%);
-}
-.dataflow-edge:nth-child(12n+9) .dataflow-edge-wire {
-  stroke: hsl(90, 66%, 66%);
-}
-.dataflow-edge:nth-child(12n+10) .dataflow-edge-wire {
-  stroke: hsl(120, 66%, 66%);
-}
-.dataflow-edge:nth-child(12n+11) .dataflow-edge-wire {
-  stroke: hsl(150, 66%, 66%);
-}
-.dataflow-edge:nth-child(12n+12) .dataflow-edge-wire {
-  stroke: hsl(180, 66%, 66%);
-}
-
-.dataflow-edge:nth-child(6n+1) .dataflow-edge-wire {
-  stroke: hsl(170, 80%, 66%);
-}
-.dataflow-edge:nth-child(6n+2) .dataflow-edge-wire {
-  stroke: hsl(180, 80%, 66%);
-}
-.dataflow-edge:nth-child(6n+3) .dataflow-edge-wire {
-  stroke: hsl(190, 80%, 66%);
-}
-.dataflow-edge:nth-child(6n+4) .dataflow-edge-wire {
-  stroke: hsl(200, 80%, 66%);
-}
-.dataflow-edge:nth-child(6n+5) .dataflow-edge-wire {
-  stroke: hsl(210, 80%, 66%);
-}
-.dataflow-edge:nth-child(6n+6) .dataflow-edge-wire {
-  stroke: hsl(220, 80%, 66%);
-}
 
 .dataflow-edge-shadow {
   stroke: hsla(0, 0%, 0%,.9);
   stroke-width: 10px;
   fill: none;
 }
+
+.dataflow-edge-wire.route0  { stroke: hsl(  0, 68%, 70%); }
+.dataflow-edge-wire.route1  { stroke: hsl( 30, 68%, 70%); }
+.dataflow-edge-wire.route2  { stroke: hsl( 60, 68%, 70%); }
+.dataflow-edge-wire.route3  { stroke: hsl( 90, 68%, 70%); }
+.dataflow-edge-wire.route4  { stroke: hsl(120, 68%, 70%); }
+.dataflow-edge-wire.route5  { stroke: hsl(150, 68%, 70%); }
+.dataflow-edge-wire.route6  { stroke: hsl(180, 68%, 70%); }
+.dataflow-edge-wire.route7  { stroke: hsl(210, 68%, 70%); }
+.dataflow-edge-wire.route8  { stroke: hsl(240, 68%, 70%); }
+.dataflow-edge-wire.route9  { stroke: hsl(270, 68%, 70%); }
+.dataflow-edge-wire.route10 { stroke: hsl(300, 68%, 70%); }
+.dataflow-edge-wire.route11 { stroke: hsl(330, 68%, 70%); }
+
 /*
-g.dataflow-edge.highlight .dataflow-edge-wire {
+.dataflow-edge.highlight .dataflow-edge-wire {
   stroke: #AAA;
 }
-g.dataflow-edge.highlight .dataflow-edge-shadow {
+.dataflow-edge.highlight .dataflow-edge-shadow {
   stroke: #666;
 }
 */
-g.dataflow-edge.fade .dataflow-edge-wire,
-g.dataflow-edge.fade .dataflow-edge-shadow {
-  stroke: #EEE;
+
+.dataflow-edge.fade .dataflow-edge-wire,
+.dataflow-edge.fade .dataflow-edge-shadow {
+  opacity: 0.5;
 }

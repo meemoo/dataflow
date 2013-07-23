@@ -59,7 +59,8 @@
     toJSON: function(){
       return {
         source: this.get("source"),
-        target: this.get("target")
+        target: this.get("target"),
+        route: this.get("route"),
       };
     },
     bringToTop: function(){

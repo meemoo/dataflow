@@ -10,19 +10,19 @@
     '<div class="outer" />'+
     '<div class="dataflow-node-header">'+
       '<h1 class="dataflow-node-title"><span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
+      '<button title="properties" class="dataflow-node-inspect icon-cog"></button>'+
     '</div>'+
-    // '<div class="dataflow-node-controls">'+
-    //   '<button class="dataflow-node-delete">delete</button>'+
-    //   '<button class="dataflow-node-save">save</button>'+
-    //   '<button class="dataflow-node-cancel">cancel</button>'+
-    // '</div>'+
-    '<button title="properties" class="dataflow-node-inspect icon-cog"></button>'+
     '<div class="dataflow-node-ports dataflow-node-ins" />'+
     '<div class="dataflow-node-ports dataflow-node-outs" />'+
     '<div class="dataflow-node-inner" />';
 
   var inspectTemplate = 
     '<h1 class="dataflow-node-inspector-title"><%- label %></h1>'+
+    // '<div class="dataflow-node-inspector-controls">'+
+    //   '<button class="dataflow-node-delete">delete</button>'+
+    //   '<button class="dataflow-node-save">save</button>'+
+    //   '<button class="dataflow-node-cancel">cancel</button>'+
+    // '</div>'+
     '<div class="dataflow-node-inspector-inputs"></div>';
 
   var innerTemplate = "";
@@ -34,8 +34,8 @@
     className: "dataflow-node",
     events: function(){
       return {
-        "click .dataflow-node-title":   "select",
         "click .dataflow-node-inspect": "showInspector",
+        "click":   "select",
         "dragstart":     "dragStart",
         "drag":          "drag",
         "dragstop":      "dragStop"
@@ -195,6 +195,11 @@
       var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
       $inspector.children().detach();
       $inspector.append( this.getInputList() );
+      
+      this.highlightEdges();
+    },
+    highlightEdges: function(){
+      
     },
     hideControls: function(){
     },

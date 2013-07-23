@@ -11,13 +11,16 @@
       '<svg class="dataflow-svg-edges" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="800" height="800"></svg>'+
     '</div>'+
     '<div class="dataflow-nodes" />'+
-    '<div class="dataflow-graph-controls" />';
+    '<div class="dataflow-graph-controls">'+
+      '<button class="dataflow-graph-gotoparent"><i class="icon-chevron-left"></i> back to parent</button>'+
+    '</div>';
 
   Graph.View = Backbone.View.extend({
     template: _.template(template),
     className: "dataflow-graph",
     events: {
-      "click": "deselect"
+      "click": "deselect",
+      "click .dataflow-graph-gotoparent": "gotoParent"
     },
     initialize: function() {
       // Graph container
@@ -37,42 +40,20 @@
       this.model.edges.on("add", this.addEdge, this);
       this.model.edges.on("remove", this.removeEdge, this);
 
-      // For subgraphs only: breadcrumbs to navigate up
+      // For subgraphs only: navigate up
       var parentNode = this.model.get("parentNode");
-      if (parentNode){
-        // This subgraph's label
-        this.$(".dataflow-graph-controls")
-          .text( parentNode.get("label") );
-
-        var self = this;
-
-        // Buttons up
-        var parentGraph, upButton, upLabel;
-        var showGraph = function(graph) {
-          return function () {
-            self.model.dataflow.showGraph(graph);
-            return false;
-          };
-        };
-        while(parentNode){
-          parentGraph = parentNode.get("parentGraph");
-          parentNode = parentGraph.get("parentNode");
-          if (parentNode) {
-            upLabel = parentNode.get("label");
-          } else {
-            upLabel = "main";
-          }
-          upButton = $('<a href="#">')
-            .text( upLabel )
-            .click( showGraph(parentGraph) );
-          this.$(".dataflow-graph-controls")
-            .prepend(" / ")
-            .prepend(upButton);
-        }
+      if (!parentNode){
+        this.$(".dataflow-graph-controls").hide();
       }
 
       // Handle zoom events
       this.bindZoom();
+    },
+    gotoParent: function() {
+      var parentNode = this.model.get("parentNode");
+      if (parentNode){
+        this.model.dataflow.showGraph( parentNode.parentGraph );
+      }
     },
     bindZoom: function () {
       if (this.zoomBound || !window.Hammer) {
