@@ -16,6 +16,7 @@
             'libs/actionbar/js/actionbar.js',
             // Main
             'src/dataflow.js',
+            'src/state.js',
             // Models
             "src/modules/graph.js",
             "src/modules/node.js",

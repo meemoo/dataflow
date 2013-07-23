@@ -64,6 +64,9 @@
         });
       }
       $(appendTo).append(this.el);
+
+      // Initialize state
+      this.loadState();
     },
     prepareActionBar: function () {
       this.actionBar = new ActionBar({}, this);
@@ -269,7 +272,6 @@
       item.view.remove();
     }
   });
-
 }());
 
 // All code has been downloaded and evaluated and app is ready to be initialized.
