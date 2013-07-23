@@ -187,11 +187,10 @@
     },
     // _holePosition: null,
     holePosition: function () {
-      var nodePos = this.model.parentNode.view.$el.position();
-      var holePos = this.$(".dataflow-port-hole").position();
+      var holePos = this.$(".dataflow-port-hole").get(0).getBoundingClientRect();
       return {
-        left: nodePos.left + holePos.left + 10,
-        top: nodePos.top + holePos.top + 8
+        left: holePos.left + 10,
+        top: holePos.top + 8
       };
     },
     plugSetActive: function(){

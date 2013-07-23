@@ -74,12 +74,8 @@
         graph = this.model.parentGraph.view.$el;
         this.positions.from = {
           left: graph.scrollLeft() + previewPosition.left - 5 - dataflowParent.left,
-          top:  graph.scrollTop()  + previewPosition.top  - 35 - dataflowParent.top
+          top:  graph.scrollTop()  + previewPosition.top + 5 - dataflowParent.top
         };
-        // No chrome
-        if (!this.model.parentGraph.dataflow.controls) {
-          this.positions.from.top += 40;
-        }
       }
       if (target) {
         this.positions.to = target.view.holePosition();
@@ -89,12 +85,8 @@
         graph = this.model.parentGraph.view.$el;
         this.positions.to = {
           left: graph.scrollLeft() + previewPosition.left + 15 - dataflowParent.left,
-          top:  graph.scrollTop()  + previewPosition.top  - 35 - dataflowParent.top
+          top:  graph.scrollTop()  + previewPosition.top + 5 - dataflowParent.top
         };
-        // No chrome
-        if (!this.model.parentGraph.dataflow.controls) {
-          this.positions.to.top += 40;
-        }
       }
       // No half-pixels
       this.positions.from.left = Math.floor(this.positions.from.left);
