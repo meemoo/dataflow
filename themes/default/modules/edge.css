@@ -1,0 +1,35 @@
+.dataflow-edge path {
+  position: relative;  
+  fill: none;
+}
+.dataflow-edge-wire {
+  stroke: hsl(0, 0%, 81%);
+  stroke-width: 8px;
+}
+.dataflow-edge:nth-child(3n+1) .dataflow-edge-wire {
+  stroke: hsl(180, 66%, 66%);
+  stroke-width: 8px;
+}
+.dataflow-edge:nth-child(3n+2) .dataflow-edge-wire {
+  stroke: hsl(220, 66%, 66%);
+  stroke-width: 8px;
+}
+.dataflow-edge:nth-child(3n+3) .dataflow-edge-wire {
+  stroke: hsl(140, 66%, 66%);
+  stroke-width: 8px;
+}
+.dataflow-edge-shadow {
+  stroke: hsla(0, 0%, 0%,.9);
+  stroke-width: 10px;
+  fill: none;
+}
+g.dataflow-edge.highlight .dataflow-edge-wire {
+  stroke: #AAA;
+}
+g.dataflow-edge.highlight .dataflow-edge-shadow {
+  stroke: #666;
+}
+g.dataflow-edge.fade .dataflow-edge-wire,
+g.dataflow-edge.fade .dataflow-edge-shadow {
+  stroke: #EEE;
+}

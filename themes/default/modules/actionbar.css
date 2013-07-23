@@ -1,0 +1,125 @@
+/* actionbar's bootstrap styles */
+
+.navbar-fixed-top {
+  z-index: 3;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+}
+  .navbar-fixed-top .navbar-inner, .navbar-static-top .navbar-inner {
+      box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.1);
+  }
+  .navbar-fixed-top .navbar-inner, .navbar-fixed-bottom .navbar-inner {
+      padding-right: 0px;
+      padding-left: 0px;
+      border-radius: 0px 0px 0px 0px;
+  }
+  .navbar-fixed-top .navbar-inner, .navbar-static-top .navbar-inner {
+      border-width: 0px 0px 1px;
+  }
+  .navbar-inner {
+      min-height: 40px;
+      padding-right: 20px;
+      padding-left: 20px;
+      background-color: rgb(250, 250, 250);
+      background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgb(242, 242, 242));
+      background-repeat: repeat-x;
+      border: 1px solid rgb(212, 212, 212);
+      border-radius: 4px 4px 4px 4px;
+      box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.067);
+  }
+
+
+ul, ol {
+    padding: 0px;
+    margin: 0px 0px 10px 25px;
+}
+li {
+    line-height: 20px;
+}
+.nav {
+    margin-bottom: 20px;
+    margin-left: 0px;
+    list-style: none outside none;
+}
+.pull-left {
+    float: left;
+}
+.pull-right {
+    float: right;
+}
+.navbar .nav {
+    position: relative;
+    left: 0px;
+    display: block;
+    float: left;
+    margin: 0px 10px 0px 0px;
+}
+.navbar .nav.pull-right {
+    float: right;
+    margin-right: 0px;
+}
+.navbar .nav > li {
+    float: left;
+}
+
+a {
+    color: rgb(0, 136, 204);
+    text-decoration: none;
+}
+.nav > li > a {
+    display: block;
+}
+.navbar .nav > li > a {
+    float: none;
+    padding: 10px 15px;
+    color: rgb(119, 119, 119);
+    text-decoration: none;
+    text-shadow: 0px 1px 0px rgb(255, 255, 255);
+
+    cursor: pointer;
+}
+
+.navbar-inverse .brand, .navbar-inverse .nav > li > a {
+    color: rgb(153, 153, 153);
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+}
+
+.navbar .brand {
+    padding: 10px 20px;
+    margin-left: -20px;
+
+    padding-right: 10px;
+    padding-left: 10px;
+    margin: 0px 0px 0px -5px;
+
+    display: block;
+    float: left;
+    font-size: 20px;
+    font-weight: 200;
+    color: rgb(119, 119, 119);
+    text-shadow: 0px 1px 0px rgb(255, 255, 255);
+
+    cursor: pointer;
+}
+
+
+
+
+.navbar-inverse .navbar-inner {
+    background-color: rgb(27, 27, 27);
+    background-image: linear-gradient(to bottom, rgb(34, 34, 34), rgb(17, 17, 17));
+    background-repeat: repeat-x;
+    border-color: rgb(37, 37, 37);
+}
+
+.navbar-inverse .brand {
+    color: rgb(153, 153, 153);
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+}
+
+.navbar-inverse .brand, .navbar-inverse .nav > li > a {
+    color: rgb(153, 153, 153);
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+}

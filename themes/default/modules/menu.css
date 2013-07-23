@@ -1,0 +1,65 @@
+/* right menu */
+
+.dataflow-menu {
+  display: none;
+
+  z-index: 2;
+  position: absolute;
+  top: 40px;
+  right: 0px;
+  bottom: 0px;
+  width: 300px;
+  overflow: auto;
+
+  box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgb(250, 250, 250);
+  background-image: linear-gradient(to left, rgb(255, 255, 255), rgb(242, 242, 242));
+}
+.dataflow.menu-shown .dataflow-menu {
+  display: block;
+}
+.dataflow.menu-shown .dataflow-graph {
+  right: 300px;
+}
+
+.dataflow-menuitem {
+  display: none;
+  padding: 5px;
+}
+.dataflow-menuitem.shown {
+  display: block;
+}
+
+.dataflow-menu-close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+}
+
+.dataflow-node-inspector-inputs label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+  .dataflow-node-inspector-inputs label span {
+    display: inline-block;
+    width: 100px;
+  }
+
+.input-container {
+  margin-right: 0.25em;
+}
+  .input-string, 
+  .input-int, 
+  .input-float, 
+  .input-select {
+    width: 4em;
+    vertical-align: top;
+  }
+  .input-select {
+    width: 5em;
+  }
+  .input-bang {
+    vertical-align: top;
+  }
