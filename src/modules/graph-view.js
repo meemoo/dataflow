@@ -71,10 +71,31 @@
         }
       }
 
-      // If no controls, move up
-      if (!this.model.dataflow.controls){
-        this.$el.css("top", "0px");
+      // Handle zoom events
+      this.bindZoom();
+    },
+    bindZoom: function () {
+      if (this.zoomBound || !window.Hammer) {
+        return;
       }
+      window.dataflowZoom = 1;
+      var self = this;
+      var lastScale;
+      var centerX, centerY;
+      Hammer(this.el).on('touch', function (event) {
+        lastScale = window.dataflowZoom;
+        centerX = event.gesture.center.pageX;
+        centerY = event.gesture.center.pageY;
+      });
+      Hammer(this.el).on('pinch', function (event) {
+        window.dataflowZoom = Math.max(0.5, Math.min(lastScale * event.gesture.scale, 3));
+        var scrollX = centerX - (centerX / window.dataflowZoom);
+        var scrollY = centerY - (centerY / window.dataflowZoom);
+        $(self.el).css('zoom', window.dataflowZoom);
+        self.el.scrollTop = scrollY;
+        self.el.scrollLeft = scrollX;
+      });
+      this.zoomBound = true;
     },
     render: function() {
       // HACK to get them to show correct positions on load

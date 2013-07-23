@@ -38,7 +38,7 @@
         cursor: "pointer",
         helper: function(){
           var helper = $('<span class="dataflow-port-plug out helper" />');
-          $(document.body).append(helper);
+          $('.dataflow-graph').append(helper);
           return helper;
         },
         disabled: true,
@@ -51,7 +51,7 @@
         helper: function(){
           var helper = $('<span class="dataflow-port-plug in helper" />')
             .data({port: self.model});
-          $(document.body).append(helper);
+          $('.dataflow-graph').append(helper);
           return helper;
         }
       });
@@ -83,8 +83,18 @@
     newEdgeDrag: function(event, ui){
       // Don't drag node
       event.stopPropagation();
-      this.previewEdgeView.render(ui.offset);
-      this.model.parentNode.parentGraph.view.sizeSVG();
+      if (!this.previewEdgeView || !ui) {
+        return;
+      }
+      ui.position.top = event.clientY / window.dataflowZoom;
+      ui.position.left = event.clientX / window.dataflowZoom;
+      var df = $('.dataflow-graph').get(0);
+      ui.position.left += df.scrollLeft;
+      ui.position.top += df.scrollTop;
+      this.previewEdgeView.render({
+        left: ui.position.left - df.scrollLeft,
+        top: ui.position.top - df.scrollTop
+      });
     },
     newEdgeStop: function(event, ui){
       // Don't drag node
@@ -187,11 +197,10 @@
     },
     // _holePosition: null,
     holePosition: function () {
-      var nodePos = this.model.parentNode.view.$el.position();
-      var holePos = this.$(".dataflow-port-hole").position();
+      var holePos = this.$(".dataflow-port-hole").get(0).getBoundingClientRect();
       return {
-        left: nodePos.left + holePos.left + 10,
-        top: nodePos.top + holePos.top + 8
+        left: holePos.left + 10,
+        top: holePos.top + 8
       };
     },
     plugSetActive: function(){

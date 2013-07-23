@@ -74,9 +74,9 @@
 
     dataflow.addPlugin({
       id: "library", 
-      name: "library", 
+      name: "", 
       menu: library, 
-      icon: "book"
+      icon: "plus"
     });
 
     Library.update = update;

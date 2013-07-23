@@ -1,0 +1,140 @@
+/*------------------------------------*\
+    $Fonts
+\*------------------------------------*/
+@font-face {
+    font-family: "proxima-nova-light";
+    src: url("../../fonts/proximanova-light-webfont.eot");
+    src: local("?"),
+        url("../../fonts/proximanova-light-webfont.woff") format("woff"),
+        url("../../fonts/proximanova-light-webfont.ttf") format("truetype"),
+        url("../../fonts/proximanova-light-webfont.svg#webfont") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "proxima-nova-regular";
+    src: url("../../fonts/proximanova-regular-webfont.eot");
+    src: local("?"),
+        url("../../fonts/proximanova-regular-webfont.woff") format("woff"),
+        url("../../fonts/proximanova-regular-webfont.ttf") format("truetype"),
+        url("../../fonts/proximanova-regular-webfont.svg#webfont") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "proxima-nova-bold";
+    src: url("../../fonts/proximanova-bold-webfont.eot");
+    src: local("?"),
+        url("../../fonts/proximanova-bold-webfont.woff") format("woff"),
+        url("../../fonts/proximanova-bold-webfont.ttf") format("truetype"),
+        url("../../fonts/proximanova-bold-webfont.svg#webfont") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "proxima-nova-semibold";
+    src: url("../../fonts/proximanova-semibold-webfont.eot");
+    src: local("?"),
+        url("../../fonts/proximanova-semibold-webfont.woff") format("woff"),
+        url("../../fonts/proximanova-semibold-webfont.ttf") format("truetype"),
+        url("../../fonts/proximanova-semibold-webfont.svg#webfont") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+.dataflow {
+  font-family: "proxima-nova-regular", "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  text-shadow: 0 1px 0 white;
+  line-height: 20px;
+  color: #232429;
+
+  position: relative;
+  top: 0;
+  left: 0;
+
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  
+  background-color: hsl(230, 8%, 18%);
+}
+
+.dataflow button, 
+.dataflow input[type="submit"], 
+.dataflow .button {
+  cursor: pointer;
+  border-radius: 3px;
+  border: 1px #CCC solid;
+  background-color: #EEE;
+  color: black;
+  font-size: 12px;
+  margin: 1px;
+  padding: 3px 6px;
+}
+.dataflow button:before, 
+.dataflow .button:before {
+  color: hsl(0, 0%, 40%);
+}
+  .dataflow button:active,
+  .dataflow input[type="submit"]:active, 
+  .dataflow .button:active {
+  }
+
+.dataflow .dataflow-node-inspect{    
+  border:none;
+  padding: 8px 10px;
+}
+.dataflow .dataflow-node-inspect:before{    
+  color: hsl(0, 0%, 66%);
+  text-shadow: 0 1px white;
+}
+
+.dataflow-graph {
+  z-index: 1;
+
+  position: absolute;
+  margin-top: 0;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  overflow: auto;
+}
+  .dataflow-edges {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+  }
+  .dataflow-nodes {
+    position: relative;
+    top: 0;
+    left: 0;  
+    z-index: 3;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  .dataflow-graph-controls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 4;
+  }
+
+.dataflow-node-inner {
+  padding: 10px;
+  color: hsl(0,0%,66%);
+  font-size: 12px;
+  font-weight: normal;
+}

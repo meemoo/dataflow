@@ -1,0 +1,82 @@
+.dataflow-edge path {
+  position: relative;  
+  fill: none;
+  stroke-linejoin: round;
+}
+.dataflow-edge-wire {
+  stroke: hsl(0, 0%, 81%);
+  stroke-width: 8px;
+}
+.dataflow-edge:nth-child(12n+1) .dataflow-edge-wire {
+  stroke: hsl(210, 66%, 66%);
+}
+.dataflow-edge:nth-child(12n+2) .dataflow-edge-wire {
+  stroke: hsl(240, 66%, 66%);
+}
+.dataflow-edge:nth-child(12n+3) .dataflow-edge-wire {
+  stroke: hsl(270, 66%, 66%);
+}
+.dataflow-edge:nth-child(12n+4) .dataflow-edge-wire {
+  stroke: hsl(300, 66%, 66%);
+}
+.dataflow-edge:nth-child(12n+5) .dataflow-edge-wire {
+  stroke: hsl(330, 66%, 66%);
+}
+.dataflow-edge:nth-child(12n+6) .dataflow-edge-wire {
+  stroke: hsl(360, 66%, 66%);
+}
+.dataflow-edge:nth-child(12n+7) .dataflow-edge-wire {
+  stroke: hsl(30, 66%, 66%);
+}
+.dataflow-edge:nth-child(12n+8) .dataflow-edge-wire {
+  stroke: hsl(60, 66%, 66%);
+}
+.dataflow-edge:nth-child(12n+9) .dataflow-edge-wire {
+  stroke: hsl(90, 66%, 66%);
+}
+.dataflow-edge:nth-child(12n+10) .dataflow-edge-wire {
+  stroke: hsl(120, 66%, 66%);
+}
+.dataflow-edge:nth-child(12n+11) .dataflow-edge-wire {
+  stroke: hsl(150, 66%, 66%);
+}
+.dataflow-edge:nth-child(12n+12) .dataflow-edge-wire {
+  stroke: hsl(180, 66%, 66%);
+}
+
+.dataflow-edge:nth-child(6n+1) .dataflow-edge-wire {
+  stroke: hsl(170, 80%, 66%);
+}
+.dataflow-edge:nth-child(6n+2) .dataflow-edge-wire {
+  stroke: hsl(180, 80%, 66%);
+}
+.dataflow-edge:nth-child(6n+3) .dataflow-edge-wire {
+  stroke: hsl(190, 80%, 66%);
+}
+.dataflow-edge:nth-child(6n+4) .dataflow-edge-wire {
+  stroke: hsl(200, 80%, 66%);
+}
+.dataflow-edge:nth-child(6n+5) .dataflow-edge-wire {
+  stroke: hsl(210, 80%, 66%);
+}
+.dataflow-edge:nth-child(6n+6) .dataflow-edge-wire {
+  stroke: hsl(220, 80%, 66%);
+}
+
+.dataflow-edge-shadow {
+  stroke: hsla(0, 0%, 0%,.9);
+  stroke-width: 10px;
+  fill: none;
+}
+/*
+g.dataflow-edge.highlight .dataflow-edge-wire {
+  stroke: #AAA;
+}
+g.dataflow-edge.highlight .dataflow-edge-shadow {
+  stroke: #666;
+}
+*/
+g.dataflow-edge.fade .dataflow-edge-wire,
+g.dataflow-edge.fade .dataflow-edge-shadow {
+  stroke: #EEE;
+}

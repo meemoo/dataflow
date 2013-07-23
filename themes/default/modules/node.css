@@ -1,0 +1,58 @@
+.dataflow-node {
+  font-size: 12px;
+  position: absolute;
+  display: inline-block;
+  width: 200px;
+  border: 1px #aaa solid;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 3px;
+  z-index: 0;
+  border: 1px solid hsla(0, 0%, 0%, .8);
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background-color: hsla(220, 11%, 97%, 0.95);
+  
+
+  box-shadow: inset 0 1px 1px white, 0 2px 3px hsla(0, 0%, 0%, 0.7);
+
+}
+  .dataflow-node .outer {    
+    position: absolute;
+    top:0; right:0; bottom:0; left:0;
+    border-radius: 3px;
+    z-index: -1;
+  }
+  .dataflow-node.ui-selected {
+      box-shadow: 0 0 2px 2px hsla(180, 100%, 60%, .8),        0 0 8px 4px hsla(230, 100%, 15%, 0.8);
+}
+    .dataflow-node.ui-selected .outer {
+      border: 4px hsla(210, 100%, 60%, 0.66) solid;
+      top: -5px; 
+      right: -5px; 
+      bottom: -5px; 
+      left: -5px;
+    }
+  .dataflow-node.helper {
+    border-style: dotted;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+  .dataflow-node-title {
+    cursor: move;
+    font-size: 12px;
+    font-weight: normal;
+    font-family: "proxima-nova-bold";
+    margin: 0;
+    padding: 6px 10px;
+  }
+  .dataflow-node .controls {
+  }
+    .dataflow-node .controls .delete {
+      margin-right: 10px;
+    }
+
+.dataflow-node-inspect {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
