@@ -94,7 +94,7 @@
       var state = this.model.parentNode.parentGraph.dataflow.get('state');
       ui.position.top = event.clientY / state.get('zoom');
       ui.position.left = event.clientX / state.get('zoom');
-      var df = $('.dataflow-graph').get(0);
+      var df = this.model.parentNode.parentGraph.view.el;
       ui.position.left += df.scrollLeft;
       ui.position.top += df.scrollTop;
       this.previewEdgeView.render({
@@ -215,10 +215,11 @@
       if (!this.parent) {
         this.parent = this.options.parent;
       }
-      var graphPos = this.parent.graph.$el.offset();
+      var $graph = this.parent.graph.$el;
+      var graphPos = $graph.offset();
       return {
-        left: holePos.left - graphPos.left + 10,
-        top: holePos.top - graphPos.top + 8
+        left: $graph.scrollLeft() + holePos.left - graphPos.left + 5,
+        top: $graph.scrollTop() + holePos.top - graphPos.top + 8
       };
     },
     isConnected: false,
