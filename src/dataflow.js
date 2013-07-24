@@ -65,6 +65,10 @@
       }
       $(appendTo).append(this.el);
 
+      if (!this.id) {
+        this.id = $(appendTo).attr('id');
+      }
+
       // Initialize state
       this.loadState();
     },
