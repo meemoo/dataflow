@@ -171,6 +171,23 @@
     deselect: function () {
       this.$(".dataflow-node").removeClass("ui-selected");
       this.model.trigger("selectionChanged");
+      this.unfade();
+    },
+    fade: function () {
+      this.model.nodes.each(function(node){
+        node.view.fade();
+      });
+      this.model.edges.each(function(edge){
+        edge.view.fade();
+      });
+    },
+    unfade: function () {
+      this.model.nodes.each(function(node){
+        node.view.unfade();
+      });
+      this.model.edges.each(function(edge){
+        edge.view.unfade();
+      });
     }
   });
 

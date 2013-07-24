@@ -218,6 +218,8 @@
       this.el.parentNode.removeChild(this.el);
     },
     click: function(event){
+      // Don't click graph
+      // event.stopPropagation();
       // Highlight
       this.highlight();
       this.bringToTop();
@@ -227,13 +229,18 @@
       this.model.bringToTop();
       var parent = this.el.parentNode;
       if (parent) {
-        // parent.removeChild(this.el);
         parent.appendChild(this.el);
       }
-      if (this.model.source.view && this.model.target.view) {
-        this.model.source.view.bringToTop(this.model);
-        this.model.target.view.bringToTop(this.model);
-      }
+
+      // Fade all and highlight related
+      // this.model.parentGraph.view.fade();
+      // this.unfade();
+      // this.model.source.parentNode.view.unfade();
+      // this.model.target.parentNode.view.unfade();
+
+      // Port hole color
+      this.model.source.view.bringToTop(this.model);
+      this.model.target.view.bringToTop(this.model);
     },
     $inspect: null,
     getInspect: function() {

@@ -252,8 +252,24 @@
       // Trigger
       if ( this.$el.hasClass("ui-selected") ) {
         this.model.trigger("select");
+        // Fade others, highlight these
+        this.model.parentGraph.view.fade();
+        this.unfade();
       }
       this.model.parentGraph.trigger("selectionChanged");
+    },
+    fade: function(){
+      this.$el.addClass("fade");
+    },
+    unfade: function(){
+      this.$el.removeClass("fade");
+      // Unfade related edges
+      var self = this;
+      this.model.parentGraph.edges.each(function(edge){
+        if (edge.source.parentNode.id === self.model.id || edge.target.parentNode.id === self.model.id) {
+          edge.view.unfade();
+        }
+      });
     },
     $inputList: null,
     getInputList: function() {
