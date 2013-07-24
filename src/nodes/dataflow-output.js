@@ -12,12 +12,12 @@
       y: 100,
       "output-type": "all"
     },
-    initialize: function(){
+    initialize: function (options){
       if (this.get("label")===""){
         this.set({label:"output"+this.id});
       }
       // super
-      Base.Model.prototype.initialize.call(this);
+      Base.Model.prototype.initialize.call(this, options);
     },
     inputdata: function (data) {
       // Forward data to parent graph

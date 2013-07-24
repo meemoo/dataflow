@@ -46,8 +46,8 @@
         this.$(".dataflow-graph-controls").hide();
       }
 
-      // Handle zoom events
-      this.bindZoom();
+      // Handle zooming and scrolling
+      this.bindInteraction();
     },
     gotoParent: function() {
       var parentNode = this.model.get("parentNode");
@@ -55,11 +55,22 @@
         this.model.dataflow.showGraph( parentNode.parentGraph );
       }
     },
-    bindZoom: function () {
-      if (this.zoomBound || !window.Hammer) {
+    bindInteraction: function () {
+      var state = this.model.dataflow.get('state');
+      this.bindZoom(state);
+      this.bindScroll(state);
+
+      var self = this;
+      state.on('change:zoom', function () {
+        self.el.style.zoom = state.get('zoom');
+        self.el.scrollTop = state.get('scrollY');
+        self.el.scrollLeft = state.get('scrollX');
+      });
+    },
+    bindZoom: function (state) {
+      if (!window.Hammer) {
         return;
       }
-      var state = this.model.dataflow.get('state');
       if (!state.has('zoom')) {
         // Initial zoom level
         // TODO: calculate level where whole graph fits
@@ -83,18 +94,16 @@
         state.set('scrollX', scrollX);
       });
 
-      var doZoom = function () {
-        $(self.el).css('zoom', state.get('zoom'));
-        self.el.scrollTop = state.get('scrollY');
-        self.el.scrollLeft = state.get('scrollX');
-      };
-      state.on('change:zoom', doZoom);
-
       // Initial zoom state from localStorage
       if (state.get('zoom') !== 1) {
-        doZoom();
+        state.trigger('change:zoom');
       }
-      this.zoomBound = true;
+    },
+    bindScroll: function (state) {
+      this.el.addEventListener('scroll', function (event) {
+        state.set('scrollY', this.scrollTop);
+        state.set('scrollX', this.scrollLeft);
+      });
     },
     render: function() {
       // HACK to get them to show correct positions on load
@@ -109,10 +118,16 @@
       // Initialize
       var CustomType = this.model.dataflow.nodes[node.type];
       if (CustomType && CustomType.View) {
-        node.view = new CustomType.View({model:node});
+        node.view = new CustomType.View({
+          model:node,
+          graph: this
+        });
       } else {
         var BaseNode = this.model.dataflow.node("base");
-        node.view = new BaseNode.View({model:node});
+        node.view = new BaseNode.View({
+          model:node,
+          graph: this
+        });
       }
       // Save to local collection
       this.nodes[node.id] = node.view;

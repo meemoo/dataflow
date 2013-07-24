@@ -75,8 +75,8 @@
   });
 
   Test.View = BaseResizable.View.extend({
-    initialize: function(){
-      BaseResizable.View.prototype.initialize.call(this);
+    initialize: function(options){
+      BaseResizable.View.prototype.initialize.call(this, options);
       this.$inner.text("view.$inner");
     }
   });
