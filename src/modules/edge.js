@@ -4,7 +4,8 @@
 
   Edge.Model = Backbone.Model.extend({
     defaults: {
-      "z": 0
+      "z": 0,
+      "route": 0
     },
     initialize: function() {
       var nodes, sourceNode, targetNode;
@@ -42,7 +43,13 @@
         sourceNode.on("send:"+this.source.id, this.send, this);
 
         this.bringToTop();
+
+        // Selection event
+        this.on("select", this.select, this);
       }
+    },
+    select: function() {
+      this.parentGraph.trigger("select:edge", this);
     },
     send: function (value) {
       this.target.parentNode.recieve( this.target.id, value );

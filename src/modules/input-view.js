@@ -371,10 +371,13 @@
         this.isConnected = false;
       }
     },
+    topRoute: 0,
     bringToTop: function (edge) {
       var route = edge.get("route");
       if (route !== undefined) {
+        this.$(".dataflow-port-hole").removeClass("route"+this.topRoute);
         this.$(".dataflow-port-hole").addClass("route"+route);
+        this.topRoute = route;
       }
     }
   });

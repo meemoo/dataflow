@@ -50,16 +50,29 @@
       }
     }
 
+    function updateInspectorEdge (edge) {
+      $inspector.children().detach();
+      $inspector.append( edge.view.getInspect() );
+    }
+
+    function selectEdge (graph, edge) {
+      if (lastSelected !== edge) {
+        lastSelected = edge;
+        if ($menu.is(':visible')){
+          updateInspectorEdge(edge);
+        }
+      }
+    }
+
     Inspector.listeners = function(boo){
       if (boo) {
         // Selection changes
         dataflow.on("select:node", selectNode);
-        // dataflow.on("select:edge", function(graph, edge){
-        // });
+        dataflow.on("select:edge", selectEdge);
       } else {
         // Custom
         dataflow.off("select:node", selectNode);
-        // dataflow.off("select:edge");
+        dataflow.off("select:edge", selectEdge);
       }
     };
     Inspector.listeners(true);

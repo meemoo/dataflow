@@ -206,6 +206,7 @@
         top: nodePos.top + holePos.top + 8
       };
     },
+    isConnected: false,
     plugSetActive: function(){
       try {
         this.$(".dataflow-port-plug").draggable("enable");
@@ -225,10 +226,13 @@
         this.isConnected = false;
       }
     },
+    topRoute: 0,
     bringToTop: function (edge) {
       var route = edge.get("route");
       if (route !== undefined) {
+        this.$(".dataflow-port-hole").removeClass("route"+this.topRoute);
         this.$(".dataflow-port-hole").addClass("route"+route);
+        this.topRoute = route;
       }
     }
   });

@@ -15,11 +15,17 @@
     }
     return svg;
   };
+
+  var inspectTemplate = 
+    '<h1 class="dataflow-edge-inspector-title">Edge</h1>'+
+    '<div class="dataflow-edge-inspector-route-choose"></div>';
+    // '<div class="dataflow-edge-inspector-route route<%- route %>"><%- route %></div>';
   
   Edge.View = Backbone.View.extend({
     tagName: "div",
     className: "dataflow-edge",
     positions: null,
+    inspectTemplate: _.template(inspectTemplate),
     initialize: function() {
       this.positions = {
         from: null, 
@@ -58,15 +64,21 @@
         "class": "dataflow-edge-shadow"
       });
 
+      // Color route
       if (this.model.get("route") !== undefined) {
         this.elEdge.setAttribute("class", "dataflow-edge-wire route"+this.model.get("route"));
       }
+      // Change color on route change
+      var self = this;
+      this.model.on("change:route", function(){
+        self.elEdge.setAttribute("class", "dataflow-edge-wire route"+self.model.get("route"));
+        self.bringToTop();
+      });
 
       this.el.appendChild(this.elShadow);
       this.el.appendChild(this.elEdge);
 
       // Click handler
-      var self = this;
       this.el.addEventListener("click", function(event){
         self.click(event);
       });
@@ -222,6 +234,27 @@
         this.model.source.view.bringToTop(this.model);
         this.model.target.view.bringToTop(this.model);
       }
+    },
+    $inspect: null,
+    getInspect: function() {
+      if (!this.$inspect) {
+        this.$inspect = $("<div>");
+        var model = this.model.toJSON();
+        this.$inspect.html( this.inspectTemplate(model) );
+        var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
+        var self = this;
+        var changeRoute = function(event){
+          self.model.set("route", $(event.target).data("route"));
+        };
+        for (var i=0; i<12; i++) {
+          var button = $("<button>")
+            .data("route", i)
+            .addClass("route"+i)
+            .click(changeRoute);
+          $choose.append(button);
+        }
+      }
+      return this.$inspect;
     }
   });
 
