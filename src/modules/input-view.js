@@ -283,7 +283,8 @@
 
           // Make preview
           ui.helper.data({
-            port: changeEdge.source
+            port: changeEdge.source,
+            route: changeEdge.get("route")
           });
           this.previewEdgeChange = new Edge.Model({
             source: changeEdge.get("source"),
@@ -329,6 +330,11 @@
         return false;
       }
 
+      var route = 0;
+      if (ui.helper.data("route") !== undefined) {
+        route = ui.helper.data("route");
+      }
+
       this.model.parentNode.parentGraph.edges.add({
         id: otherPort.parentNode.id+":"+otherPort.id+"::"+this.model.parentNode.id+":"+this.model.id,
         parentGraph: this.model.parentNode.parentGraph,
@@ -339,7 +345,8 @@
         target: {
           node: this.model.parentNode.id,
           port: this.model.id
-        }
+        },
+        route: route
       });
       // Tells changeEdgeStop to remove to old edge
       ui.helper.data("removeChangeEdge", (oldLength < this.model.parentNode.parentGraph.edges.length));
