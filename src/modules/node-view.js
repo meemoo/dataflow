@@ -44,8 +44,10 @@
         // "click .dataflow-node-save":   "saveLabel"
       };
     },
-    initialize: function() {
+    initialize: function(options) {
       this.$el.html(this.template(this.model.toJSON()));
+
+      this.graph = options.graph;
 
       // Add type class
       this.$el.addClass(this.model.type);
@@ -57,11 +59,13 @@
 
       // Initialize i/o views
       this.inputs = this.model.inputs.view = new Input.CollectionView({
-        collection: this.model.inputs
+        collection: this.model.inputs,
+        parent: this
       });
       // Outs
       this.outputs = this.model.outputs.view = new Output.CollectionView({
-        collection: this.model.outputs
+        collection: this.model.outputs,
+        parent: this
       });
 
       var self = this;

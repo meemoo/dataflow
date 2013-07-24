@@ -260,16 +260,20 @@
   // Simple collection view
   Backbone.CollectionView = Backbone.Model.extend({
     // this.tagName and this.itemView should be set
-    initialize: function(){
+    initialize: function(options){
       this.el = document.createElement(this.tagName);
       this.$el = $(this.el);
+      this.parent = options.parent;
       var collection = this.get("collection");
       collection.each(this.addItem, this);
       collection.on("add", this.addItem, this);
       collection.on("remove", this.removeItem, this);
     },
     addItem: function(item){
-      item.view = new this.itemView({model:item});
+      item.view = new this.itemView({
+        model:item,
+        parent: this.parent
+      });
       this.$el.append(item.view.render().el);
     },
     removeItem: function(item){

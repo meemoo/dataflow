@@ -12,12 +12,12 @@
       y: 100,
       "input-type": "all"
     },
-    initialize: function(){
+    initialize: function(options) {
       if (this.get("label")===""){
         this.set({label:"input"+this.id});
       }
       // super
-      Base.Model.prototype.initialize.call(this);
+      Base.Model.prototype.initialize.call(this, options);
     },
     toJSON: function(){
       var json = Base.Model.prototype.toJSON.call(this);

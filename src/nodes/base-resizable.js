@@ -29,8 +29,8 @@
   });
 
   BaseResizable.View = Base.View.extend({
-    initialize: function() {
-      Base.View.prototype.initialize.call(this);
+    initialize: function(options) {
+      Base.View.prototype.initialize.call(this, options);
       // Initial size
       this.$el.css({
         width: this.model.get("w"),

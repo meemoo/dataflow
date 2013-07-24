@@ -118,10 +118,16 @@
       // Initialize
       var CustomType = this.model.dataflow.nodes[node.type];
       if (CustomType && CustomType.View) {
-        node.view = new CustomType.View({model:node});
+        node.view = new CustomType.View({
+          model:node,
+          graph: this
+        });
       } else {
         var BaseNode = this.model.dataflow.node("base");
-        node.view = new BaseNode.View({model:node});
+        node.view = new BaseNode.View({
+          model:node,
+          graph: this
+        });
       }
       // Save to local collection
       this.nodes[node.id] = node.view;

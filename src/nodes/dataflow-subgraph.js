@@ -119,8 +119,8 @@
       return events;
     },
     innerTemplate: _.template(innerTemplate),
-    initialize: function() {
-      BaseResizable.View.prototype.initialize.call(this);
+    initialize: function(options) {
+      BaseResizable.View.prototype.initialize.call(this, options);
       this.model.graph.view = new Graph.View({model:this.model.graph});
 
       // Listen for label changes

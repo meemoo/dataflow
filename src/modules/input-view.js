@@ -27,7 +27,7 @@
       "dragstop  .dataflow-port-plug":  "changeEdgeStop"
     },
     $input: null,
-    initialize: function() {
+    initialize: function(options) {
       this.$el.html(this.template(this.model.toJSON()));
       this.$el.addClass(this.model.get("type"));
 
@@ -37,6 +37,7 @@
       }
 
       var self = this;
+      this.parent = options.parent;
       this.$(".dataflow-port-plug").draggable({
         cursor: "pointer",
         helper: function(){
@@ -73,7 +74,7 @@
       var input;
       var type = this.model.get("type");
       var state = this.model.parentNode.get("state");
-      var options = this.model.get("options");
+      options = this.model.get("options");
       if (options !== undefined) {
         // Select dropdown
         // Find default
@@ -344,11 +345,14 @@
       ui.helper.data("removeChangeEdge", (oldLength < this.model.parentNode.parentGraph.edges.length));
     },
     holePosition: function(){
-      var nodePos = this.model.parentNode.view.$el.position();
-      var holePos = this.$(".dataflow-port-hole").position();
+      var holePos = this.$(".dataflow-port-hole").offset();
+      if (!this.parent) {
+        this.parent = this.options.parent;
+      }
+      var graphPos = this.parent.graph.$el.offset();
       return {
-        left: nodePos.left + holePos.left + 5,
-        top: nodePos.top + holePos.top + 8
+        left: holePos.left - graphPos.left + 5,
+        top: holePos.top - graphPos.top + 8
       };
     },
     isConnected: false,

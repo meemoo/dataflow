@@ -24,7 +24,7 @@
       "drag      .dataflow-port-plug": "changeEdgeDrag",
       "dragstop  .dataflow-port-plug": "changeEdgeStop"
     },
-    initialize: function () {
+    initialize: function (options) {
       this.$el.html(this.template(this.model.toJSON()));
       this.$el.addClass(this.model.get("type"));
 
@@ -34,6 +34,7 @@
       }
 
       var self = this;
+      this.parent = options.parent;
       this.$(".dataflow-port-plug").draggable({
         cursor: "pointer",
         helper: function(){
@@ -199,11 +200,14 @@
     },
     // _holePosition: null,
     holePosition: function () {
-      var nodePos = this.model.parentNode.view.$el.position();
-      var holePos = this.$(".dataflow-port-hole").position();
+      var holePos = this.$(".dataflow-port-hole").offset();
+      if (!this.parent) {
+        this.parent = this.options.parent;
+      }
+      var graphPos = this.parent.graph.$el.offset();
       return {
-        left: nodePos.left + holePos.left + 10,
-        top: nodePos.top + holePos.top + 8
+        left: holePos.left - graphPos.left + 10,
+        top: holePos.top - graphPos.top + 8
       };
     },
     plugSetActive: function(){
