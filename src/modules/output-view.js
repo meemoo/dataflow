@@ -67,13 +67,17 @@
     newEdgeStart: function(event, ui){
       // Don't drag node
       event.stopPropagation();
+      ui.helper.data({
+        route: this.topRoute
+      });
       this.previewEdge = new Edge.Model({
         source: {
           node: this.model.parentNode.id,
           port: this.model.id
         },
         parentGraph: this.model.parentNode.parentGraph,
-        preview: true
+        preview: true,
+        route: this.topRoute
       });
       this.previewEdgeView = new Edge.View({
         model: this.previewEdge
