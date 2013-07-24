@@ -60,12 +60,6 @@
       this.bindZoom(state);
       this.bindScroll(state);
 
-      var self = this;
-      state.on('change:zoom', function () {
-        self.el.style.zoom = state.get('zoom');
-        self.el.scrollTop = state.get('scrollY');
-        self.el.scrollLeft = state.get('scrollX');
-      });
     },
     bindZoom: function (state) {
       if (!window.Hammer) {
@@ -94,9 +88,16 @@
         state.set('scrollX', scrollX);
       });
 
+      var onZoom = function () {
+        self.el.style.zoom = state.get('zoom');
+        self.el.scrollTop = state.get('scrollY');
+        self.el.scrollLeft = state.get('scrollX');
+      };
+      state.on('change:zoom', onZoom);
+
       // Initial zoom state from localStorage
       if (state.get('zoom') !== 1) {
-        state.trigger('change:zoom');
+        onZoom();
       }
     },
     bindScroll: function (state) {
