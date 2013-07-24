@@ -286,10 +286,12 @@
           changeEdge.remove();
 
           // Make preview
-          ui.helper.data({
-            port: changeEdge.source,
-            route: changeEdge.get("route")
-          });
+          if (ui) {
+            ui.helper.data({
+              port: changeEdge.source,
+              route: changeEdge.get("route")
+            });
+          }
           this.previewEdgeChange = new Edge.Model({
             source: changeEdge.get("source"),
             route: changeEdge.get("route"),
