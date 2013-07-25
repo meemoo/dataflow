@@ -23,7 +23,8 @@
     "libs/jquery-ui.js",
     "libs/jquery.ui.touch-punch.js",
     "libs/underscore.js",
-    "libs/backbone.js"
+    "libs/backbone.js",
+    "libs/hammer.min.js"
   ],
   "fonts": [
     "font/fontawesome-webfont.eot",
