@@ -37,7 +37,9 @@
             "src/plugins/library.js",
             "src/plugins/view-source.js",
             "src/plugins/log.js",
-            "src/plugins/inspector.js"
+            "src/plugins/inspector.js",
+            // Nodes
+            "src/nodes/base.js"
           ],
           dest: 'build/<%= pkg.name %>.build.js'
         }
@@ -84,13 +86,13 @@
           },
           files: {
             'build/dataflow.min.css': [
-              'style/dataflow.css',
-              'style/modules/node.css',
-              'style/modules/edge.css',
-              'style/modules/port.css',
-              'style/modules/menu.css',
-              'style/modules/actionbar.css',
-              'style/modules/jqui.css',
+              'themes/default/dataflow.css',
+              'themes/default/modules/node.css',
+              'themes/default/modules/edge.css',
+              'themes/default/modules/port.css',
+              'themes/default/modules/menu.css',
+              'themes/default/modules/actionbar.css',
+              'themes/default/modules/jqui.css',
               'libs/actionbar/vendor/css/font-awesome.min.css'
             ]
           }
