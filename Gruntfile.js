@@ -37,7 +37,9 @@
             "src/plugins/library.js",
             "src/plugins/view-source.js",
             "src/plugins/log.js",
-            "src/plugins/inspector.js"
+            "src/plugins/inspector.js",
+            // Nodes
+            "src/nodes/base.js"
           ],
           dest: 'build/<%= pkg.name %>.build.js'
         }
