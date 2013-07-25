@@ -11,9 +11,9 @@
     "url": "http://meemoo.org/"
   },
   "repo": "meemoo/dataflow",
-  "main": "build/dataflow.min.js",
+  "main": "build/dataflow.build.js",
   "scripts": [
-    "build/dataflow.min.js"
+    "build/dataflow.build.js"
   ],
   "styles": [
     "build/dataflow.min.css"
