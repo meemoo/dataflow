@@ -67,6 +67,9 @@
     },
     setState: function (name, value) {
       var state = this.get("state");
+      if (state[name] === value) {
+        return;
+      }
       state[name] = value;
       if (this["input"+name]){
         this["input"+name](value);
