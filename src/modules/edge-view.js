@@ -219,7 +219,9 @@
     },
     click: function(event){
       // Don't click graph
-      event.stopPropagation();
+      if (event) {
+        event.stopPropagation();
+      }
       // Highlight
       this.highlight();
       this.bringToTop();
