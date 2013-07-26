@@ -13,7 +13,7 @@
   "repo": "meemoo/dataflow",
   "main": "build/dataflow.build.js",
   "scripts": [
-    "build/dataflow.build.js",
+    "build/dataflow.build.js"
   ],
   "styles": [
   ],
