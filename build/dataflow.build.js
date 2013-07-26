@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-26 (10:16:01 AM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-26 (11:04:10 AM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1168,7 +1168,10 @@
     className: "dataflow-graph",
     events: {
       "click": "deselect",
-      "click .dataflow-graph-gotoparent": "gotoParent"
+      "click .dataflow-graph-gotoparent": "gotoParent",
+      "dragstart": "dragStart",
+      "drag": "drag",
+      "dragstop": "dragStop"
     },
     initialize: function() {
       // Graph container
@@ -1194,10 +1197,28 @@
         this.$(".dataflow-graph-controls").hide();
       }
 
+      this.$el.draggable({
+        helper: function(){
+          var h = $("<div>");
+          this.model.dataflow.$el.append(h);
+          return h;
+        }.bind(this)
+      });
+
       // Handle zooming and scrolling
       this.bindInteraction();
     },
-    gotoParent: function() {
+    dragStart: function (event, ui) {
+    },
+    drag: function (event, ui) {
+      if (!ui) { return; }
+      this.$el.css({
+        transform: "translate("+ui.offset.left+", "+ui.offset.top+")"
+      });
+    },
+    dragStop: function (event, ui) {
+    },
+    gotoParent: function () {
       var parentNode = this.model.get("parentNode");
       if (parentNode){
         this.model.dataflow.showGraph( parentNode.parentGraph );

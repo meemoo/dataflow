@@ -1,3 +1,7 @@
+.dataflow-svg-edges {
+  overflow: visible;
+}
+
 .dataflow-edge path {
   position: relative;  
   fill: none;

@@ -107,6 +107,8 @@
   height: 100%;
   
   background-color: hsl(230, 8%, 18%);
+
+  overflow: hidden;
 }
 
 .dataflow button, 
@@ -149,7 +151,6 @@
   right: 0px;
   bottom: 0px;
   left: 0px;
-  overflow: auto;
 }
   .dataflow-edges {
     position: absolute;

@@ -207,6 +207,7 @@
     newEdgeStart: function(event, ui){
       // Don't drag node
       event.stopPropagation();
+      if (!ui) { return; }
       ui.helper.data({
         route: this.topRoute
       });

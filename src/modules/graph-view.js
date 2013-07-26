@@ -20,7 +20,10 @@
     className: "dataflow-graph",
     events: {
       "click": "deselect",
-      "click .dataflow-graph-gotoparent": "gotoParent"
+      "click .dataflow-graph-gotoparent": "gotoParent",
+      "dragstart": "dragStart",
+      "drag": "drag",
+      "dragstop": "dragStop"
     },
     initialize: function() {
       // Graph container
@@ -46,10 +49,34 @@
         this.$(".dataflow-graph-controls").hide();
       }
 
+      this.$el.draggable({
+        helper: function(){
+          var h = $("<div>");
+          this.model.dataflow.$el.append(h);
+          return h;
+        }.bind(this)
+      });
+
       // Handle zooming and scrolling
       this.bindInteraction();
     },
-    gotoParent: function() {
+    dragStart: function (event, ui) {
+    },
+    drag: function (event, ui) {
+      if (!ui) { return; }
+      this.$el.css({
+        transform: "translate3d("+ui.offset.left+"px, "+ui.offset.top+"px, 0)"
+      });
+    },
+    dragStop: function (event, ui) {
+      this.$el.css({
+        transform: "translate3d(0, 0, 0)"
+      });
+      this.model.nodes.each(function(node){
+        node.view.moveToPosition( node.get("x") + ui.offset.left, node.get("y") + ui.offset.top );
+      });
+    },
+    gotoParent: function () {
       var parentNode = this.model.get("parentNode");
       if (parentNode){
         this.model.dataflow.showGraph( parentNode.parentGraph );

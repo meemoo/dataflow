@@ -117,6 +117,9 @@
         this.select(event, true);
       }
 
+      // Don't drag graph
+      event.stopPropagation();
+
       // Make helper and save start position of all other selected
       var self = this;
       this._alsoDrag = [];
@@ -143,6 +146,9 @@
       });
     },
     drag: function(event, ui){
+      // Don't drag graph
+      event.stopPropagation();
+
       // Drag other helpers
       if (this._alsoDrag.length) {
         var self = $(event.target).data("ui-draggable");
@@ -163,6 +169,9 @@
       }
     },
     dragStop: function(event, ui){
+      // Don't drag graph
+      event.stopPropagation();
+
       var x = parseInt(ui.position.left, 10);
       var y = parseInt(ui.position.top, 10);
       this.moveToPosition(x,y);
@@ -183,8 +192,6 @@
       }
     },
     moveToPosition: function(x, y){
-      x = Math.max(x, 0);
-      y = Math.max(y, 0);
       this.$el.css({
         left: x,
         top: y

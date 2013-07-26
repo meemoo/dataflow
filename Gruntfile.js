@@ -72,7 +72,7 @@
       watch: {
         scripts: {
           files: ['Gruntfile.js', 'src/*.js', 'src/**/*.js'],
-          tasks: ['jshint:force', 'build'],
+          tasks: ['jshint:force'],
           options: {
             nospawn: true
           }
