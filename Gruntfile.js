@@ -92,8 +92,7 @@
               'themes/default/modules/port.css',
               'themes/default/modules/menu.css',
               'themes/default/modules/actionbar.css',
-              'themes/default/modules/jqui.css',
-              'libs/actionbar/vendor/css/font-awesome.min.css'
+              'themes/default/modules/jqui.css'
             ]
           }
         }
