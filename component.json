@@ -16,10 +16,9 @@
     "build/dataflow.build.js"
   ],
   "styles": [
-    "build/dataflow.min.css"
+    "build/default/dataflow.min.css",
   ],
   "files": [
-    "build/default/dataflow.min.css",
     "libs/jquery.js",
     "libs/jquery-ui.js",
     "libs/jquery.ui.touch-punch.js",
