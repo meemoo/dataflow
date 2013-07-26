@@ -85,7 +85,7 @@
             keepSpecialComments: 0
           },
           files: {
-            'build/dataflow.min.css': [
+            'build/default/dataflow.min.css': [
               'themes/default/dataflow.css',
               'themes/default/modules/node.css',
               'themes/default/modules/edge.css',

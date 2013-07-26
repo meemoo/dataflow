@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-26 (12:16:11 AM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-07-25 (5:09:43 PM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1128,6 +1128,20 @@
   });
 
 }(Dataflow) );
+
+(function(Dataflow){
+
+  var Card = Dataflow.prototype.module("card");
+
+  Card.Model = Backbone.Model.extend({
+    
+  });
+
+  Card.Collection = Backbone.Collection.extend({
+    model: Card.Model
+  });
+
+}(Dataflow));
 
 (function(Dataflow) {
 
@@ -2561,6 +2575,23 @@
   });
 
 }(Dataflow) );
+
+(function(Dataflow){
+
+  var Card = Dataflow.prototype.module("card");
+
+  Card.View = Backbone.View.extend({
+    tagName: "div",
+    initialize: function(){
+    }
+  });
+
+  Card.CollectionView = Backbone.CollectionView.extend({
+    tagName: "div",
+    itemView: Card.View
+  }); 
+
+}(Dataflow));
 
 ( function(Dataflow) {
 
