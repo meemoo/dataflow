@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-25 (8:25:04 PM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-25 (8:57:20 PM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -2513,7 +2513,7 @@
     },
     click: function(event){
       // Don't click graph
-      // event.stopPropagation();
+      event.stopPropagation();
       // Highlight
       this.highlight();
       this.bringToTop();

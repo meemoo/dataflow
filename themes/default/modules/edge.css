@@ -27,14 +27,9 @@
 .dataflow-edge-wire.route10 { stroke: hsl(300, 68%, 70%); }
 .dataflow-edge-wire.route11 { stroke: hsl(330, 68%, 70%); }
 
-/*
-.dataflow-edge.highlight .dataflow-edge-wire {
-  stroke: #AAA;
-}
 .dataflow-edge.highlight .dataflow-edge-shadow {
-  stroke: #666;
+  stroke: #EEE;
 }
-*/
 
 .dataflow-edge.fade .dataflow-edge-wire,
 .dataflow-edge.fade .dataflow-edge-shadow {
