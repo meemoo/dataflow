@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-25 (5:58:29 PM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-26 (3:16:00 AM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -871,6 +871,9 @@
     },
     setState: function (name, value) {
       var state = this.get("state");
+      if (state[name] === value) {
+        return;
+      }
       state[name] = value;
       if (this["input"+name]){
         this["input"+name](value);
@@ -1128,20 +1131,6 @@
   });
 
 }(Dataflow) );
-
-(function(Dataflow){
-
-  var Card = Dataflow.prototype.module("card");
-
-  Card.Model = Backbone.Model.extend({
-    
-  });
-
-  Card.Collection = Backbone.Collection.extend({
-    model: Card.Model
-  });
-
-}(Dataflow));
 
 (function(Dataflow) {
 
@@ -2570,23 +2559,6 @@
   });
 
 }(Dataflow) );
-
-(function(Dataflow){
-
-  var Card = Dataflow.prototype.module("card");
-
-  Card.View = Backbone.View.extend({
-    tagName: "div",
-    initialize: function(){
-    }
-  });
-
-  Card.CollectionView = Backbone.CollectionView.extend({
-    tagName: "div",
-    itemView: Card.View
-  }); 
-
-}(Dataflow));
 
 ( function(Dataflow) {
 
