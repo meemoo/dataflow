@@ -114,7 +114,7 @@
     dragStart: function(event, ui){
       // Select this
       if (!this.$el.hasClass("ui-selected")){
-        this.select(event);
+        this.select(event, true);
       }
 
       // Make helper and save start position of all other selected
@@ -229,15 +229,17 @@
       }, this);
       this.el.style.zIndex = topZ+1;
     },
-    select: function(event){
+    select: function(event, deselectOthers){
       // Don't click graph
       event.stopPropagation();
-      // Select this
+      // De/select
+      if (deselectOthers) {
+        this.model.parentGraph.view.$(".ui-selected").removeClass("ui-selected");
+      }
       this.$el.addClass("ui-selected");
       this.bringToTop();
-      // Fade others
+      // Fade / highlight
       this.model.parentGraph.view.fade();
-      // Highlight these
       this.unfade();
       // Trigger
       this.model.trigger("select");

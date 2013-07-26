@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-25 (8:57:20 PM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-26 (10:16:01 AM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1460,7 +1460,7 @@
     dragStart: function(event, ui){
       // Select this
       if (!this.$el.hasClass("ui-selected")){
-        this.select(event);
+        this.select(event, true);
       }
 
       // Make helper and save start position of all other selected
@@ -1575,15 +1575,17 @@
       }, this);
       this.el.style.zIndex = topZ+1;
     },
-    select: function(event){
+    select: function(event, deselectOthers){
       // Don't click graph
       event.stopPropagation();
-      // Select this
+      // De/select
+      if (deselectOthers) {
+        this.model.parentGraph.view.$(".ui-selected").removeClass("ui-selected");
+      }
       this.$el.addClass("ui-selected");
       this.bringToTop();
-      // Fade others
+      // Fade / highlight
       this.model.parentGraph.view.fade();
-      // Highlight these
       this.unfade();
       // Trigger
       this.model.trigger("select");

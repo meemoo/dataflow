@@ -133,6 +133,7 @@
 .dataflow .dataflow-node-inspect{    
   border:none;
   padding: 8px 10px;
+  background-color: transparent;
 }
 .dataflow .dataflow-node-inspect:before{    
   color: hsl(0, 0%, 66%);
