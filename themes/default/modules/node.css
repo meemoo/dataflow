@@ -49,6 +49,9 @@
     margin: 0;
     padding: 6px 10px;
   }
+    .dataflow-node.fade .dataflow-node-title {
+      color: hsl(0, 0%, 40%);
+    }
   .dataflow-node .controls {
   }
     .dataflow-node .controls .delete {
@@ -60,9 +63,15 @@
   top: 0;
   right: 0;
 }
+  .dataflow-node.fade .dataflow-node-inspect:before {
+    text-shadow: none;
+  }
 
 .dataflow-node-inner {
   color: hsl(0,0%,66%);
   font-size: 12px;
   font-weight: normal;
 }
+  .dataflow-node.fade .dataflow-node-inner {
+    color: hsl(0, 0%, 55%);
+  }
