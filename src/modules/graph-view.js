@@ -177,19 +177,27 @@
     fade: function () {
       this.model.nodes.each(function(node){
         if (!node.view.$el.hasClass("ui-selected")){
-          node.view.fade();
+          if (node.view) {
+            node.view.fade();
+          }
         }
       });
       this.model.edges.each(function(edge){
-        edge.view.fade();
+        if (edge.view) {
+          edge.view.fade();
+        }
       });
     },
     unfade: function () {
       this.model.nodes.each(function(node){
-        node.view.unfade();
+        if (node.view) {
+          node.view.unfade();
+        }
       });
       this.model.edges.each(function(edge){
-        edge.view.unfade();
+        if (edge.view) {
+          edge.view.unfade();
+        }
       });
     }
   });

@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-26 (2:27:34 PM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-26 (3:25:53 PM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1325,19 +1325,27 @@
     fade: function () {
       this.model.nodes.each(function(node){
         if (!node.view.$el.hasClass("ui-selected")){
-          node.view.fade();
+          if (node.view) {
+            node.view.fade();
+          }
         }
       });
       this.model.edges.each(function(edge){
-        edge.view.fade();
+        if (edge.view) {
+          edge.view.fade();
+        }
       });
     },
     unfade: function () {
       this.model.nodes.each(function(node){
-        node.view.unfade();
+        if (node.view) {
+          node.view.unfade();
+        }
       });
       this.model.edges.each(function(edge){
-        edge.view.unfade();
+        if (edge.view) {
+          edge.view.unfade();
+        }
       });
     }
   });
@@ -1577,7 +1585,9 @@
     },
     select: function(event, deselectOthers){
       // Don't click graph
-      event.stopPropagation();
+      if (event) {
+        event.stopPropagation();
+      }
       // De/select
       if (deselectOthers) {
         this.model.parentGraph.view.$(".ui-selected").removeClass("ui-selected");
@@ -1600,7 +1610,9 @@
       var self = this;
       this.model.parentGraph.edges.each(function(edge){
         if (edge.source.parentNode.id === self.model.id || edge.target.parentNode.id === self.model.id) {
-          edge.view.unfade();
+          if (edge.view) {
+            edge.view.unfade();
+          }
         }
       });
     },
