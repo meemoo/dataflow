@@ -71,121 +71,114 @@
       }
 
       // Initialize direct input
-      var input;
       var type = this.model.get("type");
       var state = this.model.parentNode.get("state");
       options = this.model.get("options");
       if (options !== undefined) {
-        // Select dropdown
-        // Find default
-        var val;
-        if (state && state[this.model.id] !== undefined){
-          // Use the stored state
-          val = state[this.model.id];
-        } else if (this.model.get("value") !== undefined) {
-          // Use the default
-          val = this.model.get("value");
+        // Normalize options
+        if (_.isString(options)) {
+          options = options.split(' ');
+          this.model.set('options', options);
         }
-        // Convert options
-        if (typeof options === "string") {
-          options = options.split(" ");
-        }
-        if ($.isArray(options)){
-          // Convert array to object
+        if (_.isArray(options)) {
           var o = {};
           for (var i=0; i<options.length; i++){
             o[options[i]] = options[i];
           }
           options = o;
+          this.model.set('options', options);
         }
-        // Make select
+      }
+      var input = this.renderInput(type, options);
+
+      var val;
+      if (state && state[this.model.id] !== undefined){
+        // Use the stored state
+        val = state[this.model.id];
+      } else if (this.model.get("value") !== undefined) {
+        // Use the default
+        val = this.model.get("value");
+      }
+
+      this.setInputValue(input, type, val);
+
+      this.model.parentNode.on('change:state', function () {
+        var state = this.model.parentNode.get('state');
+        if (!state || state[this.model.id] === undefined) {
+          return;
+        }
+        this.setInputValue(input, type, state[this.model.id]);
+      }.bind(this));
+
+      var label = $("<label>")
+        .append( input )
+        .prepend( '<span>' + this.model.get("label") + "</span> " );
+      this.$input = label;
+    },
+    renderInput: function (type, options) {
+      var input;
+      if (options) {
         input = $('<select class="input input-select">');
         for (var name in options) {
           var option = $('<option value="'+options[name]+'">'+name+'</option>')
             .data("val", options[name]);
-          if (val && options[name] === val) {
-            option.prop("selected", true);
-          }
           input.append(option);
         }
-        // Change event
-        input.change(function(event){
-          self.inputSelect(event);
-        });
-      } else if (type === "int" || type === "float" || type === "number") {
-        // Number input
-        var attributes = {};
-        if (this.model.get("min") !== undefined) {
-          attributes.min = this.model.get("min");
-        }
-        if (this.model.get("max") !== undefined) {
-          attributes.max = this.model.get("max");
-        }
-        if (type === "int") {
-          attributes.step = 1;
-        }
-        input = $('<input type="number" class="input input-number">')
-          .attr(attributes)
-          .addClass(type === "int" ? "input-int" : "input-float");
-        if (state && state[this.model.id] !== undefined){
-          // Use the stored state
-          input.val(state[this.model.id]);
-        } else if (this.model.get("value") !== undefined) {
-          // Use the default
-          input.val(this.model.get("value"));
-        }
-        // Change event
-        if (type === "int") {
-          input.change(function(event){
-            self.inputInt(event);
-          });
-        } else {
-          input.change(function(event){
-            self.inputFloat(event);
-          });
-        }
-      } else if (type === "string" || type === "all") {
-        // String input
-        input = $('<input class="input input-string">');
-        if (state && state[this.model.id] !== undefined){
-          // Use the stored state
-          input.val(state[this.model.id]);
-        } else if (this.model.get("value") !== undefined) {
-          // Use the default
-          input.val(this.model.get("value"));
-        }
-        // Change event
-        input.change(function(event){
-          self.inputString(event);
-        });
-      } else if (type === "boolean") {
-        // Checkbox boolean
-        input = $('<input type="checkbox" class="input input-boolean">');
-        if (state && state[this.model.id] !== undefined){
-          // Use the stored state
-          input.prop("checked", state[this.model.id]);
-        } else if (this.model.get("value") !== undefined) {
-          // Use the default
-          input.prop("checked", this.model.get("value"));
-        }
-        // Change event
-        input.change(function(event){
-          self.inputBoolean(event);
-        });
-      } else if (type === "bang") {
-        // Button bang
-        input = $('<button class="input input-bang">!</button>');
-        // Change event
-        input.click(function(event){
-          self.inputBang(event);
-        });
-      } 
-      if (input) {
-        var label = $("<label>")
-          .append( input )
-          .prepend( '<span>' + this.model.get("label") + "</span> " );
-        this.$input = label;
+        input.change(this.inputSelect.bind(this));
+        return input;
       }
+
+      switch (type) {
+        case 'int':
+        case 'float':
+        case 'number':
+          var attributes = {};
+          if (this.model.get("min") !== undefined) {
+            attributes.min = this.model.get("min");
+          }
+          if (this.model.get("max") !== undefined) {
+            attributes.max = this.model.get("max");
+          }
+          if (type === "int") {
+            attributes.step = 1;
+          }
+          input = $('<input type="number" class="input input-number">')
+            .attr(attributes)
+            .addClass(type === "int" ? "input-int" : "input-float");
+          if (type == 'int') {
+            input.change(this.inputInt.bind(this));
+          } else {
+            input.change(this.inputFloat.bind(this));
+          }
+          return input;
+        case 'boolean':
+          input = $('<input type="checkbox" class="input input-boolean">');
+          input.change(this.inputBoolean.bind(this));
+          return input;
+        case 'bang':
+          input = $('<button class="input input-bang">!</button>');
+          input.click(this.inputBang.bind(this));
+          return input;
+        case 'string':
+        case 'all':
+          input = $('<input class="input input-string">');
+          input.change(this.inputString.bind(this));
+          return input;
+      }
+    },
+    setInputValue: function (input, type, value) {
+      if (input[0].tagName === 'SELECT') {
+        $('option', input).each(function () {
+          var selectVal = $(this).data('val');
+          $(this).prop('selected', selectVal == value);
+        });
+        return;
+      }
+      if (type === 'boolean') {
+        input.prop('checked', value);
+        return;
+      }
+      input.val(value);
     },
     inputSelect: function(e){
       var val = $(e.target).find(":selected").data("val");
