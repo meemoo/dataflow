@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-26 (2:46:59 AM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-07-26 (2:56:15 AM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1781,14 +1781,16 @@
           input = $('<button class="input input-bang">!</button>');
           input.click(this.inputBang.bind(this));
           return input;
-        case 'string':
-        case 'all':
+        default:
           input = $('<input class="input input-string">');
           input.change(this.inputString.bind(this));
           return input;
       }
     },
     setInputValue: function (input, type, value) {
+      if (!input) {
+        return;
+      }
       if (input[0].tagName === 'SELECT') {
         $('option', input).each(function () {
           var selectVal = $(this).data('val');

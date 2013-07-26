@@ -159,14 +159,16 @@
           input = $('<button class="input input-bang">!</button>');
           input.click(this.inputBang.bind(this));
           return input;
-        case 'string':
-        case 'all':
+        default:
           input = $('<input class="input input-string">');
           input.change(this.inputString.bind(this));
           return input;
       }
     },
     setInputValue: function (input, type, value) {
+      if (!input) {
+        return;
+      }
       if (input[0].tagName === 'SELECT') {
         $('option', input).each(function () {
           var selectVal = $(this).data('val');
