@@ -59,3 +59,10 @@
   top: 0;
   right: 0;
 }
+
+.dataflow-node-inner {
+  padding: 10px;
+  color: hsl(0,0%,66%);
+  font-size: 12px;
+  font-weight: normal;
+}

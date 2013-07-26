@@ -35,10 +35,10 @@
     events: function(){
       return {
         "click .dataflow-node-inspect": "showInspector",
-        "click":   "select",
-        "dragstart":     "dragStart",
-        "drag":          "drag",
-        "dragstop":      "dragStop"
+        "click .dataflow-node-header":  "select",
+        "dragstart": "dragStart",
+        "drag":      "drag",
+        "dragstop":  "dragStop"
         // "click .dataflow-node-delete": "removeModel",
         // "click .dataflow-node-cancel": "hideControls",
         // "click .dataflow-node-save":   "saveLabel"
@@ -230,33 +230,16 @@
       this.el.style.zIndex = topZ+1;
     },
     select: function(event){
-      if (event) {
-        // Don't click graph
-        event.stopPropagation();
-        // Called from click
-        if (event.ctrlKey || event.metaKey) {
-          // Command key is pressed, toggle selection
-          this.$el.toggleClass("ui-selected");
-        } else {
-          // Command key isn't pressed, deselect others and select this one
-          this.model.parentGraph.view.$(".ui-selected").removeClass("ui-selected");
-          this.$el.addClass("ui-selected");
-        }
-        // Bring to top
-        this.bringToTop();
-      } else {
-        // Called from code
-        this.$el.addClass("ui-selected");
-        this.bringToTop();
-      }
+      // Select this
+      this.$el.addClass("ui-selected");
+      this.bringToTop();
       // Trigger
-      if ( this.$el.hasClass("ui-selected") ) {
-        this.model.trigger("select");
-        // Fade others, highlight these
-        this.model.parentGraph.view.fade();
-        this.unfade();
-      }
+      this.model.trigger("select");
       this.model.parentGraph.trigger("selectionChanged");
+      // Fade others
+      this.model.parentGraph.view.fade();
+      // Highlight these
+      // this.unfade();
     },
     fade: function(){
       this.$el.addClass("fade");

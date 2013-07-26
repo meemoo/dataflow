@@ -176,7 +176,9 @@
     },
     fade: function () {
       this.model.nodes.each(function(node){
-        node.view.fade();
+        if (!node.view.$el.hasClass("ui-selected")){
+          node.view.fade();
+        }
       });
       this.model.edges.each(function(edge){
         edge.view.fade();
