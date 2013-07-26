@@ -19,7 +19,7 @@
     "build/dataflow.min.css"
   ],
   "files": [
-    "build/dataflow.min.css",
+    "build/default/dataflow.min.css",
     "libs/jquery.js",
     "libs/jquery-ui.js",
     "libs/jquery.ui.touch-punch.js",
@@ -28,10 +28,26 @@
     "libs/hammer.min.js"
   ],
   "fonts": [
-    "font/fontawesome-webfont.eot",
-    "font/fontawesome-webfont.svg",
-    "font/fontawesome-webfont.ttf",
-    "font/fontawesome-webfont.woff",
-    "font/FontAwesome.otf"
+    "fonts/fontawesome-webfont.eot",
+    "fonts/fontawesome-webfont.svg",
+    "fonts/fontawesome-webfont.ttf",
+    "fonts/fontawesome-webfont.woff",
+    "fonts/FontAwesome.otf",
+    "fonts/proximanova-bold-webfont.eot",
+    "fonts/proximanova-bold-webfont.svg",
+    "fonts/proximanova-bold-webfont.ttf",
+    "fonts/proximanova-bold-webfont.woff",
+    "fonts/proximanova-light-webfont.eot",
+    "fonts/proximanova-light-webfont.svg",
+    "fonts/proximanova-light-webfont.ttf",
+    "fonts/proximanova-light-webfont.woff",
+    "fonts/proximanova-regular-webfont.eot",
+    "fonts/proximanova-regular-webfont.svg",
+    "fonts/proximanova-regular-webfont.ttf",
+    "fonts/proximanova-regular-webfont.woff",
+    "fonts/proximanova-semibold-webfont.eot",
+    "fonts/proximanova-semibold-webfont.svg",
+    "fonts/proximanova-semibold-webfont.ttf",
+    "fonts/proximanova-semibold-webfont.woff"
   ]
 }
