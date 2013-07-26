@@ -13,12 +13,13 @@
   "repo": "meemoo/dataflow",
   "main": "build/dataflow.build.js",
   "scripts": [
-    "build/dataflow.build.js"
+    "build/dataflow.build.js",
   ],
   "styles": [
-    "build/default/dataflow.min.css"
   ],
   "files": [
+    "build/dataflow.min.js",
+    "build/dataflow.min.js.map",
     "build/default/dataflow.min.css",
     "libs/jquery.js",
     "libs/jquery-ui.js",

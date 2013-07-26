@@ -47,7 +47,8 @@
       uglify: {
         options: {
           banner: banner,
-          report: 'min'
+          report: 'min',
+          sourceMap: 'build/<%= pkg.name %>.min.js.map'
         },
         dist: {
           files: {
