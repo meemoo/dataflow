@@ -230,16 +230,18 @@
       this.el.style.zIndex = topZ+1;
     },
     select: function(event){
+      // Don't click graph
+      event.stopPropagation();
       // Select this
       this.$el.addClass("ui-selected");
       this.bringToTop();
-      // Trigger
-      this.model.trigger("select");
-      this.model.parentGraph.trigger("selectionChanged");
       // Fade others
       this.model.parentGraph.view.fade();
       // Highlight these
-      // this.unfade();
+      this.unfade();
+      // Trigger
+      this.model.trigger("select");
+      this.model.parentGraph.trigger("selectionChanged");
     },
     fade: function(){
       this.$el.addClass("fade");

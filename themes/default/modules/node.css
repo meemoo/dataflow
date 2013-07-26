@@ -18,7 +18,7 @@
 
 }
   .dataflow-node.fade {
-    opacity: 0.4;
+    opacity: 0.8;
   }
   .dataflow-node .outer {    
     position: absolute;

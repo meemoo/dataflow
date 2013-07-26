@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-25 (6:53:24 PM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-25 (8:25:04 PM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1576,16 +1576,18 @@
       this.el.style.zIndex = topZ+1;
     },
     select: function(event){
+      // Don't click graph
+      event.stopPropagation();
       // Select this
       this.$el.addClass("ui-selected");
       this.bringToTop();
-      // Trigger
-      this.model.trigger("select");
-      this.model.parentGraph.trigger("selectionChanged");
       // Fade others
       this.model.parentGraph.view.fade();
       // Highlight these
-      // this.unfade();
+      this.unfade();
+      // Trigger
+      this.model.trigger("select");
+      this.model.parentGraph.trigger("selectionChanged");
     },
     fade: function(){
       this.$el.addClass("fade");
