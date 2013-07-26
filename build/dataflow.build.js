@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-26 (11:04:10 AM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-26 (1:09:22 PM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1213,10 +1213,16 @@
     drag: function (event, ui) {
       if (!ui) { return; }
       this.$el.css({
-        transform: "translate("+ui.offset.left+", "+ui.offset.top+")"
+        transform: "translate3d("+ui.offset.left+"px, "+ui.offset.top+"px, 0)"
       });
     },
     dragStop: function (event, ui) {
+      this.$el.css({
+        transform: "translate3d(0, 0, 0)"
+      });
+      this.model.nodes.each(function(node){
+        node.view.moveToPosition( node.get("x") + ui.offset.left, node.get("y") + ui.offset.top );
+      });
     },
     gotoParent: function () {
       var parentNode = this.model.get("parentNode");
@@ -1484,6 +1490,9 @@
         this.select(event, true);
       }
 
+      // Don't drag graph
+      event.stopPropagation();
+
       // Make helper and save start position of all other selected
       var self = this;
       this._alsoDrag = [];
@@ -1510,6 +1519,9 @@
       });
     },
     drag: function(event, ui){
+      // Don't drag graph
+      event.stopPropagation();
+
       // Drag other helpers
       if (this._alsoDrag.length) {
         var self = $(event.target).data("ui-draggable");
@@ -1530,6 +1542,9 @@
       }
     },
     dragStop: function(event, ui){
+      // Don't drag graph
+      event.stopPropagation();
+
       var x = parseInt(ui.position.left, 10);
       var y = parseInt(ui.position.top, 10);
       this.moveToPosition(x,y);
@@ -1550,8 +1565,6 @@
       }
     },
     moveToPosition: function(x, y){
-      x = Math.max(x, 0);
-      y = Math.max(y, 0);
       this.$el.css({
         left: x,
         top: y
@@ -1856,6 +1869,7 @@
     newEdgeStart: function(event, ui){
       // Don't drag node
       event.stopPropagation();
+      if (!ui) { return; }
       ui.helper.data({
         route: this.topRoute
       });
@@ -2120,6 +2134,8 @@
     newEdgeStart: function(event, ui){
       // Don't drag node
       event.stopPropagation();
+      if (!ui) { return; }
+
       ui.helper.data({
         route: this.topRoute
       });
@@ -2536,7 +2552,9 @@
     },
     click: function(event){
       // Don't click graph
-      event.stopPropagation();
+      if (event) {
+        event.stopPropagation();
+      }
       // Highlight
       this.highlight();
       this.bringToTop();
