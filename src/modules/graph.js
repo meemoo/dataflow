@@ -9,7 +9,9 @@
   Graph.Model = Backbone.Model.extend({
     defaults: {
       nodes: [],
-      edges: []
+      edges: [],
+      panX: 0,
+      panY: 0
     },
     initialize: function() {
       this.dataflow = this.get("dataflow");

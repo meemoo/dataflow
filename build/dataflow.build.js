@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-26 (11:24:44 PM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-27 (4:27:44 PM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -691,7 +691,9 @@
   Graph.Model = Backbone.Model.extend({
     defaults: {
       nodes: [],
-      edges: []
+      edges: [],
+      panX: 0,
+      panY: 0
     },
     initialize: function() {
       this.dataflow = this.get("dataflow");
@@ -1230,11 +1232,9 @@
         transform: "translate3d(0, 0, 0)"
       });
       var scale = this.state.get('zoom');
-      this.bumpAllNodes(ui.offset.left/scale, ui.offset.top/scale);
-    },
-    bumpAllNodes: function (x, y) {
-      this.model.nodes.each(function(node){
-        node.view.moveToPosition( node.get("x") + x, node.get("y") + y);
+      this.model.set({
+        panX: this.model.get("panX") + ui.offset.left/scale,
+        panY: this.model.get("panY") + ui.offset.top/scale
       });
     },
     gotoParent: function () {
@@ -1260,6 +1260,8 @@
       var currentZoom, startX, startY, originX, originY, scale, posX, poxY;
       var self = this;
       Hammer(this.el).on('transformstart', function (event) {
+        // Don't click node
+        event.stopPropagation();
         currentZoom = state.get('zoom');
         startX = event.gesture.center.pageX;
         startY = event.gesture.center.pageY;
@@ -1271,6 +1273,8 @@
         });
       });
       Hammer(this.el).on('transform', function (event) {
+        // Don't click node
+        event.stopPropagation();
         scale = Math.max(0.5/currentZoom, Math.min(event.gesture.scale, 3/currentZoom));
         posX = (event.gesture.center.pageX - startX) / currentZoom;
         posY = (event.gesture.center.pageY - startY) / currentZoom;
@@ -1280,6 +1284,8 @@
         });
       });
       Hammer(this.el).on('transformend', function (event) {
+        // Don't click node
+        event.stopPropagation();
         // Reset 3D transform
         self.$el.css({
           transform: "translate3d(0, 0, 0) " +
@@ -1288,8 +1294,12 @@
         // Zoom
         var zoom = currentZoom * scale;
         zoom = Math.max(0.5, Math.min(zoom, 3));
-        self.bumpAllNodes( posX/zoom , posY/zoom);
         state.set('zoom', zoom);
+        // var scaleD = scale - currentZoom;
+        self.model.set({
+          panX: self.model.get("panX") + posX/scale,
+          panY: self.model.get("panY") + posY/scale
+        });
       });
 
       var onZoom = function () {
@@ -1503,13 +1513,17 @@
       //   console.log("change");
       // }, this);
 
+      // Listen for graph panning
+      // this.model.parentGraph.on("change:panX change:panY", this.bumpPosition, this);
+      this.listenTo(this.model.parentGraph, "change:panX change:panY", this.bumpPosition);
+
       this.$inner = this.$(".dataflow-node-inner");
     },
     render: function() {
       // Initial position
       this.$el.css({
-        left: this.model.get("x"),
-        top: this.model.get("y")
+        left: this.model.get("x") + this.model.parentGraph.get("panX"),
+        top: this.model.get("y") + this.model.parentGraph.get("panY")
       });
 
       this.$(".dataflow-node-ins").html(this.inputs.el);
@@ -1584,8 +1598,8 @@
       // Don't drag graph
       event.stopPropagation();
 
-      var x = parseInt(ui.position.left, 10);
-      var y = parseInt(ui.position.top, 10);
+      var x = parseInt(ui.position.left, 10) - this.model.parentGraph.get("panX");
+      var y = parseInt(ui.position.top, 10) - this.model.parentGraph.get("panY");
       this.moveToPosition(x,y);
       // Also drag
       if (this._alsoDrag.length) {
@@ -1603,15 +1617,22 @@
         this._alsoDrag = [];
       }
     },
-    moveToPosition: function(x, y){
+    bumpPosition: function () {
       this.$el.css({
-        left: x,
-        top: y
+        left: this.model.get("x") + this.model.parentGraph.get("panX"),
+        top: this.model.get("y") + this.model.parentGraph.get("panY")
       });
+      this.model.trigger("change:x change:y");
+    },
+    moveToPosition: function(x, y){
       this.model.set({
         x: x,
         y: y
+      }, {
+        // Don't trigger wire move until bumped
+        silent: true
       });
+      this.bumpPosition();
     },
     showInspector: function(){
       this.model.parentGraph.dataflow.showMenu("inspector");

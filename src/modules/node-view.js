@@ -91,13 +91,17 @@
       //   console.log("change");
       // }, this);
 
+      // Listen for graph panning
+      // this.model.parentGraph.on("change:panX change:panY", this.bumpPosition, this);
+      this.listenTo(this.model.parentGraph, "change:panX change:panY", this.bumpPosition);
+
       this.$inner = this.$(".dataflow-node-inner");
     },
     render: function() {
       // Initial position
       this.$el.css({
-        left: this.model.get("x"),
-        top: this.model.get("y")
+        left: this.model.get("x") + this.model.parentGraph.get("panX"),
+        top: this.model.get("y") + this.model.parentGraph.get("panY")
       });
 
       this.$(".dataflow-node-ins").html(this.inputs.el);
@@ -172,8 +176,8 @@
       // Don't drag graph
       event.stopPropagation();
 
-      var x = parseInt(ui.position.left, 10);
-      var y = parseInt(ui.position.top, 10);
+      var x = parseInt(ui.position.left, 10) - this.model.parentGraph.get("panX");
+      var y = parseInt(ui.position.top, 10) - this.model.parentGraph.get("panY");
       this.moveToPosition(x,y);
       // Also drag
       if (this._alsoDrag.length) {
@@ -191,15 +195,22 @@
         this._alsoDrag = [];
       }
     },
-    moveToPosition: function(x, y){
+    bumpPosition: function () {
       this.$el.css({
-        left: x,
-        top: y
+        left: this.model.get("x") + this.model.parentGraph.get("panX"),
+        top: this.model.get("y") + this.model.parentGraph.get("panY")
       });
+      this.model.trigger("change:x change:y");
+    },
+    moveToPosition: function(x, y){
       this.model.set({
         x: x,
         y: y
+      }, {
+        // Don't trigger wire move until bumped
+        silent: true
       });
+      this.bumpPosition();
     },
     showInspector: function(){
       this.model.parentGraph.dataflow.showMenu("inspector");

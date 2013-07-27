@@ -82,11 +82,9 @@
         transform: "translate3d(0, 0, 0)"
       });
       var scale = this.state.get('zoom');
-      this.bumpAllNodes(ui.offset.left/scale, ui.offset.top/scale);
-    },
-    bumpAllNodes: function (x, y) {
-      this.model.nodes.each(function(node){
-        node.view.moveToPosition( node.get("x") + x, node.get("y") + y);
+      this.model.set({
+        panX: this.model.get("panX") + ui.offset.left/scale,
+        panY: this.model.get("panY") + ui.offset.top/scale
       });
     },
     gotoParent: function () {
@@ -112,6 +110,8 @@
       var currentZoom, startX, startY, originX, originY, scale, posX, poxY;
       var self = this;
       Hammer(this.el).on('transformstart', function (event) {
+        // Don't click node
+        event.stopPropagation();
         currentZoom = state.get('zoom');
         startX = event.gesture.center.pageX;
         startY = event.gesture.center.pageY;
@@ -123,6 +123,8 @@
         });
       });
       Hammer(this.el).on('transform', function (event) {
+        // Don't click node
+        event.stopPropagation();
         scale = Math.max(0.5/currentZoom, Math.min(event.gesture.scale, 3/currentZoom));
         posX = (event.gesture.center.pageX - startX) / currentZoom;
         posY = (event.gesture.center.pageY - startY) / currentZoom;
@@ -132,6 +134,8 @@
         });
       });
       Hammer(this.el).on('transformend', function (event) {
+        // Don't click node
+        event.stopPropagation();
         // Reset 3D transform
         self.$el.css({
           transform: "translate3d(0, 0, 0) " +
@@ -140,8 +144,12 @@
         // Zoom
         var zoom = currentZoom * scale;
         zoom = Math.max(0.5, Math.min(zoom, 3));
-        self.bumpAllNodes( posX/zoom , posY/zoom);
         state.set('zoom', zoom);
+        // var scaleD = scale - currentZoom;
+        self.model.set({
+          panX: self.model.get("panX") + posX/scale,
+          panY: self.model.get("panY") + posY/scale
+        });
       });
 
       var onZoom = function () {
