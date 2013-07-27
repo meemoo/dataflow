@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-26 (1:09:22 PM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-26 (8:46:28 PM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1205,23 +1205,36 @@
         }.bind(this)
       });
 
+      // Default 3D transform
+      this.$el.css({
+        transform: "translate3d(0, 0, 0) " +
+                   "scale3d(1, 1, 1) ",
+        transformOrigin: "left top"
+      });
+
       // Handle zooming and scrolling
+      this.state = this.model.dataflow.get('state');
       this.bindInteraction();
     },
     dragStart: function (event, ui) {
     },
     drag: function (event, ui) {
       if (!ui) { return; }
+      var scale = this.state.get('zoom');
       this.$el.css({
-        transform: "translate3d("+ui.offset.left+"px, "+ui.offset.top+"px, 0)"
+        transform: "translate3d("+ui.offset.left/scale+"px, "+ui.offset.top/scale+"px, 0)"
       });
     },
     dragStop: function (event, ui) {
       this.$el.css({
         transform: "translate3d(0, 0, 0)"
       });
+      var scale = this.state.get('zoom');
+      this.bumpAllNodes(ui.offset.left/scale, ui.offset.top/scale);
+    },
+    bumpAllNodes: function (x, y) {
       this.model.nodes.each(function(node){
-        node.view.moveToPosition( node.get("x") + ui.offset.left, node.get("y") + ui.offset.top );
+        node.view.moveToPosition( node.get("x") + x, node.get("y") + y);
       });
     },
     gotoParent: function () {
@@ -1234,7 +1247,6 @@
       var state = this.model.dataflow.get('state');
       this.bindZoom(state);
       this.bindScroll(state);
-
     },
     bindZoom: function (state) {
       if (!window.Hammer) {
@@ -1246,27 +1258,48 @@
         state.set('zoom', 1);
       }
       var self = this;
-      var lastScale;
-      Hammer(this.el).on('touch', function (event) {
+      var lastScale, startX, startY, scale, posX, poxY;
+      // Hammer(this.el).on('touch', function (event) {
+      //   lastScale = state.get('zoom');
+      //   state.set('centerX', event.gesture.center.pageX);
+      //   state.set('centerY', event.gesture.center.pageY);
+      // });
+      Hammer(this.el).on('transformstart', function (event) {
         lastScale = state.get('zoom');
-        state.set('centerX', event.gesture.center.pageX);
-        state.set('centerY', event.gesture.center.pageY);
+        startX = event.gesture.center.pageX;
+        startY = event.gesture.center.pageY;
+        // self.$el.css({
+        //   transformOrigin: startX+"px "+startY+"px"
+        // });
       });
-      Hammer(this.el).on('pinch', function (event) {
-        var zoom = Math.max(0.5, Math.min(lastScale * event.gesture.scale, 3));
-        var centerX = state.get('centerX');
-        var centerY = state.get('centerY');
-        var scrollX = centerX - (centerX / zoom);
-        var scrollY = centerY - (centerY / zoom);
+      Hammer(this.el).on('transform', function (event) {
+        scale = Math.max(0.5/lastScale, Math.min(event.gesture.scale, 3/lastScale));
+        posX = (event.gesture.center.pageX - startX) / lastScale;
+        posY = (event.gesture.center.pageY - startY) / lastScale;
+        self.$el.css({
+          transform: "translate3d("+posX+"px,"+posY+"px, 0) " +
+                     "scale3d("+scale+","+scale+", 1) "
+        });
+      });
+      Hammer(this.el).on('transformend', function (event) {
+        // Reset 3D transform
+        self.$el.css({
+          transform: "translate3d(0, 0, 0) " +
+                     "scale3d(1, 1, 1) "
+        });
+        // Zoom
+        var zoom = lastScale * scale;
+        zoom = Math.max(0.5, Math.min(zoom, 3));
         state.set('zoom', zoom);
-        state.set('scrollY', scrollY);
-        state.set('scrollX', scrollX);
+        self.bumpAllNodes(posX*lastScale/zoom, posY*lastScale/zoom);
+        console.log(startX, posX, startY, posY, lastScale, scale);
+        console.log(posX/scale, posY/scale);
       });
 
       var onZoom = function () {
         self.el.style.zoom = state.get('zoom');
-        self.el.scrollTop = state.get('scrollY');
-        self.el.scrollLeft = state.get('scrollX');
+        // self.el.scrollTop = state.get('scrollY');
+        // self.el.scrollLeft = state.get('scrollX');
       };
       state.on('change:zoom', onZoom);
 
@@ -1276,10 +1309,10 @@
       }
     },
     bindScroll: function (state) {
-      this.el.addEventListener('scroll', function (event) {
-        state.set('scrollY', this.scrollTop);
-        state.set('scrollX', this.scrollLeft);
-      });
+      // this.el.addEventListener('scroll', function (event) {
+      //   state.set('scrollY', this.scrollTop);
+      //   state.set('scrollX', this.scrollLeft);
+      // });
     },
     render: function() {
       // HACK to get them to show correct positions on load
@@ -1352,19 +1385,27 @@
     fade: function () {
       this.model.nodes.each(function(node){
         if (!node.view.$el.hasClass("ui-selected")){
-          node.view.fade();
+          if (node.view) {
+            node.view.fade();
+          }
         }
       });
       this.model.edges.each(function(edge){
-        edge.view.fade();
+        if (edge.view) {
+          edge.view.fade();
+        }
       });
     },
     unfade: function () {
       this.model.nodes.each(function(node){
-        node.view.unfade();
+        if (node.view) {
+          node.view.unfade();
+        }
       });
       this.model.edges.each(function(edge){
-        edge.view.unfade();
+        if (edge.view) {
+          edge.view.unfade();
+        }
       });
     }
   });
@@ -1611,7 +1652,9 @@
     },
     select: function(event, deselectOthers){
       // Don't click graph
-      event.stopPropagation();
+      if (event) {
+        event.stopPropagation();
+      }
       // De/select
       if (deselectOthers) {
         this.model.parentGraph.view.$(".ui-selected").removeClass("ui-selected");
@@ -1634,7 +1677,9 @@
       var self = this;
       this.model.parentGraph.edges.each(function(edge){
         if (edge.source.parentNode.id === self.model.id || edge.target.parentNode.id === self.model.id) {
-          edge.view.unfade();
+          if (edge.view) {
+            edge.view.unfade();
+          }
         }
       });
     },
@@ -1867,9 +1912,10 @@
       return this;
     },
     newEdgeStart: function(event, ui){
+      if (!ui) { return; }
       // Don't drag node
       event.stopPropagation();
-      if (!ui) { return; }
+      
       ui.helper.data({
         route: this.topRoute
       });
@@ -1889,11 +1935,12 @@
       graphSVGElement.appendChild(this.previewEdgeNewView.el);
     },
     newEdgeDrag: function(event, ui){
-      // Don't drag node
-      event.stopPropagation();
       if (!this.previewEdgeNewView || !ui) {
         return;
       }
+      // Don't drag node
+      event.stopPropagation();
+
       var state = this.model.parentNode.parentGraph.dataflow.get('state');
       ui.position.top = event.clientY / state.get('zoom');
       ui.position.left = event.clientX / state.get('zoom');
@@ -1934,6 +1981,7 @@
       return topEdge;
     },
     changeEdgeStart: function(event, ui){
+      if (!ui) { return; }
       // Don't drag node
       event.stopPropagation();
 
@@ -1965,6 +2013,7 @@
       }
     },
     changeEdgeDrag: function(event, ui){
+      if (!ui) { return; }
       // Don't drag node
       event.stopPropagation();
       
@@ -2199,6 +2248,7 @@
       return topEdge;
     },
     changeEdgeStart: function(event, ui){
+      if (!ui) { return; }
       // Don't drag node
       event.stopPropagation();
 
@@ -2230,6 +2280,7 @@
       }
     },
     changeEdgeDrag: function(event, ui){
+      if (!ui) { return; }
       // Don't drag node
       event.stopPropagation();
 
@@ -2245,8 +2296,8 @@
       // Clean up preview edge
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.remove();
-        // delete this.previewEdgeChange;
-        // delete this.previewEdgeChangeView;
+        delete this.previewEdgeChange;
+        delete this.previewEdgeChangeView;
       }
     },
     connectEdge: function(event, ui) {
@@ -2459,6 +2510,9 @@
       }
     },
     fade: function(){
+      if (this.model.source.parentNode.view.$el.hasClass("ui-selected") || this.model.target.parentNode.view.$el.hasClass("ui-selected")) {
+        return;
+      }
       this.el.setAttribute("class", "dataflow-edge fade");
     },
     unfade: function(){

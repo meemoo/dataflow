@@ -16,7 +16,6 @@
     "build/dataflow.build.js"
   ],
   "styles": [
-    "build/default/dataflow.min.css"
   ],
   "files": [
     "build/default/dataflow.min.css",

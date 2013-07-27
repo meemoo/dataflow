@@ -238,7 +238,9 @@
     },
     select: function(event, deselectOthers){
       // Don't click graph
-      event.stopPropagation();
+      if (event) {
+        event.stopPropagation();
+      }
       // De/select
       if (deselectOthers) {
         this.model.parentGraph.view.$(".ui-selected").removeClass("ui-selected");
@@ -261,7 +263,9 @@
       var self = this;
       this.model.parentGraph.edges.each(function(edge){
         if (edge.source.parentNode.id === self.model.id || edge.target.parentNode.id === self.model.id) {
-          edge.view.unfade();
+          if (edge.view) {
+            edge.view.unfade();
+          }
         }
       });
     },

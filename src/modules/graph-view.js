@@ -57,23 +57,36 @@
         }.bind(this)
       });
 
+      // Default 3D transform
+      this.$el.css({
+        transform: "translate3d(0, 0, 0) " +
+                   "scale3d(1, 1, 1) ",
+        transformOrigin: "left top"
+      });
+
       // Handle zooming and scrolling
+      this.state = this.model.dataflow.get('state');
       this.bindInteraction();
     },
     dragStart: function (event, ui) {
     },
     drag: function (event, ui) {
       if (!ui) { return; }
+      var scale = this.state.get('zoom');
       this.$el.css({
-        transform: "translate3d("+ui.offset.left+"px, "+ui.offset.top+"px, 0)"
+        transform: "translate3d("+ui.offset.left/scale+"px, "+ui.offset.top/scale+"px, 0)"
       });
     },
     dragStop: function (event, ui) {
       this.$el.css({
         transform: "translate3d(0, 0, 0)"
       });
+      var scale = this.state.get('zoom');
+      this.bumpAllNodes(ui.offset.left/scale, ui.offset.top/scale);
+    },
+    bumpAllNodes: function (x, y) {
       this.model.nodes.each(function(node){
-        node.view.moveToPosition( node.get("x") + ui.offset.left, node.get("y") + ui.offset.top );
+        node.view.moveToPosition( node.get("x") + x, node.get("y") + y);
       });
     },
     gotoParent: function () {
@@ -86,7 +99,6 @@
       var state = this.model.dataflow.get('state');
       this.bindZoom(state);
       this.bindScroll(state);
-
     },
     bindZoom: function (state) {
       if (!window.Hammer) {
@@ -98,27 +110,48 @@
         state.set('zoom', 1);
       }
       var self = this;
-      var lastScale;
-      Hammer(this.el).on('touch', function (event) {
+      var lastScale, startX, startY, scale, posX, poxY;
+      // Hammer(this.el).on('touch', function (event) {
+      //   lastScale = state.get('zoom');
+      //   state.set('centerX', event.gesture.center.pageX);
+      //   state.set('centerY', event.gesture.center.pageY);
+      // });
+      Hammer(this.el).on('transformstart', function (event) {
         lastScale = state.get('zoom');
-        state.set('centerX', event.gesture.center.pageX);
-        state.set('centerY', event.gesture.center.pageY);
+        startX = event.gesture.center.pageX;
+        startY = event.gesture.center.pageY;
+        // self.$el.css({
+        //   transformOrigin: startX+"px "+startY+"px"
+        // });
       });
-      Hammer(this.el).on('pinch', function (event) {
-        var zoom = Math.max(0.5, Math.min(lastScale * event.gesture.scale, 3));
-        var centerX = state.get('centerX');
-        var centerY = state.get('centerY');
-        var scrollX = centerX - (centerX / zoom);
-        var scrollY = centerY - (centerY / zoom);
+      Hammer(this.el).on('transform', function (event) {
+        scale = Math.max(0.5/lastScale, Math.min(event.gesture.scale, 3/lastScale));
+        posX = (event.gesture.center.pageX - startX) / lastScale;
+        posY = (event.gesture.center.pageY - startY) / lastScale;
+        self.$el.css({
+          transform: "translate3d("+posX+"px,"+posY+"px, 0) " +
+                     "scale3d("+scale+","+scale+", 1) "
+        });
+      });
+      Hammer(this.el).on('transformend', function (event) {
+        // Reset 3D transform
+        self.$el.css({
+          transform: "translate3d(0, 0, 0) " +
+                     "scale3d(1, 1, 1) "
+        });
+        // Zoom
+        var zoom = lastScale * scale;
+        zoom = Math.max(0.5, Math.min(zoom, 3));
         state.set('zoom', zoom);
-        state.set('scrollY', scrollY);
-        state.set('scrollX', scrollX);
+        self.bumpAllNodes(posX*lastScale/zoom, posY*lastScale/zoom);
+        console.log(startX, posX, startY, posY, lastScale, scale);
+        console.log(posX/scale, posY/scale);
       });
 
       var onZoom = function () {
         self.el.style.zoom = state.get('zoom');
-        self.el.scrollTop = state.get('scrollY');
-        self.el.scrollLeft = state.get('scrollX');
+        // self.el.scrollTop = state.get('scrollY');
+        // self.el.scrollLeft = state.get('scrollX');
       };
       state.on('change:zoom', onZoom);
 
@@ -128,10 +161,10 @@
       }
     },
     bindScroll: function (state) {
-      this.el.addEventListener('scroll', function (event) {
-        state.set('scrollY', this.scrollTop);
-        state.set('scrollX', this.scrollLeft);
-      });
+      // this.el.addEventListener('scroll', function (event) {
+      //   state.set('scrollY', this.scrollTop);
+      //   state.set('scrollX', this.scrollLeft);
+      // });
     },
     render: function() {
       // HACK to get them to show correct positions on load
@@ -204,19 +237,27 @@
     fade: function () {
       this.model.nodes.each(function(node){
         if (!node.view.$el.hasClass("ui-selected")){
-          node.view.fade();
+          if (node.view) {
+            node.view.fade();
+          }
         }
       });
       this.model.edges.each(function(edge){
-        edge.view.fade();
+        if (edge.view) {
+          edge.view.fade();
+        }
       });
     },
     unfade: function () {
       this.model.nodes.each(function(node){
-        node.view.unfade();
+        if (node.view) {
+          node.view.unfade();
+        }
       });
       this.model.edges.each(function(edge){
-        edge.view.unfade();
+        if (edge.view) {
+          edge.view.unfade();
+        }
       });
     }
   });
