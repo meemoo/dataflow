@@ -140,7 +140,7 @@
         // Zoom
         var zoom = currentZoom * scale;
         zoom = Math.max(0.5, Math.min(zoom, 3));
-        self.bumpAllNodes( posX/scale , posY/scale );
+        self.bumpAllNodes( posX/zoom , posY/zoom);
         state.set('zoom', zoom);
       });
 
