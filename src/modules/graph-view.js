@@ -109,25 +109,23 @@
         // TODO: calculate level where whole graph fits
         state.set('zoom', 1);
       }
+      var currentZoom, startX, startY, originX, originY, scale, posX, poxY;
       var self = this;
-      var lastScale, startX, startY, scale, posX, poxY;
-      // Hammer(this.el).on('touch', function (event) {
-      //   lastScale = state.get('zoom');
-      //   state.set('centerX', event.gesture.center.pageX);
-      //   state.set('centerY', event.gesture.center.pageY);
-      // });
       Hammer(this.el).on('transformstart', function (event) {
-        lastScale = state.get('zoom');
+        currentZoom = state.get('zoom');
         startX = event.gesture.center.pageX;
         startY = event.gesture.center.pageY;
-        // self.$el.css({
-        //   transformOrigin: startX+"px "+startY+"px"
-        // });
+        originX = startX/currentZoom;
+        originY = startY/currentZoom;
+        self.$el.css({
+          transformOrigin: originX+"px "+originY+"px"
+          // transformOrigin: startX+"px "+startY+"px"
+        });
       });
       Hammer(this.el).on('transform', function (event) {
-        scale = Math.max(0.5/lastScale, Math.min(event.gesture.scale, 3/lastScale));
-        posX = (event.gesture.center.pageX - startX) / lastScale;
-        posY = (event.gesture.center.pageY - startY) / lastScale;
+        scale = Math.max(0.5/currentZoom, Math.min(event.gesture.scale, 3/currentZoom));
+        posX = (event.gesture.center.pageX - startX) / currentZoom;
+        posY = (event.gesture.center.pageY - startY) / currentZoom;
         self.$el.css({
           transform: "translate3d("+posX+"px,"+posY+"px, 0) " +
                      "scale3d("+scale+","+scale+", 1) "
@@ -140,12 +138,10 @@
                      "scale3d(1, 1, 1) "
         });
         // Zoom
-        var zoom = lastScale * scale;
+        var zoom = currentZoom * scale;
         zoom = Math.max(0.5, Math.min(zoom, 3));
+        self.bumpAllNodes( posX/scale , posY/scale );
         state.set('zoom', zoom);
-        self.bumpAllNodes(posX*lastScale/zoom, posY*lastScale/zoom);
-        console.log(startX, posX, startY, posY, lastScale, scale);
-        console.log(posX/scale, posY/scale);
       });
 
       var onZoom = function () {
@@ -225,8 +221,10 @@
       try{
         var svg = this.$('.dataflow-svg-edges')[0];
         var rect = svg.getBBox();
-        svg.setAttribute("width", Math.round(rect.x+rect.width+50));
-        svg.setAttribute("height", Math.round(rect.y+rect.height+50));
+        var width =  Math.max( Math.round(rect.x+rect.width +50), 50 );
+        var height = Math.max( Math.round(rect.y+rect.height+50), 50 );
+        svg.setAttribute("width", width);
+        svg.setAttribute("height", height);
       } catch (error) {}
     },
     deselect: function () {
