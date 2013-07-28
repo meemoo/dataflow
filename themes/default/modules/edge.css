@@ -14,25 +14,29 @@
   fill: none;
 }
 
-.dataflow-edge-wire.route0  { stroke: hsl(  0,  0%, 70%); }
-.dataflow-edge-wire.route1  { stroke: hsl(  0, 68%, 70%); }
-.dataflow-edge-wire.route2  { stroke: hsl( 30, 68%, 70%); }
-.dataflow-edge-wire.route3  { stroke: hsl( 60, 68%, 70%); }
-.dataflow-edge-wire.route4  { stroke: hsl( 90, 68%, 70%); }
-.dataflow-edge-wire.route5  { stroke: hsl(120, 68%, 70%); }
-.dataflow-edge-wire.route6  { stroke: hsl(150, 68%, 70%); }
-.dataflow-edge-wire.route7  { stroke: hsl(180, 68%, 70%); }
-.dataflow-edge-wire.route8  { stroke: hsl(210, 68%, 70%); }
-.dataflow-edge-wire.route9  { stroke: hsl(240, 68%, 70%); }
-.dataflow-edge-wire.route10 { stroke: hsl(270, 68%, 70%); }
-.dataflow-edge-wire.route11 { stroke: hsl(300, 68%, 70%); }
-.dataflow-edge-wire.route12 { stroke: hsl(330, 68%, 70%); }
+.dataflow-edge-wire.route0  { stroke: hsl(220, 10%, 40%); } /* Gray */
+.dataflow-edge-wire.route1  { stroke: hsl(  0, 68%, 70%); } /* Red */
+.dataflow-edge-wire.route2  { stroke: hsl( 30, 68%, 70%); } /* Orange */
+.dataflow-edge-wire.route3  { stroke: hsl( 60, 68%, 70%); } /* Yellow */
+.dataflow-edge-wire.route4  { stroke: hsl( 90, 68%, 70%); } /* Lime Green */
+.dataflow-edge-wire.route5  { stroke: hsl(120, 68%, 70%); } /* Green */
+.dataflow-edge-wire.route6  { stroke: hsl(150, 68%, 70%); } /* Green-Turq */
+.dataflow-edge-wire.route7  { stroke: hsl(180, 68%, 70%); } /* Bright Blue */
+.dataflow-edge-wire.route8  { stroke: hsl(210, 68%, 70%); } /* blue */
+.dataflow-edge-wire.route9  { stroke: hsl(240, 68%, 70%); } /* Purple */
+.dataflow-edge-wire.route10 { stroke: hsl(270, 68%, 70%); } /* Violet */
+.dataflow-edge-wire.route11 { stroke: hsl(300, 68%, 70%); } /* Pink */
+.dataflow-edge-wire.route12 { stroke: hsl(330, 68%, 70%); } 
 
 .dataflow-edge.highlight .dataflow-edge-shadow {
-  stroke: #EEE;
+  stroke: black;
+  stroke-width: 16px;
 }
 
-.dataflow-edge.fade .dataflow-edge-wire,
-.dataflow-edge.fade .dataflow-edge-shadow {
-  opacity: 0.6;
+.dataflow-edge.fade .dataflow-edge-wire {
+  stroke: hsl(220, 10%, 40%);
+}
+.dataflow-edge.fade .dataflow-edge-shadow {  
+  stroke: black;
+  opacity: 1;
 }
