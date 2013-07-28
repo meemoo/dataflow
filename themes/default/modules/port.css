@@ -1,11 +1,16 @@
-.dataflow-node-ins {
-  width: 100%;
-  /* position: absolute; */
-  padding: 5px 0;
+.dataflow-node-ports {
   border-top: solid 1px white;
   border-bottom: solid 1px hsl(0, 0%, 98%);
   box-shadow: 0 0px 1px hsl(220,10%,88%);
-  background-color: hsla(0, 100%, 100%,.5);
+  background-color: hsla(0, 100%, 100%,.5);  
+}
+
+.dataflow-node-ins {
+  float: left;
+  width: 50%;
+  overflow: hidden;
+
+  padding: 5px 0;
   text-align: left;
 }
   .dataflow-port-label.in {
@@ -17,11 +22,16 @@
   
 
 .dataflow-node-outs {
+  float: right;
+  width: 49%;
+  overflow: hidden;
+/*
   top: 32px;
   right: 0px;
   position: absolute;
+*/
   z-index: 1;
-  padding: 6px 0;
+  padding: 5px 0;
   text-align: right;
 }
   .dataflow-port-label.out {
@@ -37,6 +47,7 @@
     border: none;
     margin: 0;
     padding: 0;
+    white-space: nowrap;
   }
     .dataflow-port.droppable-hover {
       border-color: black;

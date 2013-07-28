@@ -149,6 +149,8 @@
         // console.log("scale", scale);
         // console.log("zoom", zoom);
         // console.log("-===============-");
+        //
+        // TODO : fix origin difference bump
         self.model.set({
           panX: self.model.get("panX") + deltaX,
           panY: self.model.get("panY") + deltaY

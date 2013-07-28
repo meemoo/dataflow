@@ -12,9 +12,12 @@
       '<h1 class="dataflow-node-title"><span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
       '<button title="properties" class="dataflow-node-inspect icon-cog"></button>'+
     '</div>'+
-    '<div class="dataflow-node-ports dataflow-node-ins" />'+
-    '<div class="dataflow-node-ports dataflow-node-outs" />'+
-    '<div class="dataflow-node-inner" />';
+    '<div class="dataflow-node-ports">'+
+      '<div class="dataflow-node-ins"></div>'+
+      '<div class="dataflow-node-outs"></div>'+
+      '<div style="clear:both;"></div>'+
+    '</div>'+
+    '<div class="dataflow-node-inner"></div>';
 
   var inspectTemplate = 
     '<h1 class="dataflow-node-inspector-title"><%- label %></h1>'+

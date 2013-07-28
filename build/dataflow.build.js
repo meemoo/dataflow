@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-28 (1:39:31 PM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-28 (2:41:11 PM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1299,6 +1299,8 @@
         // console.log("scale", scale);
         // console.log("zoom", zoom);
         // console.log("-===============-");
+        //
+        // TODO : fix origin difference bump
         self.model.set({
           panX: self.model.get("panX") + deltaX,
           panY: self.model.get("panY") + deltaY
@@ -1437,9 +1439,12 @@
       '<h1 class="dataflow-node-title"><span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
       '<button title="properties" class="dataflow-node-inspect icon-cog"></button>'+
     '</div>'+
-    '<div class="dataflow-node-ports dataflow-node-ins" />'+
-    '<div class="dataflow-node-ports dataflow-node-outs" />'+
-    '<div class="dataflow-node-inner" />';
+    '<div class="dataflow-node-ports">'+
+      '<div class="dataflow-node-ins"></div>'+
+      '<div class="dataflow-node-outs"></div>'+
+      '<div style="clear:both;"></div>'+
+    '</div>'+
+    '<div class="dataflow-node-inner"></div>';
 
   var inspectTemplate = 
     '<h1 class="dataflow-node-inspector-title"><%- label %></h1>'+
