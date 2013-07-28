@@ -92,4 +92,7 @@
 .dataflow-port-hole.active.route11 { background-color: hsl(300, 68%, 70%); }
 .dataflow-port-hole.active.route12 { background-color: hsl(330, 68%, 70%); }
 
+.dataflow-node.fade .dataflow-port-hole.active {
+  opacity: 0.75;
+}
 

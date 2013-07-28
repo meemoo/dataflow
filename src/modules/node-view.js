@@ -136,7 +136,7 @@
           };
           el.data("ui-draggable-alsodrag-initial", position);
           // Add helper
-          var helper = $('<div class="node helper">').css({
+          var helper = $('<div class="dataflow-node helper">').css({
             width: el.width(),
             height: el.height(),
             left: position.left,
@@ -176,8 +176,10 @@
       // Don't drag graph
       event.stopPropagation();
 
-      var x = parseInt(ui.position.left, 10) - this.model.parentGraph.get("panX");
-      var y = parseInt(ui.position.top, 10) - this.model.parentGraph.get("panY");
+      var panX = this.model.parentGraph.get("panX");
+      var panY = this.model.parentGraph.get("panY");
+      var x = parseInt(ui.position.left, 10) - panX;
+      var y = parseInt(ui.position.top, 10) - panY;
       this.moveToPosition(x,y);
       // Also drag
       if (this._alsoDrag.length) {
@@ -186,7 +188,7 @@
           var helper = el.data("ui-draggable-alsodrag-helper");
           var node = el.data("dataflow-node-view");
           // Move other node
-          node.moveToPosition(parseInt(helper.css("left"), 10), parseInt(helper.css("top"), 10));
+          node.moveToPosition(parseInt(helper.css("left"), 10) - panX, parseInt(helper.css("top"), 10) - panY);
           // Remove helper
           helper.remove();
           el.data("ui-draggable-alsodrag-initial", null);

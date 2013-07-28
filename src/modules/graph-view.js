@@ -110,8 +110,6 @@
       var currentZoom, startX, startY, originX, originY, scale, posX, poxY;
       var self = this;
       Hammer(this.el).on('transformstart', function (event) {
-        // Don't click node
-        event.stopPropagation();
         currentZoom = state.get('zoom');
         startX = event.gesture.center.pageX;
         startY = event.gesture.center.pageY;
@@ -123,8 +121,6 @@
         });
       });
       Hammer(this.el).on('transform', function (event) {
-        // Don't click node
-        event.stopPropagation();
         scale = Math.max(0.5/currentZoom, Math.min(event.gesture.scale, 3/currentZoom));
         posX = (event.gesture.center.pageX - startX) / currentZoom;
         posY = (event.gesture.center.pageY - startY) / currentZoom;
@@ -134,8 +130,6 @@
         });
       });
       Hammer(this.el).on('transformend', function (event) {
-        // Don't click node
-        event.stopPropagation();
         // Reset 3D transform
         self.$el.css({
           transform: "translate3d(0, 0, 0) " +
