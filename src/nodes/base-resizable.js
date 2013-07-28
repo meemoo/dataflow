@@ -40,7 +40,8 @@
       var self = this;
       this.$el.resizable({
         helper: "node helper",
-        // grid: [ 5, 5 ],
+        minHeight: 75,
+        minWidth: 75,
         stop: function(event, ui) {
           self.resizeStop(event, ui);
         }
