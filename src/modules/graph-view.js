@@ -130,7 +130,6 @@
         });
       });
       Hammer(this.el).on('transformend', function (event) {
-        console.log(event.gesture);
         // Reset 3D transform
         self.$el.css({
           transform: "translate3d(0, 0, 0) " +
