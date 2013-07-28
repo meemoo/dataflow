@@ -17,10 +17,7 @@
   box-shadow: inset 0 1px 1px white, 0 2px 3px hsla(0, 0%, 0%, 0.7);
 
 }
-  .dataflow-node.fade {
-    background-color: hsla(220, 11%, 77%, 0.95);
-    text-shadow: none;
-  }
+  
   .dataflow-node .outer {    
     position: absolute;
     top:0; right:0; bottom:0; left:0;
@@ -49,9 +46,7 @@
     margin: 0;
     padding: 6px 10px;
   }
-    .dataflow-node.fade .dataflow-node-title {
-      color: hsl(0, 0%, 40%);
-    }
+    
   .dataflow-node .controls {
   }
     .dataflow-node .controls .delete {
@@ -63,23 +58,19 @@
   top: 0;
   right: 0;
 }
-  .dataflow-node.fade .dataflow-node-inspect:before {
-    text-shadow: none;
-  }
+  
 
 .dataflow-node-inner {
   color: hsl(0,0%,66%);
   font-size: 12px;
   font-weight: normal;
 }
-  .dataflow-node.fade .dataflow-node-inner {
-    color: hsl(0, 0%, 55%);
-  }
 
 .dataflow-nodes-helpers {
   position: absolute;
   top: 0;
   left: 0;
+  /* accelR8 */
   transform: translate3d(0,0,0);
   -o-transform: translate3d(0,0,0);
   -ms-transform: translate3d(0,0,0);
@@ -87,3 +78,23 @@
   -webkit-transform: translate3d(0,0,0);
   z-index: 9999;
 }
+
+/* Fade */
+
+.dataflow-node.fade {
+ background-color: hsla(220, 11%, 77%, 0.85);
+ text-shadow: 0 1px 0 hsla(220, 11%, 100%, 0.3);
+}
+
+.dataflow-node.fade .dataflow-node-title {
+  color: hsl(0, 0%, 0%);
+}
+
+.dataflow-node.fade .dataflow-node-inspect:before {
+  text-shadow: none;
+}
+  
+.dataflow-node.fade .dataflow-node-inner {
+  color: hsl(0, 0%, 55%);
+}
+
