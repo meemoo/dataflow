@@ -191,13 +191,11 @@
           var node = el.data("dataflow-node-view");
           // Move other node
           node.moveToPosition(node.model.get("x") + deltaX, node.model.get("y") + deltaY);
-          el.data("ui-draggable-alsodrag-initial", null);
           el.data("ui-draggable-alsodrag-helper", null);
         });
         this._alsoDrag = [];
       }
       // Remove helpers
-      this.$dragHelpers.empty();
       this.$dragHelpers.remove();
     },
     bumpPosition: function () {

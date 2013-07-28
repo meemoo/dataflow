@@ -107,7 +107,7 @@
         // TODO: calculate level where whole graph fits
         state.set('zoom', 1);
       }
-      var currentZoom, startX, startY, originX, originY, scale, posX, poxY;
+      var currentZoom, startX, startY, originX, originY, scale, deltaX, deltaY;
       var self = this;
       Hammer(this.el).on('transformstart', function (event) {
         currentZoom = state.get('zoom');
@@ -122,10 +122,10 @@
       });
       Hammer(this.el).on('transform', function (event) {
         scale = Math.max(0.5/currentZoom, Math.min(event.gesture.scale, 3/currentZoom));
-        posX = (event.gesture.center.pageX - startX) / currentZoom;
-        posY = (event.gesture.center.pageY - startY) / currentZoom;
+        deltaX = (event.gesture.center.pageX - startX) / currentZoom;
+        deltaY = (event.gesture.center.pageY - startY) / currentZoom;
         self.$el.css({
-          transform: "translate3d("+posX+"px,"+posY+"px, 0) " +
+          transform: "translate3d("+deltaX+"px,"+deltaY+"px, 0) " +
                      "scale3d("+scale+","+scale+", 1) "
         });
       });
@@ -140,9 +140,18 @@
         zoom = Math.max(0.5, Math.min(zoom, 3));
         state.set('zoom', zoom);
         // var scaleD = scale - currentZoom;
+        var width = self.$el.width();
+        var height = self.$el.height();
+        // console.log("panX", self.model.get("panX") );
+        // console.log("deltaX", deltaX); 
+        // console.log("width", width); 
+        // console.log("currentZoom", currentZoom); 
+        // console.log("scale", scale);
+        // console.log("zoom", zoom);
+        // console.log("-===============-");
         self.model.set({
-          panX: self.model.get("panX") + posX/scale,
-          panY: self.model.get("panY") + posY/scale
+          panX: self.model.get("panX") + deltaX,
+          panY: self.model.get("panY") + deltaY
         });
       });
 
