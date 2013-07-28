@@ -26,6 +26,8 @@
     '<div class="dataflow-node-inspector-inputs"></div>';
 
   var innerTemplate = "";
+
+  var zoom;
  
   Node.View = Backbone.View.extend({
     template: _.template(template),
@@ -71,12 +73,8 @@
       var self = this;
       this.$el.draggable({
         handle: "h1",
-        // grid: [ 5, 5 ],
         helper: function(){
-          var node = self.$el;
-          var width = node.width();
-          var height = node.height();
-          return $('<div class="dataflow-node helper" style="width:'+width+'px; height:'+height+'px">');
+          return $('<div>');
         }
       });
 
@@ -115,7 +113,9 @@
     },
     _alsoDrag: [],
     _dragDelta: {},
+    $dragHelpers: null,
     dragStart: function(event, ui){
+      if (!ui){ return; }
       // Select this
       if (!this.$el.hasClass("ui-selected")){
         this.select(event, true);
@@ -124,25 +124,35 @@
       // Don't drag graph
       event.stopPropagation();
 
+      // Current zoom
+      zoom = this.model.parentGraph.dataflow.get('state').get('zoom');
+
       // Make helper and save start position of all other selected
       var self = this;
       this._alsoDrag = [];
+
+      this.$dragHelpers = $('<div class="dataflow-nodes-helpers">');
+      this.$el.parent().append( this.$dragHelpers );
+
+      var helper = $('<div class="dataflow-node helper">').css({
+        width: this.$el.width(),
+        height: this.$el.height(),
+        left: parseInt(this.$el.css('left'), 10),
+        top: parseInt(this.$el.css('top'), 10)
+      });
+      this.$dragHelpers.append(helper);
+
       this.model.parentGraph.view.$(".ui-selected").each(function() {
         if (self.el !== this) {
           var el = $(this);
-          var position = {
-            left: parseInt(el.css('left'), 10), 
-            top: parseInt(el.css('top'), 10)
-          };
-          el.data("ui-draggable-alsodrag-initial", position);
           // Add helper
           var helper = $('<div class="dataflow-node helper">').css({
             width: el.width(),
             height: el.height(),
-            left: position.left,
-            top: position.top
+            left: parseInt(el.css('left'), 10),
+            top: parseInt(el.css('top'), 10)
           });
-          el.parent().append(helper);
+          self.$dragHelpers.append(helper);
           el.data("ui-draggable-alsodrag-helper", helper);
           // Add to array
           self._alsoDrag.push(el);
@@ -150,37 +160,29 @@
       });
     },
     drag: function(event, ui){
+      if (!ui){ return; }
       // Don't drag graph
       event.stopPropagation();
 
-      // Drag other helpers
-      if (this._alsoDrag.length) {
-        var self = $(event.target).data("ui-draggable");
-        var op = self.originalPosition;
-        var delta = {
-          top: (self.position.top - op.top) || 0, 
-          left: (self.position.left - op.left) || 0
-        };
-
-        _.each(this._alsoDrag, function(el){
-          var initial = el.data("ui-draggable-alsodrag-initial");
-          var helper = el.data("ui-draggable-alsodrag-helper");
-          helper.css({
-            left: initial.left + delta.left,
-            top: initial.top + delta.top
-          });
-        });
-      }
+      var x = (ui.position.left - ui.originalPosition.left) / zoom;
+      var y = (ui.position.top - ui.originalPosition.top) / zoom;
+      this.$dragHelpers.css({
+        transform: "translate3d("+x+"px,"+y+"px,0)"
+      });
     },
     dragStop: function(event, ui){
+      // HACK
+      console.log("hmm");
+
+      if (!ui){ return; }
       // Don't drag graph
       event.stopPropagation();
 
       var panX = this.model.parentGraph.get("panX");
       var panY = this.model.parentGraph.get("panY");
-      var x = parseInt(ui.position.left, 10) - panX;
-      var y = parseInt(ui.position.top, 10) - panY;
-      this.moveToPosition(x,y);
+      var deltaX = (ui.position.left - ui.originalPosition.left) / zoom;
+      var deltaY = (ui.position.top - ui.originalPosition.top) / zoom;
+      this.moveToPosition(this.model.get("x") + deltaX, this.model.get("y") + deltaY);
       // Also drag
       if (this._alsoDrag.length) {
         _.each(this._alsoDrag, function(el){
@@ -188,14 +190,15 @@
           var helper = el.data("ui-draggable-alsodrag-helper");
           var node = el.data("dataflow-node-view");
           // Move other node
-          node.moveToPosition(parseInt(helper.css("left"), 10) - panX, parseInt(helper.css("top"), 10) - panY);
-          // Remove helper
-          helper.remove();
+          node.moveToPosition(node.model.get("x") + deltaX, node.model.get("y") + deltaY);
           el.data("ui-draggable-alsodrag-initial", null);
           el.data("ui-draggable-alsodrag-helper", null);
         });
         this._alsoDrag = [];
       }
+      // Remove helpers
+      this.$dragHelpers.empty();
+      this.$dragHelpers.remove();
     },
     bumpPosition: function () {
       this.$el.css({
