@@ -40,8 +40,8 @@
       var self = this;
       this.$el.resizable({
         helper: "dataflow-node helper",
-        minHeight: 75,
-        minWidth: 75,
+        minHeight: 100,
+        minWidth: 120,
         stop: function(event, ui) {
           self.resizeStop(event, ui);
         }

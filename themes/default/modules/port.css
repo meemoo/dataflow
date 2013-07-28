@@ -8,15 +8,13 @@
 .dataflow-node-ins {
   float: left;
   width: 50%;
-  overflow: hidden;
 
   padding: 5px 0;
   text-align: left;
 }
   .dataflow-port-label.in {
-    margin-left: 5px;
-  
     font-family: "proxima-nova-regular";
+    margin-left: 5px;
   }
 
   
@@ -24,12 +22,6 @@
 .dataflow-node-outs {
   float: right;
   width: 49%;
-  overflow: hidden;
-/*
-  top: 32px;
-  right: 0px;
-  position: absolute;
-*/
   z-index: 1;
   padding: 5px 0;
   text-align: right;
