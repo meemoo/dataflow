@@ -74,7 +74,7 @@
 
 /* Fade */
 
-.dataflow-node.fade .dataflow-node-ins {
+.dataflow-node.fade .dataflow-node-ports {
   border: none;
   background-color: transparent;
   box-shadow: none;
@@ -97,31 +97,31 @@
 
 
 /* Port Colors */
-.dataflow-node.fade .dataflow-port-hole.active.route0, .dataflow-port-hole.active.route0  { background-color: hsl(  0,  0%, 70%);}
-.dataflow-node.fade .dataflow-port-hole.active.route1, .dataflow-port-hole.active.route1  { background-color: hsl(  0, 68%, 70%);}
-.dataflow-node.fade .dataflow-port-hole.active.route2, .dataflow-port-hole.active.route2  { background-color: hsl( 30, 68%, 70%);}
-.dataflow-node.fade .dataflow-port-hole.active.route3, .dataflow-port-hole.active.route3  { background-color: hsl( 60, 68%, 70%);}
-.dataflow-node.fade .dataflow-port-hole.active.route4, .dataflow-port-hole.active.route4  { background-color: hsl( 90, 68%, 70%);}
-.dataflow-node.fade .dataflow-port-hole.active.route5, .dataflow-port-hole.active.route5  { background-color: hsl(120, 68%, 70%);}
-.dataflow-node.fade .dataflow-port-hole.active.route6, .dataflow-port-hole.active.route6  { background-color: hsl(150, 68%, 70%);}
-.dataflow-node.fade .dataflow-port-hole.active.route7, .dataflow-port-hole.active.route7  { background-color: hsl(180, 68%, 70%);}
-.dataflow-node.fade .dataflow-port-hole.active.route8, .dataflow-port-hole.active.route8  { background-color: hsl(210, 68%, 70%);}
-.dataflow-node.fade .dataflow-port-hole.active.route9, .dataflow-port-hole.active.route9  { background-color: hsl(240, 68%, 70%);}
-.dataflow-node.fade .dataflow-port-hole.active.route1, .dataflow-port-hole.active.route10 { background-color: hsl(270, 68%, 70%);}
-.dataflow-node.fade .dataflow-port-hole.active.route1, .dataflow-port-hole.active.route11 { background-color: hsl(300, 68%, 70%);}
-.dataflow-node.fade .dataflow-port-hole.active.route1, .dataflow-port-hole.active.route12 { background-color: hsl(330, 68%, 70%);}
+.dataflow-node.fade .dataflow-port-hole.active.route0, .dataflow-port-hole.active.route0  { background-color: hsl(  0,  0%, 65%); }
+.dataflow-node.fade .dataflow-port-hole.active.route1, .dataflow-port-hole.active.route1  { background-color: hsl(  0, 68%, 70%); }
+.dataflow-node.fade .dataflow-port-hole.active.route2, .dataflow-port-hole.active.route2  { background-color: hsl( 30, 68%, 70%); }
+.dataflow-node.fade .dataflow-port-hole.active.route3, .dataflow-port-hole.active.route3  { background-color: hsl( 60, 68%, 70%); }
+.dataflow-node.fade .dataflow-port-hole.active.route4, .dataflow-port-hole.active.route4  { background-color: hsl( 90, 68%, 70%); }
+.dataflow-node.fade .dataflow-port-hole.active.route5, .dataflow-port-hole.active.route5  { background-color: hsl(120, 68%, 70%); }
+.dataflow-node.fade .dataflow-port-hole.active.route6, .dataflow-port-hole.active.route6  { background-color: hsl(150, 68%, 70%); }
+.dataflow-node.fade .dataflow-port-hole.active.route7, .dataflow-port-hole.active.route7  { background-color: hsl(180, 68%, 70%); }
+.dataflow-node.fade .dataflow-port-hole.active.route8, .dataflow-port-hole.active.route8  { background-color: hsl(210, 68%, 70%); }
+.dataflow-node.fade .dataflow-port-hole.active.route9, .dataflow-port-hole.active.route9  { background-color: hsl(240, 68%, 70%); }
+.dataflow-node.fade .dataflow-port-hole.active.route1, .dataflow-port-hole.active.route10 { background-color: hsl(270, 68%, 70%); }
+.dataflow-node.fade .dataflow-port-hole.active.route1, .dataflow-port-hole.active.route11 { background-color: hsl(300, 68%, 70%); }
+.dataflow-node.fade .dataflow-port-hole.active.route1, .dataflow-port-hole.active.route12 { background-color: hsl(330, 68%, 70%); }
 
-.dataflow-node.fade .dataflow-port-hole.active.route0 { border-color:hsla(  0, 100%, 88%, .6);}
-.dataflow-node.fade .dataflow-port-hole.active.route1 { border-color:hsla(  0, 100%, 88%, .6);}
-.dataflow-node.fade .dataflow-port-hole.active.route2 { border-color:hsla( 30, 100%, 88%, .6);}
-.dataflow-node.fade .dataflow-port-hole.active.route3 { border-color:hsla( 60, 100%, 88%, .6);}
-.dataflow-node.fade .dataflow-port-hole.active.route4 { border-color:hsla( 90, 100%, 88%, .6);}
-.dataflow-node.fade .dataflow-port-hole.active.route5 { border-color:hsla(120, 100%, 88%, .6);}
-.dataflow-node.fade .dataflow-port-hole.active.route6 { border-color:hsla(150, 100%, 88%, .6);}
-.dataflow-node.fade .dataflow-port-hole.active.route7 { border-color:hsla(180, 100%, 88%, .6);}
-.dataflow-node.fade .dataflow-port-hole.active.route8 { border-color:hsla(210, 100%, 88%, .6);}
-.dataflow-node.fade .dataflow-port-hole.active.route9 { border-color:hsla(240, 100%, 88%, .6);}
-.dataflow-node.fade .dataflow-port-hole.active.route1 { border-color:hsla(270, 100%, 88%, .6);}
-.dataflow-node.fade .dataflow-port-hole.active.route1 { border-color:hsla(300, 100%, 88%, .6);}
-.dataflow-node.fade .dataflow-port-hole.active.route1 { border-color:hsla(330, 100%, 88%, .6);}
+.dataflow-node.fade .dataflow-port-hole.active.route0  { border-color:hsla(  0, 100%, 88%, .6); }
+.dataflow-node.fade .dataflow-port-hole.active.route1  { border-color:hsla(  0, 100%, 88%, .6); }
+.dataflow-node.fade .dataflow-port-hole.active.route2  { border-color:hsla( 30, 100%, 88%, .6); }
+.dataflow-node.fade .dataflow-port-hole.active.route3  { border-color:hsla( 60, 100%, 88%, .6); }
+.dataflow-node.fade .dataflow-port-hole.active.route4  { border-color:hsla( 90, 100%, 88%, .6); }
+.dataflow-node.fade .dataflow-port-hole.active.route5  { border-color:hsla(120, 100%, 88%, .6); }
+.dataflow-node.fade .dataflow-port-hole.active.route6  { border-color:hsla(150, 100%, 88%, .6); }
+.dataflow-node.fade .dataflow-port-hole.active.route7  { border-color:hsla(180, 100%, 88%, .6); }
+.dataflow-node.fade .dataflow-port-hole.active.route8  { border-color:hsla(210, 100%, 88%, .6); }
+.dataflow-node.fade .dataflow-port-hole.active.route9  { border-color:hsla(240, 100%, 88%, .6); }
+.dataflow-node.fade .dataflow-port-hole.active.route10 { border-color:hsla(270, 100%, 88%, .6); }
+.dataflow-node.fade .dataflow-port-hole.active.route11 { border-color:hsla(300, 100%, 88%, .6); }
+.dataflow-node.fade .dataflow-port-hole.active.route12 { border-color:hsla(330, 100%, 88%, .6); }
                                                       
