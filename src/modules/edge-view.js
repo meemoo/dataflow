@@ -245,7 +245,7 @@
       $choose.children(".route"+this.model.get("route")).addClass("active");
     },
     bringToTop: function(){
-      this.model.bringToTop();
+      // this.model.bringToTop();
       var parent = this.el.parentNode;
       if (parent) {
         parent.appendChild(this.el);

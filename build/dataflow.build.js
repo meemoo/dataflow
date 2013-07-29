@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-29 (1:15:08 AM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-29 (1:24:45 AM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1066,7 +1066,7 @@
         // Set up listener
         sourceNode.on("send:"+this.source.id, this.send, this);
 
-        this.bringToTop();
+        // this.bringToTop();
 
         // Selection event
         this.on("select", this.select, this);
@@ -1094,24 +1094,24 @@
         route: this.get("route")
       };
     },
-    bringToTop: function(){
-      var topZ = 0;
-      this.parentGraph.edges.each(function(edge){
-        if (edge !== this) {
-          var thisZ = edge.get("z");
-          if (thisZ > topZ) {
-            topZ = thisZ;
-          }
-          if (edge.view){
-            edge.view.unhighlight();
-          }
-        }
-      }, this);
-      this.set("z", topZ+1);
-      if (this.collection) {
-        this.collection.sort();
-      }
-    },
+    // bringToTop: function(){
+    //   var topZ = 0;
+    //   this.parentGraph.edges.each(function(edge){
+    //     if (edge !== this) {
+    //       var thisZ = edge.get("z");
+    //       if (thisZ > topZ) {
+    //         topZ = thisZ;
+    //       }
+    //       if (edge.view){
+    //         edge.view.unhighlight();
+    //       }
+    //     }
+    //   }, this);
+    //   this.set("z", topZ+1);
+    //   if (this.collection) {
+    //     this.collection.sort();
+    //   }
+    // },
     remove: function(){
       this.source.disconnect(this);
       this.target.disconnect(this);
@@ -2696,7 +2696,7 @@
       $choose.children(".route"+this.model.get("route")).addClass("active");
     },
     bringToTop: function(){
-      this.model.bringToTop();
+      // this.model.bringToTop();
       var parent = this.el.parentNode;
       if (parent) {
         parent.appendChild(this.el);
