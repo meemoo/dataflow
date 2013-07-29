@@ -38,6 +38,7 @@
             "src/plugins/view-source.js",
             "src/plugins/log.js",
             "src/plugins/inspector.js",
+            "src/plugins/keybinding.js",
             // Nodes
             "src/nodes/base.js"
           ],
