@@ -10,6 +10,10 @@
       return function(){
         // Deselect others
         dataflow.currentGraph.view.$(".node").removeClass("ui-selected");
+
+        // Current zoom
+        zoom = dataflow.get('state').get('zoom');
+
         // Find vacant id
         var id = 1;
         while (dataflow.currentGraph.nodes.get(id)){
@@ -18,10 +22,10 @@
         // Position if button clicked
         x = x===undefined ? 200 : x;
         y = y===undefined ? 200 : y;
-        x += dataflow.currentGraph.view.$el.scrollLeft();
-        y += dataflow.currentGraph.view.$el.scrollTop();
-        x = Math.max(x, 0);
-        y = Math.max(y, 0);
+        x -= dataflow.currentGraph.get("panX");
+        y -= dataflow.currentGraph.get("panY");
+        x /= zoom;
+        y /= zoom;
         // Add node
         var newNode = new node.Model({
           id: id,

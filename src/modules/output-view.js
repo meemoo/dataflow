@@ -67,6 +67,8 @@
     newEdgeStart: function(event, ui){
       // Don't drag node
       event.stopPropagation();
+      if (!ui) { return; }
+
       ui.helper.data({
         route: this.topRoute
       });
@@ -130,6 +132,7 @@
       return topEdge;
     },
     changeEdgeStart: function(event, ui){
+      if (!ui) { return; }
       // Don't drag node
       event.stopPropagation();
 
@@ -161,6 +164,7 @@
       }
     },
     changeEdgeDrag: function(event, ui){
+      if (!ui) { return; }
       // Don't drag node
       event.stopPropagation();
 
@@ -176,8 +180,8 @@
       // Clean up preview edge
       if (this.previewEdgeChange) {
         this.previewEdgeChangeView.remove();
-        // delete this.previewEdgeChange;
-        // delete this.previewEdgeChangeView;
+        delete this.previewEdgeChange;
+        delete this.previewEdgeChangeView;
       }
     },
     connectEdge: function(event, ui) {

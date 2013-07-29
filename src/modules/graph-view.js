@@ -20,7 +20,10 @@
     className: "dataflow-graph",
     events: {
       "click": "deselect",
-      "click .dataflow-graph-gotoparent": "gotoParent"
+      "click .dataflow-graph-gotoparent": "gotoParent",
+      "dragstart": "dragStart",
+      "drag": "drag",
+      "dragstop": "dragStop"
     },
     initialize: function() {
       // Graph container
@@ -46,10 +49,45 @@
         this.$(".dataflow-graph-controls").hide();
       }
 
+      this.$el.draggable({
+        helper: function(){
+          var h = $("<div>");
+          this.model.dataflow.$el.append(h);
+          return h;
+        }.bind(this)
+      });
+
+      // Default 3D transform
+      this.$el.css({
+        transform: "translate3d(0, 0, 0) " +
+                   "scale3d(1, 1, 1) ",
+        transformOrigin: "left top"
+      });
+
       // Handle zooming and scrolling
+      this.state = this.model.dataflow.get('state');
       this.bindInteraction();
     },
-    gotoParent: function() {
+    dragStart: function (event, ui) {
+    },
+    drag: function (event, ui) {
+      if (!ui) { return; }
+      var scale = this.state.get('zoom');
+      this.$el.css({
+        transform: "translate3d("+ui.offset.left/scale+"px, "+ui.offset.top/scale+"px, 0)"
+      });
+    },
+    dragStop: function (event, ui) {
+      this.$el.css({
+        transform: "translate3d(0, 0, 0)"
+      });
+      var scale = this.state.get('zoom');
+      this.model.set({
+        panX: this.model.get("panX") + ui.offset.left/scale,
+        panY: this.model.get("panY") + ui.offset.top/scale
+      });
+    },
+    gotoParent: function () {
       var parentNode = this.model.get("parentNode");
       if (parentNode){
         this.model.dataflow.showGraph( parentNode.parentGraph );
@@ -59,7 +97,6 @@
       var state = this.model.dataflow.get('state');
       this.bindZoom(state);
       this.bindScroll(state);
-
     },
     bindZoom: function (state) {
       if (!window.Hammer) {
@@ -70,28 +107,60 @@
         // TODO: calculate level where whole graph fits
         state.set('zoom', 1);
       }
+      var currentZoom, startX, startY, originX, originY, scale, deltaX, deltaY;
       var self = this;
-      var lastScale;
-      Hammer(this.el).on('touch', function (event) {
-        lastScale = state.get('zoom');
-        state.set('centerX', event.gesture.center.pageX);
-        state.set('centerY', event.gesture.center.pageY);
+      Hammer(this.el).on('transformstart', function (event) {
+        currentZoom = state.get('zoom');
+        startX = event.gesture.center.pageX;
+        startY = event.gesture.center.pageY;
+        originX = startX/currentZoom;
+        originY = startY/currentZoom;
+        self.$el.css({
+          transformOrigin: originX+"px "+originY+"px"
+          // transformOrigin: startX+"px "+startY+"px"
+        });
       });
-      Hammer(this.el).on('pinch', function (event) {
-        var zoom = Math.max(0.5, Math.min(lastScale * event.gesture.scale, 3));
-        var centerX = state.get('centerX');
-        var centerY = state.get('centerY');
-        var scrollX = centerX - (centerX / zoom);
-        var scrollY = centerY - (centerY / zoom);
+      Hammer(this.el).on('transform', function (event) {
+        scale = Math.max(0.5/currentZoom, Math.min(event.gesture.scale, 3/currentZoom));
+        deltaX = (event.gesture.center.pageX - startX) / currentZoom;
+        deltaY = (event.gesture.center.pageY - startY) / currentZoom;
+        self.$el.css({
+          transform: "translate3d("+deltaX+"px,"+deltaY+"px, 0) " +
+                     "scale3d("+scale+","+scale+", 1) "
+        });
+      });
+      Hammer(this.el).on('transformend', function (event) {
+        // Reset 3D transform
+        self.$el.css({
+          transform: "translate3d(0, 0, 0) " +
+                     "scale3d(1, 1, 1) "
+        });
+        // Zoom
+        var zoom = currentZoom * scale;
+        zoom = Math.max(0.5, Math.min(zoom, 3));
         state.set('zoom', zoom);
-        state.set('scrollY', scrollY);
-        state.set('scrollX', scrollX);
+        // var scaleD = scale - currentZoom;
+        var width = self.$el.width();
+        var height = self.$el.height();
+        // console.log("panX", self.model.get("panX") );
+        // console.log("deltaX", deltaX); 
+        // console.log("width", width); 
+        // console.log("currentZoom", currentZoom); 
+        // console.log("scale", scale);
+        // console.log("zoom", zoom);
+        // console.log("-===============-");
+        //
+        // TODO : fix origin difference bump
+        self.model.set({
+          panX: self.model.get("panX") + deltaX,
+          panY: self.model.get("panY") + deltaY
+        });
       });
 
       var onZoom = function () {
         self.el.style.zoom = state.get('zoom');
-        self.el.scrollTop = state.get('scrollY');
-        self.el.scrollLeft = state.get('scrollX');
+        // self.el.scrollTop = state.get('scrollY');
+        // self.el.scrollLeft = state.get('scrollX');
       };
       state.on('change:zoom', onZoom);
 
@@ -101,10 +170,10 @@
       }
     },
     bindScroll: function (state) {
-      this.el.addEventListener('scroll', function (event) {
-        state.set('scrollY', this.scrollTop);
-        state.set('scrollX', this.scrollLeft);
-      });
+      // this.el.addEventListener('scroll', function (event) {
+      //   state.set('scrollY', this.scrollTop);
+      //   state.set('scrollX', this.scrollLeft);
+      // });
     },
     render: function() {
       // HACK to get them to show correct positions on load
@@ -165,8 +234,10 @@
       try{
         var svg = this.$('.dataflow-svg-edges')[0];
         var rect = svg.getBBox();
-        svg.setAttribute("width", Math.round(rect.x+rect.width+50));
-        svg.setAttribute("height", Math.round(rect.y+rect.height+50));
+        var width =  Math.max( Math.round(rect.x+rect.width +50), 50 );
+        var height = Math.max( Math.round(rect.y+rect.height+50), 50 );
+        svg.setAttribute("width", width);
+        svg.setAttribute("height", height);
       } catch (error) {}
     },
     deselect: function () {
@@ -177,19 +248,27 @@
     fade: function () {
       this.model.nodes.each(function(node){
         if (!node.view.$el.hasClass("ui-selected")){
-          node.view.fade();
+          if (node.view) {
+            node.view.fade();
+          }
         }
       });
       this.model.edges.each(function(edge){
-        edge.view.fade();
+        if (edge.view) {
+          edge.view.fade();
+        }
       });
     },
     unfade: function () {
       this.model.nodes.each(function(node){
-        node.view.unfade();
+        if (node.view) {
+          node.view.unfade();
+        }
       });
       this.model.edges.each(function(edge){
-        edge.view.unfade();
+        if (edge.view) {
+          edge.view.unfade();
+        }
       });
     }
   });

@@ -205,8 +205,10 @@
       return this;
     },
     newEdgeStart: function(event, ui){
+      if (!ui) { return; }
       // Don't drag node
       event.stopPropagation();
+      
       ui.helper.data({
         route: this.topRoute
       });
@@ -226,11 +228,12 @@
       graphSVGElement.appendChild(this.previewEdgeNewView.el);
     },
     newEdgeDrag: function(event, ui){
-      // Don't drag node
-      event.stopPropagation();
       if (!this.previewEdgeNewView || !ui) {
         return;
       }
+      // Don't drag node
+      event.stopPropagation();
+
       var state = this.model.parentNode.parentGraph.dataflow.get('state');
       ui.position.top = event.clientY / state.get('zoom');
       ui.position.left = event.clientX / state.get('zoom');
@@ -271,6 +274,7 @@
       return topEdge;
     },
     changeEdgeStart: function(event, ui){
+      if (!ui) { return; }
       // Don't drag node
       event.stopPropagation();
 
@@ -302,6 +306,7 @@
       }
     },
     changeEdgeDrag: function(event, ui){
+      if (!ui) { return; }
       // Don't drag node
       event.stopPropagation();
       

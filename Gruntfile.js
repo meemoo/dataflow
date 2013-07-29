@@ -49,7 +49,8 @@
       uglify: {
         options: {
           banner: banner,
-          report: 'min'
+          report: 'min',
+          sourceMap: 'build/<%= pkg.name %>.min.js.map'
         },
         dist: {
           files: {
@@ -74,7 +75,7 @@
       watch: {
         scripts: {
           files: ['Gruntfile.js', 'src/*.js', 'src/**/*.js'],
-          tasks: ['jshint:force', 'build'],
+          tasks: ['jshint:force'],
           options: {
             nospawn: true
           }

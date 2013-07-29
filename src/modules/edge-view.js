@@ -126,6 +126,9 @@
       }
     },
     fade: function(){
+      if (this.model.source.parentNode.view.$el.hasClass("ui-selected") || this.model.target.parentNode.view.$el.hasClass("ui-selected")) {
+        return;
+      }
       this.el.setAttribute("class", "dataflow-edge fade");
     },
     unfade: function(){
@@ -219,7 +222,9 @@
     },
     click: function(event){
       // Don't click graph
-      event.stopPropagation();
+      if (event) {
+        event.stopPropagation();
+      }
       // Highlight
       this.highlight();
       this.bringToTop();
