@@ -39,7 +39,9 @@
             "src/plugins/log.js",
             "src/plugins/inspector.js",
             // Nodes
-            "src/nodes/base.js"
+            "src/nodes/base.js",
+            "src/nodes/base-resizable.js",
+            "src/nodes/dataflow-subgraph.js"
           ],
           dest: 'build/<%= pkg.name %>.build.js'
         }
