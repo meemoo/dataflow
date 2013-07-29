@@ -40,7 +40,9 @@
             "src/plugins/inspector.js",
             "src/plugins/keybinding.js",
             // Nodes
-            "src/nodes/base.js"
+            "src/nodes/base.js",
+            "src/nodes/base-resizable.js",
+            "src/nodes/dataflow-subgraph.js"
           ],
           dest: 'build/<%= pkg.name %>.build.js'
         }
