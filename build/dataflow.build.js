@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-29 (12:35:08 AM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-29 (1:15:08 AM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -2042,7 +2042,7 @@
           }
         }, this);
         if (topEdge && topEdge.view) {
-          topEdge.view.click();
+          topEdge.view.bringToTop();
         }
       }
       return topEdge;
@@ -2167,8 +2167,8 @@
     bringToTop: function (edge) {
       var route = edge.get("route");
       if (route !== undefined) {
-        this.$(".dataflow-port-hole").removeClass("route"+this.topRoute);
-        this.$(".dataflow-port-hole").addClass("route"+route);
+        this.$(".dataflow-port-hole, .dataflow-port-plug").removeClass("route"+this.topRoute);
+        this.$(".dataflow-port-hole, .dataflow-port-plug").addClass("route"+route);
         this.topRoute = route;
       }
     }
@@ -2309,7 +2309,7 @@
           }
         }, this);
         if (topEdge && topEdge.view) {
-          topEdge.view.click();
+          topEdge.view.bringToTop();
         }
       }
       return topEdge;
@@ -2680,6 +2680,9 @@
       this.highlight();
       this.bringToTop();
       this.model.trigger("select");
+      // Fade all and highlight related
+      this.model.parentGraph.view.fade();
+      this.unfade();
       this.showInspector();
     },
     showInspector: function(){
@@ -2699,9 +2702,6 @@
         parent.appendChild(this.el);
       }
 
-      // Fade all and highlight related
-      this.model.parentGraph.view.fade();
-      this.unfade();
       // this.model.source.parentNode.view.unfade();
       // this.model.target.parentNode.view.unfade();
 

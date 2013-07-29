@@ -229,6 +229,9 @@
       this.highlight();
       this.bringToTop();
       this.model.trigger("select");
+      // Fade all and highlight related
+      this.model.parentGraph.view.fade();
+      this.unfade();
       this.showInspector();
     },
     showInspector: function(){
@@ -248,9 +251,6 @@
         parent.appendChild(this.el);
       }
 
-      // Fade all and highlight related
-      this.model.parentGraph.view.fade();
-      this.unfade();
       // this.model.source.parentNode.view.unfade();
       // this.model.target.parentNode.view.unfade();
 
