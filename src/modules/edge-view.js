@@ -229,6 +229,17 @@
       this.highlight();
       this.bringToTop();
       this.model.trigger("select");
+      this.showInspector();
+    },
+    showInspector: function(){
+      this.model.parentGraph.dataflow.showMenu("inspector");
+      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
+      $inspector.children().detach();
+      $inspector.append( this.getInspect() );
+
+      var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
+      $choose.children().removeClass("active");
+      $choose.children(".route"+this.model.get("route")).addClass("active");
     },
     bringToTop: function(){
       this.model.bringToTop();
@@ -256,7 +267,10 @@
         var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
         var self = this;
         var changeRoute = function(event){
-          self.model.set("route", $(event.target).data("route"));
+          var route = $(event.target).data("route");
+          self.model.set("route", route);
+          $choose.children().removeClass("active");
+          $choose.children(".route"+route).addClass("active");
         };
         for (var i=0; i<12; i++) {
           var button = $("<button>")

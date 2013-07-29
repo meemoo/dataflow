@@ -280,6 +280,7 @@
       this.$(".dataflow-node").removeClass("ui-selected");
       this.model.trigger("selectionChanged");
       this.unfade();
+      this.model.dataflow.hideMenu();
     },
     fade: function () {
       this.model.nodes.each(function(node){

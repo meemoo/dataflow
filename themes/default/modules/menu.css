@@ -103,6 +103,16 @@
 .dataflow-edge-inspector-route-choose button {
   width: 20px;
   height: 20px;
+
+  -webkit-transform: scale(1.0);
+  -moz-transform: scale(1.0);
+  -o-transform: scale(1.0);
+  transform: scale(1.0);
+
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .dataflow-edge-inspector-route-choose button.route0  { background-color: hsl(  0,  0%, 70%); }
@@ -118,3 +128,10 @@
 .dataflow-edge-inspector-route-choose button.route10 { background-color: hsl(270, 68%, 70%); }
 .dataflow-edge-inspector-route-choose button.route11 { background-color: hsl(300, 68%, 70%); }
 .dataflow-edge-inspector-route-choose button.route12 { background-color: hsl(330, 68%, 70%); }
+
+.dataflow-edge-inspector-route-choose button.active {
+  -webkit-transform: scale(1.15);
+  -moz-transform: scale(1.15);
+  -o-transform: scale(1.15);
+  transform: scale(1.15);
+}

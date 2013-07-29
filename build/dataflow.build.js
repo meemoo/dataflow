@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-28 (11:31:28 PM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-29 (12:35:08 AM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1430,6 +1430,7 @@
       this.$(".dataflow-node").removeClass("ui-selected");
       this.model.trigger("selectionChanged");
       this.unfade();
+      this.model.dataflow.hideMenu();
     },
     fade: function () {
       this.model.nodes.each(function(node){
@@ -2679,6 +2680,17 @@
       this.highlight();
       this.bringToTop();
       this.model.trigger("select");
+      this.showInspector();
+    },
+    showInspector: function(){
+      this.model.parentGraph.dataflow.showMenu("inspector");
+      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
+      $inspector.children().detach();
+      $inspector.append( this.getInspect() );
+
+      var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
+      $choose.children().removeClass("active");
+      $choose.children(".route"+this.model.get("route")).addClass("active");
     },
     bringToTop: function(){
       this.model.bringToTop();
@@ -2706,7 +2718,10 @@
         var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
         var self = this;
         var changeRoute = function(event){
-          self.model.set("route", $(event.target).data("route"));
+          var route = $(event.target).data("route");
+          self.model.set("route", route);
+          $choose.children().removeClass("active");
+          $choose.children(".route"+route).addClass("active");
         };
         for (var i=0; i<12; i++) {
           var button = $("<button>")
