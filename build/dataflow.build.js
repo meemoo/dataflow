@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-29 (1:24:45 AM PDT)
+/*! dataflow.js - v0.0.7 - 2013-07-29 (2:16:32 PM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1170,7 +1170,7 @@
 
   Graph.View = Backbone.View.extend({
     template: _.template(template),
-    className: "dataflow-graph",
+    className: "dataflow-graph zoom-normal",
     events: {
       "click": "deselect",
       "click .dataflow-graph-gotoparent": "gotoParent",
@@ -1314,13 +1314,12 @@
       });
 
       var onZoom = function () {
-        // var zoom = state.get('zoom');
-        // self.el.style.zoom = self.state.get('zoom');
-        // var lastClass = self.zoomClass;
-        // self.zoomClass = Math.floor(zoom * 100 * 4) / 4;
-        // self.$el
-        //   .removeClass(lastClass)
-        //   .addClass(self.zoomClass);
+        var z = state.get('zoom');
+        var lastClass = self.zoomClass;
+        self.zoomClass = z < 0.5 ? "zoom-tiny" : (z < 0.8 ? "zoom-small" : (z < 1.3 ? "zoom-normal" : "zoom-big"));
+        self.$el
+          .removeClass(lastClass)
+          .addClass(self.zoomClass);
         self.el.style.zoom = state.get('zoom');
       };
 
@@ -1331,7 +1330,7 @@
         onZoom();
       }
     },
-    // zoomClass: 1,
+    zoomClass: 1,
     zoomIn: function () {
       var currentZoom = this.state.get('zoom');
       var zoom = currentZoom * 0.9;
