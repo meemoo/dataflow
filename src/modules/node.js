@@ -80,6 +80,7 @@
       if (this["input"+name]){
         this["input"+name]();
       }
+      this.trigger("bang", name);
     },
     send: function (name, value) {
       // This isn't the only way that values are sent, see github.com/forresto/dataflow-webaudio
