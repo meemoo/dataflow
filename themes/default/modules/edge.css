@@ -18,7 +18,7 @@
   fill: none;
 }
 
-.dataflow-edge-wire.route0  { stroke: hsl(220, 10%, 40%); } /* Gray */
+.dataflow-edge-wire.route0  { stroke: hsl(220, 10%, 60%); } /* Gray */
 .dataflow-edge-wire.route1  { stroke: hsl(  0, 68%, 70%); } /* Red */
 .dataflow-edge-wire.route2  { stroke: hsl( 30, 68%, 70%); } /* Orange */
 .dataflow-edge-wire.route3  { stroke: hsl( 60, 68%, 70%); } /* Yellow */

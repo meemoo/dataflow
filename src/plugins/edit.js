@@ -26,9 +26,10 @@
     //
 
     function selectAll(){
-      dataflow.currentGraph.view.$(".node").addClass("ui-selected");
+      dataflow.currentGraph.view.$(".dataflow-node").addClass("ui-selected");
     }
     buttons.children(".selectall").click(selectAll);
+    Edit.selectAll = selectAll;
 
     //
     // X
@@ -51,6 +52,7 @@
       });
     }
     buttons.children(".cut").click(cut);
+    Edit.cut = cut;
 
     //
     // C
@@ -82,6 +84,7 @@
       });
     }
     buttons.children(".copy").click(copy);
+    Edit.copy = copy;
 
     //
     // V
@@ -90,7 +93,7 @@
     function paste(){
       if (copied && copied.nodes.length > 0) {
         // Deselect all
-        dataflow.currentGraph.view.$(".node").removeClass("ui-selected");
+        dataflow.currentGraph.view.$(".dataflow-node").removeClass("ui-selected");
         // Add nodes
         _.each(copied.nodes, function(node){
           // Offset pasted
@@ -135,6 +138,7 @@
       });
     }
     buttons.children(".paste").click(paste);
+    Edit.paste = paste;
 
 
 

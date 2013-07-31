@@ -268,7 +268,7 @@
           }
         }, this);
         if (topEdge && topEdge.view) {
-          topEdge.view.click();
+          topEdge.view.bringToTop();
         }
       }
       return topEdge;
@@ -393,8 +393,8 @@
     bringToTop: function (edge) {
       var route = edge.get("route");
       if (route !== undefined) {
-        this.$(".dataflow-port-hole").removeClass("route"+this.topRoute);
-        this.$(".dataflow-port-hole").addClass("route"+route);
+        this.$(".dataflow-port-hole, .dataflow-port-plug").removeClass("route"+this.topRoute);
+        this.$(".dataflow-port-hole, .dataflow-port-plug").addClass("route"+route);
         this.topRoute = route;
       }
     }

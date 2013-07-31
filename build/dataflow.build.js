@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-29 (4:52:57 AM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-07-29 (2:16:32 PM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1066,7 +1066,7 @@
         // Set up listener
         sourceNode.on("send:"+this.source.id, this.send, this);
 
-        this.bringToTop();
+        // this.bringToTop();
 
         // Selection event
         this.on("select", this.select, this);
@@ -1094,24 +1094,24 @@
         route: this.get("route")
       };
     },
-    bringToTop: function(){
-      var topZ = 0;
-      this.parentGraph.edges.each(function(edge){
-        if (edge !== this) {
-          var thisZ = edge.get("z");
-          if (thisZ > topZ) {
-            topZ = thisZ;
-          }
-          if (edge.view){
-            edge.view.unhighlight();
-          }
-        }
-      }, this);
-      this.set("z", topZ+1);
-      if (this.collection) {
-        this.collection.sort();
-      }
-    },
+    // bringToTop: function(){
+    //   var topZ = 0;
+    //   this.parentGraph.edges.each(function(edge){
+    //     if (edge !== this) {
+    //       var thisZ = edge.get("z");
+    //       if (thisZ > topZ) {
+    //         topZ = thisZ;
+    //       }
+    //       if (edge.view){
+    //         edge.view.unhighlight();
+    //       }
+    //     }
+    //   }, this);
+    //   this.set("z", topZ+1);
+    //   if (this.collection) {
+    //     this.collection.sort();
+    //   }
+    // },
     remove: function(){
       this.source.disconnect(this);
       this.target.disconnect(this);
@@ -1134,6 +1134,20 @@
 
 }(Dataflow) );
 
+(function(Dataflow){
+
+  var Card = Dataflow.prototype.module("card");
+
+  Card.Model = Backbone.Model.extend({
+    
+  });
+
+  Card.Collection = Backbone.Collection.extend({
+    model: Card.Model
+  });
+
+}(Dataflow));
+
 (function(Dataflow) {
 
   var Graph = Dataflow.prototype.module("graph");
@@ -1141,6 +1155,9 @@
   // Dependencies
   var Node = Dataflow.prototype.module("node");
   var Edge = Dataflow.prototype.module("edge");
+
+  var minZoom = 0.25;
+  var maxZoom = 2.5;
  
   var template = 
     '<div class="dataflow-edges">'+
@@ -1153,7 +1170,7 @@
 
   Graph.View = Backbone.View.extend({
     template: _.template(template),
-    className: "dataflow-graph",
+    className: "dataflow-graph zoom-normal",
     events: {
       "click": "deselect",
       "click .dataflow-graph-gotoparent": "gotoParent",
@@ -1200,8 +1217,11 @@
         transformOrigin: "left top"
       });
 
+      this.pageX = this.$el.position();
+
       // Handle zooming and scrolling
       this.state = this.model.dataflow.get('state');
+
       this.bindInteraction();
     },
     dragStart: function (event, ui) {
@@ -1257,7 +1277,7 @@
         });
       });
       Hammer(this.el).on('transform', function (event) {
-        scale = Math.max(0.5/currentZoom, Math.min(event.gesture.scale, 3/currentZoom));
+        scale = Math.max(minZoom/currentZoom, Math.min(event.gesture.scale, maxZoom/currentZoom));
         deltaX = (event.gesture.center.pageX - startX) / currentZoom;
         deltaY = (event.gesture.center.pageY - startY) / currentZoom;
         self.$el.css({
@@ -1273,7 +1293,7 @@
         });
         // Zoom
         var zoom = currentZoom * scale;
-        zoom = Math.max(0.5, Math.min(zoom, 3));
+        zoom = Math.max(minZoom, Math.min(zoom, maxZoom));
         state.set('zoom', zoom);
         // var scaleD = scale - currentZoom;
         var width = self.$el.width();
@@ -1294,15 +1314,44 @@
       });
 
       var onZoom = function () {
+        var z = state.get('zoom');
+        var lastClass = self.zoomClass;
+        self.zoomClass = z < 0.5 ? "zoom-tiny" : (z < 0.8 ? "zoom-small" : (z < 1.3 ? "zoom-normal" : "zoom-big"));
+        self.$el
+          .removeClass(lastClass)
+          .addClass(self.zoomClass);
         self.el.style.zoom = state.get('zoom');
-        // self.el.scrollTop = state.get('scrollY');
-        // self.el.scrollLeft = state.get('scrollX');
       };
+
       state.on('change:zoom', onZoom);
 
       // Initial zoom state from localStorage
       if (state.get('zoom') !== 1) {
         onZoom();
+      }
+    },
+    zoomClass: 1,
+    zoomIn: function () {
+      var currentZoom = this.state.get('zoom');
+      var zoom = currentZoom * 0.9;
+      zoom = Math.max(minZoom, zoom); 
+      if (zoom !== currentZoom) {
+        this.state.set('zoom', zoom);
+      }
+    },
+    zoomOut: function () {
+      var currentZoom = this.state.get('zoom');
+      var zoom = currentZoom * 1.1;
+      zoom = Math.min(maxZoom, zoom); 
+      if (zoom !== currentZoom) {
+        this.state.set('zoom', zoom);
+      }
+    },
+    zoomCenter: function () {
+      var currentZoom = this.state.get('zoom');
+      var zoom = 1;
+      if (zoom !== currentZoom) {
+        this.state.set('zoom', 1);
       }
     },
     bindScroll: function (state) {
@@ -1380,6 +1429,7 @@
       this.$(".dataflow-node").removeClass("ui-selected");
       this.model.trigger("selectionChanged");
       this.unfade();
+      this.model.dataflow.hideMenu();
     },
     fade: function () {
       this.model.nodes.each(function(node){
@@ -1991,7 +2041,7 @@
           }
         }, this);
         if (topEdge && topEdge.view) {
-          topEdge.view.click();
+          topEdge.view.bringToTop();
         }
       }
       return topEdge;
@@ -2116,8 +2166,8 @@
     bringToTop: function (edge) {
       var route = edge.get("route");
       if (route !== undefined) {
-        this.$(".dataflow-port-hole").removeClass("route"+this.topRoute);
-        this.$(".dataflow-port-hole").addClass("route"+route);
+        this.$(".dataflow-port-hole, .dataflow-port-plug").removeClass("route"+this.topRoute);
+        this.$(".dataflow-port-hole, .dataflow-port-plug").addClass("route"+route);
         this.topRoute = route;
       }
     }
@@ -2258,7 +2308,7 @@
           }
         }, this);
         if (topEdge && topEdge.view) {
-          topEdge.view.click();
+          topEdge.view.bringToTop();
         }
       }
       return topEdge;
@@ -2629,17 +2679,28 @@
       this.highlight();
       this.bringToTop();
       this.model.trigger("select");
+      // Fade all and highlight related
+      this.model.parentGraph.view.fade();
+      this.unfade();
+      this.showInspector();
+    },
+    showInspector: function(){
+      this.model.parentGraph.dataflow.showMenu("inspector");
+      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
+      $inspector.children().detach();
+      $inspector.append( this.getInspect() );
+
+      var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
+      $choose.children().removeClass("active");
+      $choose.children(".route"+this.model.get("route")).addClass("active");
     },
     bringToTop: function(){
-      this.model.bringToTop();
+      // this.model.bringToTop();
       var parent = this.el.parentNode;
       if (parent) {
         parent.appendChild(this.el);
       }
 
-      // Fade all and highlight related
-      // this.model.parentGraph.view.fade();
-      // this.unfade();
       // this.model.source.parentNode.view.unfade();
       // this.model.target.parentNode.view.unfade();
 
@@ -2656,7 +2717,10 @@
         var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
         var self = this;
         var changeRoute = function(event){
-          self.model.set("route", $(event.target).data("route"));
+          var route = $(event.target).data("route");
+          self.model.set("route", route);
+          $choose.children().removeClass("active");
+          $choose.children(".route"+route).addClass("active");
         };
         for (var i=0; i<12; i++) {
           var button = $("<button>")
@@ -2671,6 +2735,23 @@
   });
 
 }(Dataflow) );
+
+(function(Dataflow){
+
+  var Card = Dataflow.prototype.module("card");
+
+  Card.View = Backbone.View.extend({
+    tagName: "div",
+    initialize: function(){
+    }
+  });
+
+  Card.CollectionView = Backbone.CollectionView.extend({
+    tagName: "div",
+    itemView: Card.View
+  }); 
+
+}(Dataflow));
 
 ( function(Dataflow) {
 
@@ -2700,9 +2781,10 @@
     //
 
     function selectAll(){
-      dataflow.currentGraph.view.$(".node").addClass("ui-selected");
+      dataflow.currentGraph.view.$(".dataflow-node").addClass("ui-selected");
     }
     buttons.children(".selectall").click(selectAll);
+    Edit.selectAll = selectAll;
 
     //
     // X
@@ -2725,6 +2807,7 @@
       });
     }
     buttons.children(".cut").click(cut);
+    Edit.cut = cut;
 
     //
     // C
@@ -2756,6 +2839,7 @@
       });
     }
     buttons.children(".copy").click(copy);
+    Edit.copy = copy;
 
     //
     // V
@@ -2764,7 +2848,7 @@
     function paste(){
       if (copied && copied.nodes.length > 0) {
         // Deselect all
-        dataflow.currentGraph.view.$(".node").removeClass("ui-selected");
+        dataflow.currentGraph.view.$(".dataflow-node").removeClass("ui-selected");
         // Add nodes
         _.each(copied.nodes, function(node){
           // Offset pasted
@@ -2809,6 +2893,7 @@
       });
     }
     buttons.children(".paste").click(paste);
+    Edit.paste = paste;
 
 
 
@@ -3155,6 +3240,82 @@
       }
     };
     Inspector.listeners(true);
+
+  };
+
+}(Dataflow) );
+
+( function(Dataflow) {
+
+  // Load after other plugins
+  // TODO: track which widget has focus if multiple in page
+ 
+  var KeyBinding = Dataflow.prototype.plugin("keybinding");
+  var Edit = Dataflow.prototype.plugin("edit");
+
+  KeyBinding.initialize = function(dataflow){
+
+    function zoomIn() {
+      if (dataflow && dataflow.currentGraph && dataflow.currentGraph.view) {
+        dataflow.currentGraph.view.zoomIn();
+      }
+    }
+
+    function zoomOut() {
+      if (dataflow && dataflow.currentGraph && dataflow.currentGraph.view) {
+        dataflow.currentGraph.view.zoomOut();
+      }
+    }
+
+    function zoomCenter() {
+      if (dataflow && dataflow.currentGraph && dataflow.currentGraph.view) {
+        dataflow.currentGraph.view.zoomCenter();
+      }
+    }
+
+    function keyDown(event) {
+      if (event.ctrlKey || event.metaKey) {
+        switch (event.which) {
+          case 189: // -
+            event.preventDefault();
+            zoomIn();
+            break;
+          case 187: // =
+            event.preventDefault();
+            zoomOut();
+            break;
+          case 48:
+            event.preventDefault();
+            zoomCenter();
+            break;
+          case 65: // a
+            Edit.selectAll();
+            break;
+          case 88: // x
+            Edit.cut();
+            break;
+          case 67: // c
+            Edit.copy();
+            break;
+          case 86: // v
+            Edit.paste();
+            break;
+          case 90: // z
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
+    KeyBinding.listeners = function(boo){
+      if (boo) {
+        $(document).on('keydown', keyDown);
+      } else {
+        $(document).off('keydown', keyDown);
+      }
+    };
+    KeyBinding.listeners(true);
 
   };
 

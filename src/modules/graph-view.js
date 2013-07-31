@@ -5,6 +5,9 @@
   // Dependencies
   var Node = Dataflow.prototype.module("node");
   var Edge = Dataflow.prototype.module("edge");
+
+  var minZoom = 0.25;
+  var maxZoom = 2.5;
  
   var template = 
     '<div class="dataflow-edges">'+
@@ -17,7 +20,7 @@
 
   Graph.View = Backbone.View.extend({
     template: _.template(template),
-    className: "dataflow-graph",
+    className: "dataflow-graph zoom-normal",
     events: {
       "click": "deselect",
       "click .dataflow-graph-gotoparent": "gotoParent",
@@ -64,8 +67,11 @@
         transformOrigin: "left top"
       });
 
+      this.pageX = this.$el.position();
+
       // Handle zooming and scrolling
       this.state = this.model.dataflow.get('state');
+
       this.bindInteraction();
     },
     dragStart: function (event, ui) {
@@ -121,7 +127,7 @@
         });
       });
       Hammer(this.el).on('transform', function (event) {
-        scale = Math.max(0.5/currentZoom, Math.min(event.gesture.scale, 3/currentZoom));
+        scale = Math.max(minZoom/currentZoom, Math.min(event.gesture.scale, maxZoom/currentZoom));
         deltaX = (event.gesture.center.pageX - startX) / currentZoom;
         deltaY = (event.gesture.center.pageY - startY) / currentZoom;
         self.$el.css({
@@ -137,7 +143,7 @@
         });
         // Zoom
         var zoom = currentZoom * scale;
-        zoom = Math.max(0.5, Math.min(zoom, 3));
+        zoom = Math.max(minZoom, Math.min(zoom, maxZoom));
         state.set('zoom', zoom);
         // var scaleD = scale - currentZoom;
         var width = self.$el.width();
@@ -158,15 +164,44 @@
       });
 
       var onZoom = function () {
+        var z = state.get('zoom');
+        var lastClass = self.zoomClass;
+        self.zoomClass = z < 0.5 ? "zoom-tiny" : (z < 0.8 ? "zoom-small" : (z < 1.3 ? "zoom-normal" : "zoom-big"));
+        self.$el
+          .removeClass(lastClass)
+          .addClass(self.zoomClass);
         self.el.style.zoom = state.get('zoom');
-        // self.el.scrollTop = state.get('scrollY');
-        // self.el.scrollLeft = state.get('scrollX');
       };
+
       state.on('change:zoom', onZoom);
 
       // Initial zoom state from localStorage
       if (state.get('zoom') !== 1) {
         onZoom();
+      }
+    },
+    zoomClass: 1,
+    zoomIn: function () {
+      var currentZoom = this.state.get('zoom');
+      var zoom = currentZoom * 0.9;
+      zoom = Math.max(minZoom, zoom); 
+      if (zoom !== currentZoom) {
+        this.state.set('zoom', zoom);
+      }
+    },
+    zoomOut: function () {
+      var currentZoom = this.state.get('zoom');
+      var zoom = currentZoom * 1.1;
+      zoom = Math.min(maxZoom, zoom); 
+      if (zoom !== currentZoom) {
+        this.state.set('zoom', zoom);
+      }
+    },
+    zoomCenter: function () {
+      var currentZoom = this.state.get('zoom');
+      var zoom = 1;
+      if (zoom !== currentZoom) {
+        this.state.set('zoom', 1);
       }
     },
     bindScroll: function (state) {
@@ -244,6 +279,7 @@
       this.$(".dataflow-node").removeClass("ui-selected");
       this.model.trigger("selectionChanged");
       this.unfade();
+      this.model.dataflow.hideMenu();
     },
     fade: function () {
       this.model.nodes.each(function(node){
