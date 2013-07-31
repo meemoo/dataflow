@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-07-29 (2:16:32 PM PDT)
+/*! dataflow.js - v0.0.7 - 2013-08-01 (12:28:04 AM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -886,6 +886,7 @@
       if (this["input"+name]){
         this["input"+name]();
       }
+      this.trigger("bang", name);
     },
     send: function (name, value) {
       // This isn't the only way that values are sent, see github.com/forresto/dataflow-webaudio
@@ -1133,20 +1134,6 @@
   });
 
 }(Dataflow) );
-
-(function(Dataflow){
-
-  var Card = Dataflow.prototype.module("card");
-
-  Card.Model = Backbone.Model.extend({
-    
-  });
-
-  Card.Collection = Backbone.Collection.extend({
-    model: Card.Model
-  });
-
-}(Dataflow));
 
 (function(Dataflow) {
 
@@ -2735,23 +2722,6 @@
   });
 
 }(Dataflow) );
-
-(function(Dataflow){
-
-  var Card = Dataflow.prototype.module("card");
-
-  Card.View = Backbone.View.extend({
-    tagName: "div",
-    initialize: function(){
-    }
-  });
-
-  Card.CollectionView = Backbone.CollectionView.extend({
-    tagName: "div",
-    itemView: Card.View
-  }); 
-
-}(Dataflow));
 
 ( function(Dataflow) {
 
