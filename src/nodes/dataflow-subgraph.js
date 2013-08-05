@@ -131,12 +131,18 @@
     },
     addInput: function(input){
       // Listen for label changes
+      if (!input.get('inputNode')) {
+        return;
+      }
       input.get("inputNode").on("change:label", function(i){
         input.view.$(".label").text(i.get("label"));
       }, this);
     },
     addOutput: function(output){
       // Listen for label changes
+      if (!input.get('outputNode')) {
+        return;
+      }
       output.get("outputNode").on("change:label", function(o){
         output.view.$(".label").text(o.get("label"));
       }, this);
