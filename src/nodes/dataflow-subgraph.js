@@ -140,7 +140,7 @@
     },
     addOutput: function(output){
       // Listen for label changes
-      if (!input.get('outputNode')) {
+      if (!output.get('outputNode')) {
         return;
       }
       output.get("outputNode").on("change:label", function(o){
