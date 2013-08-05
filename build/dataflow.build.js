@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-01 (12:28:04 AM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-08-05 (4:29:50 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -3518,12 +3518,18 @@
     },
     addInput: function(input){
       // Listen for label changes
+      if (!input.get('inputNode')) {
+        return;
+      }
       input.get("inputNode").on("change:label", function(i){
         input.view.$(".label").text(i.get("label"));
       }, this);
     },
     addOutput: function(output){
       // Listen for label changes
+      if (!input.get('outputNode')) {
+        return;
+      }
       output.get("outputNode").on("change:label", function(o){
         output.view.$(".label").text(o.get("label"));
       }, this);
