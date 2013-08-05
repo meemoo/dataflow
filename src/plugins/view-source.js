@@ -6,8 +6,8 @@
 
     var $form = $( 
       '<form class="dataflow-plugin-view-source">'+
-        '<div style="position: absolute; top:5px; left:5px; bottom:35px; right:5px;">'+
-          '<textarea class="code" style="width:100%; height:100%; margin:0; padding: 0;"></textarea><br/>'+
+        '<div style="">'+
+          '<textarea class="code" style="width:99%; height:400px;; margin:0; padding: 0;"></textarea><br/>'+
         '</div>'+
         '<input class="apply" type="submit" value="apply changes" style="position: absolute; right:5px; bottom:5px;" />'+
       '</form>'
@@ -18,7 +18,7 @@
       id: "source", 
       name: "", 
       menu: $form, 
-      icon: "globe"
+      icon: "cog"
     });
 
     var show = function(source) {

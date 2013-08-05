@@ -4,7 +4,7 @@
 
   Library.initialize = function(dataflow){
  
-    var library = $('<ul class="dataflow-plugin-library" style="list-style:none; padding-left:0" />');
+    var library = $('<ul class="dataflow-plugin-library" style="list-style:none; padding:0; margin:15px 0;" />');
 
     var addNode = function(node, x, y) {
       return function(){
@@ -19,13 +19,12 @@
         while (dataflow.currentGraph.nodes.get(id)){
           id++;
         }
-        // Position if button clicked
+        // Position
         x = x===undefined ? 200 : x;
         y = y===undefined ? 200 : y;
-        x -= dataflow.currentGraph.get("panX");
-        y -= dataflow.currentGraph.get("panY");
-        x /= zoom;
-        y /= zoom;
+        x = x/zoom - dataflow.currentGraph.get("panX");
+        y = y/zoom - dataflow.currentGraph.get("panY");
+
         // Add node
         var newNode = new node.Model({
           id: id,

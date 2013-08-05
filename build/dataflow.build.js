@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-05 (6:52:48 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-08-05 (3:42:02 PM EDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1134,6 +1134,20 @@
   });
 
 }(Dataflow) );
+
+(function(Dataflow){
+
+  var Card = Dataflow.prototype.module("card");
+
+  Card.Model = Backbone.Model.extend({
+    
+  });
+
+  Card.Collection = Backbone.Collection.extend({
+    model: Card.Model
+  });
+
+}(Dataflow));
 
 (function(Dataflow) {
 
@@ -2739,6 +2753,23 @@
 
 }(Dataflow) );
 
+(function(Dataflow){
+
+  var Card = Dataflow.prototype.module("card");
+
+  Card.View = Backbone.View.extend({
+    tagName: "div",
+    initialize: function(){
+    }
+  });
+
+  Card.CollectionView = Backbone.CollectionView.extend({
+    tagName: "div",
+    itemView: Card.View
+  }); 
+
+}(Dataflow));
+
 ( function(Dataflow) {
 
   var Edit = Dataflow.prototype.plugin("edit");
@@ -2930,7 +2961,7 @@
 
   Library.initialize = function(dataflow){
  
-    var library = $('<ul class="dataflow-plugin-library" style="list-style:none; padding-left:0" />');
+    var library = $('<ul class="dataflow-plugin-library" style="list-style:none; padding:0; margin:15px 0;" />');
 
     var addNode = function(node, x, y) {
       return function(){
@@ -2945,13 +2976,12 @@
         while (dataflow.currentGraph.nodes.get(id)){
           id++;
         }
-        // Position if button clicked
+        // Position
         x = x===undefined ? 200 : x;
         y = y===undefined ? 200 : y;
-        x -= dataflow.currentGraph.get("panX");
-        y -= dataflow.currentGraph.get("panY");
-        x /= zoom;
-        y /= zoom;
+        x = x/zoom - dataflow.currentGraph.get("panX");
+        y = y/zoom - dataflow.currentGraph.get("panY");
+
         // Add node
         var newNode = new node.Model({
           id: id,
@@ -3023,8 +3053,8 @@
 
     var $form = $( 
       '<form class="dataflow-plugin-view-source">'+
-        '<div style="position: absolute; top:5px; left:5px; bottom:35px; right:5px;">'+
-          '<textarea class="code" style="width:100%; height:100%; margin:0; padding: 0;"></textarea><br/>'+
+        '<div style="">'+
+          '<textarea class="code" style="width:99%; height:400px;; margin:0; padding: 0;"></textarea><br/>'+
         '</div>'+
         '<input class="apply" type="submit" value="apply changes" style="position: absolute; right:5px; bottom:5px;" />'+
       '</form>'
@@ -3035,7 +3065,7 @@
       id: "source", 
       name: "", 
       menu: $form, 
-      icon: "globe"
+      icon: "cog"
     });
 
     var show = function(source) {
@@ -3090,7 +3120,7 @@
   Log.initialize = function(dataflow){
 
     var $log = $(
-      '<div class="dataflow-plugin-log" style="position: absolute; top:5px; left:5px; bottom:5px; right:5px; overflow:auto;">'+
+      '<div class="dataflow-plugin-log" style="max-height:400px; overflow:auto;">'+
         '<ol class="loglist"></ol>'+
       '</div>'
     );
@@ -3099,7 +3129,7 @@
       id: "log", 
       name: "", 
       menu: $log, 
-      icon: "cog"
+      icon: "th-list"
     });
 
     // Log message and scroll

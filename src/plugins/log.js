@@ -5,7 +5,7 @@
   Log.initialize = function(dataflow){
 
     var $log = $(
-      '<div class="dataflow-plugin-log" style="position: absolute; top:5px; left:5px; bottom:5px; right:5px; overflow:auto;">'+
+      '<div class="dataflow-plugin-log" style="max-height:400px; overflow:auto;">'+
         '<ol class="loglist"></ol>'+
       '</div>'
     );
@@ -14,7 +14,7 @@
       id: "log", 
       name: "", 
       menu: $log, 
-      icon: "cog"
+      icon: "th-list"
     });
 
     // Log message and scroll
