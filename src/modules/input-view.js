@@ -155,6 +155,10 @@
           input = $('<input type="checkbox" class="input input-boolean">');
           input.change(this.inputBoolean.bind(this));
           return input;
+        case 'object':
+          input = $('<textarea class="input input-object"></textarea>');
+          input.on('change, keyup', this.inputObject.bind(this));
+          return input;
         case 'bang':
           input = $('<button class="input input-bang">!</button>');
           input.click(this.inputBang.bind(this));
@@ -180,6 +184,10 @@
         input.prop('checked', value);
         return;
       }
+      if (type === 'object') {
+        input.text(JSON.stringify(value, null, 2));
+        return;
+      }
       input.val(value);
     },
     inputSelect: function(e){
@@ -197,6 +205,14 @@
     },
     inputBoolean: function(e){
       this.model.parentNode.setState(this.model.id, $(e.target).prop("checked"));
+    },
+    inputObject: function(e){
+      try {
+        var obj = JSON.parse($(e.target).text());
+        this.model.parentNode.setState(this.model.id, obj);
+      } catch (err) {
+        // TODO: We need error handling in the form
+      }
     },
     inputBang: function(){
       this.model.parentNode.setBang(this.model.id);
