@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-06 (11:52:36 AM EDT)
+/*! dataflow.js - v0.0.7 - 2013-08-06 (2:01:09 PM EDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1639,9 +1639,6 @@
       });
     },
     dragStop: function(event, ui){
-      // HACK
-      console.log("hmm");
-
       if (!ui){ return; }
       // Don't drag graph
       event.stopPropagation();

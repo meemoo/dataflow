@@ -174,9 +174,6 @@
       });
     },
     dragStop: function(event, ui){
-      // HACK
-      console.log("hmm");
-
       if (!ui){ return; }
       // Don't drag graph
       event.stopPropagation();
