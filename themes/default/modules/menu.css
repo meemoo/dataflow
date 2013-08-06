@@ -56,6 +56,12 @@
   padding: 3px 20px;
 }
 
+.dataflow-plugin-overflow {
+  min-height: 50px;
+  max-height: 350px;
+  overflow: auto;
+}
+
 .dataflow-node-inspector-inputs label {
   padding: 15px 20px 10px;
   border-top: 1px solid hsl(0, 0%, 97%);
@@ -68,6 +74,11 @@
     display: inline-block;
     width: 100px;
   }
+
+.dataflow-node-inspector-inputs textarea {
+  width: 260px;
+  height: 55px;
+}
 
 .input-container {
   margin-right: 0.25em;

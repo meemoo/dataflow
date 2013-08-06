@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-05 (3:42:02 PM EDT)
+/*! dataflow.js - v0.0.7 - 2013-08-06 (11:52:36 AM EDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -508,6 +508,7 @@
           id: info.id,
           icon: info.icon,
           label: info.name,
+          showLabel: false,
           action: function(){ this.showMenu(info.id); }
         });
       }
@@ -2960,8 +2961,10 @@
   var Library = Dataflow.prototype.plugin("library");
 
   Library.initialize = function(dataflow){
- 
-    var library = $('<ul class="dataflow-plugin-library" style="list-style:none; padding:0; margin:15px 0;" />');
+
+    var $container = $('<div class="dataflow-plugin-overflow">');
+    var $library = $('<ul class="dataflow-plugin-library" style="list-style:none; padding:0; margin:15px 0;" />');
+    $container.append($library);
 
     var addNode = function(node, x, y) {
       return function(){
@@ -3016,14 +3019,14 @@
       var item = $("<li />")
         .append(addButton)
         .append(name);
-      library.append(item);
+      $library.append(item);
     };
 
     var update = function(options){
       options = options ? options : {};
       options.exclude = options.exclude ? options.exclude : ["base", "base-resizable"];
 
-      library.empty();
+      $library.empty();
       _.each(dataflow.nodes, function(node, index){
         if (options.exclude.indexOf(index) === -1) {
           addLibraryItem(node, index);
@@ -3035,7 +3038,7 @@
     dataflow.addPlugin({
       id: "library", 
       name: "", 
-      menu: library, 
+      menu: $container, 
       icon: "plus"
     });
 
@@ -3120,7 +3123,7 @@
   Log.initialize = function(dataflow){
 
     var $log = $(
-      '<div class="dataflow-plugin-log" style="max-height:400px; overflow:auto;">'+
+      '<div class="dataflow-plugin-log dataflow-plugin-overflow">'+
         '<ol class="loglist"></ol>'+
       '</div>'
     );
@@ -3141,35 +3144,41 @@
 
     Log.add = log;
 
+    var logged = function(message){
+      log("log: " + message);
+    };
+    var nodeAdded = function(graph, node){
+      log("node added: " + node.toString());
+    };
+    var nodeRemoved = function(graph, node){
+      log("node removed: " + node.toString());
+    };
+    var edgeAdded = function(graph, edge){
+      log("edge added: " + edge.toString());
+    };
+    var edgeRemoved = function(graph, edge){
+      log("edge removed: " + edge.toString());
+    };
+
 
 
     Log.listeners = function(boo){
       if (boo) {
         // Log
-        dataflow.on("log", function(message){
-          log("log: " + message);
-        });
+        dataflow.on("log", logged);
 
         // Log graph changes
-        dataflow.on("node:add", function(graph, node){
-          log("node added: " + node.toString());
-        });
-        dataflow.on("node:remove", function(graph, node){
-          log("node removed: " + node.toString());
-        });
-        dataflow.on("edge:add", function(graph, edge){
-          log("edge added: " + edge.toString());
-        });
-        dataflow.on("edge:remove", function(graph, edge){
-          log("edge removed: " + edge.toString());
-        });
+        dataflow.on("node:add", nodeAdded);
+        dataflow.on("node:remove", nodeRemoved);
+        dataflow.on("edge:add", edgeAdded);
+        dataflow.on("edge:remove", edgeRemoved);
       } else {
-        // Custom
-        dataflow.off("log");
-        dataflow.off("node:add");
-        dataflow.off("node:remove");
-        dataflow.off("edge:add");
-        dataflow.off("edge:remove");
+        // Custom for other integration
+        dataflow.off("log", logged);
+        dataflow.off("node:add", nodeAdded);
+        dataflow.off("node:remove", nodeRemoved);
+        dataflow.off("edge:add", edgeAdded);
+        dataflow.off("edge:remove", edgeRemoved);
       }
     };
     Log.listeners(true);

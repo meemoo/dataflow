@@ -149,6 +149,7 @@
           id: info.id,
           icon: info.icon,
           label: info.name,
+          showLabel: false,
           action: function(){ this.showMenu(info.id); }
         });
       }

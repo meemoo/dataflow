@@ -3,8 +3,10 @@
   var Library = Dataflow.prototype.plugin("library");
 
   Library.initialize = function(dataflow){
- 
-    var library = $('<ul class="dataflow-plugin-library" style="list-style:none; padding:0; margin:15px 0;" />');
+
+    var $container = $('<div class="dataflow-plugin-overflow">');
+    var $library = $('<ul class="dataflow-plugin-library" style="list-style:none; padding:0; margin:15px 0;" />');
+    $container.append($library);
 
     var addNode = function(node, x, y) {
       return function(){
@@ -59,14 +61,14 @@
       var item = $("<li />")
         .append(addButton)
         .append(name);
-      library.append(item);
+      $library.append(item);
     };
 
     var update = function(options){
       options = options ? options : {};
       options.exclude = options.exclude ? options.exclude : ["base", "base-resizable"];
 
-      library.empty();
+      $library.empty();
       _.each(dataflow.nodes, function(node, index){
         if (options.exclude.indexOf(index) === -1) {
           addLibraryItem(node, index);
@@ -78,7 +80,7 @@
     dataflow.addPlugin({
       id: "library", 
       name: "", 
-      menu: library, 
+      menu: $container, 
       icon: "plus"
     });
 
