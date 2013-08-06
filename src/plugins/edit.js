@@ -91,7 +91,7 @@
     //
 
     function paste(){
-      if (copied && copied.nodes.length > 0) {
+      if (copied && copied.nodes && copied.nodes.length > 0) {
         // Deselect all
         dataflow.currentGraph.view.$(".dataflow-node").removeClass("ui-selected");
         // Add nodes

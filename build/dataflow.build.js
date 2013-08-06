@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-06 (2:01:09 PM EDT)
+/*! dataflow.js - v0.0.7 - 2013-08-06 (2:43:58 PM EDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -2861,7 +2861,7 @@
     //
 
     function paste(){
-      if (copied && copied.nodes.length > 0) {
+      if (copied && copied.nodes && copied.nodes.length > 0) {
         // Deselect all
         dataflow.currentGraph.view.$(".dataflow-node").removeClass("ui-selected");
         // Add nodes
