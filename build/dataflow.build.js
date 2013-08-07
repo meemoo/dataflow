@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-06 (2:43:58 PM EDT)
+/*! dataflow.js - v0.0.7 - 2013-08-07 (3:09:16 PM EDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -2796,7 +2796,9 @@
     //
 
     function selectAll(){
-      dataflow.currentGraph.view.$(".dataflow-node").addClass("ui-selected");
+      dataflow.currentGraph.view.$(".dataflow-node")
+        .addClass("ui-selected")
+        .removeClass("fade");
     }
     buttons.children(".selectall").click(selectAll);
     Edit.selectAll = selectAll;

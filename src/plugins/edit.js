@@ -26,7 +26,9 @@
     //
 
     function selectAll(){
-      dataflow.currentGraph.view.$(".dataflow-node").addClass("ui-selected");
+      dataflow.currentGraph.view.$(".dataflow-node")
+        .addClass("ui-selected")
+        .removeClass("fade");
     }
     buttons.children(".selectall").click(selectAll);
     Edit.selectAll = selectAll;
