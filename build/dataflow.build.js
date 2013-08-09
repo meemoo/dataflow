@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-07 (3:09:16 PM EDT)
+/*! dataflow.js - v0.0.7 - 2013-08-09 (4:46:00 PM EDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1160,7 +1160,9 @@
 
   var minZoom = 0.25;
   var maxZoom = 2.5;
- 
+
+  var cssZoomSupported = document.createElement("div").style.hasOwnProperty("zoom");
+
   var template = 
     '<div class="dataflow-edges">'+
       '<svg class="dataflow-svg-edges" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="800" height="800"></svg>'+
@@ -1226,13 +1228,18 @@
 
       this.bindInteraction();
     },
+    dragStartOffset: null,
     dragStart: function (event, ui) {
+      if (!ui) { return; }
+      this.dragStartOffset = ui.offset;
     },
     drag: function (event, ui) {
       if (!ui) { return; }
       var scale = this.state.get('zoom');
+      var deltaX = ui.offset.left - this.dragStartOffset.left;
+      var deltaY = ui.offset.top - this.dragStartOffset.top;
       this.$el.css({
-        transform: "translate3d("+ui.offset.left/scale+"px, "+ui.offset.top/scale+"px, 0)"
+        transform: "translate3d("+deltaX/scale+"px, "+deltaY/scale+"px, 0)"
       });
     },
     dragStop: function (event, ui) {
@@ -1240,9 +1247,11 @@
         transform: "translate3d(0, 0, 0)"
       });
       var scale = this.state.get('zoom');
+      var deltaX = ui.offset.left - this.dragStartOffset.left;
+      var deltaY = ui.offset.top - this.dragStartOffset.top;
       this.model.set({
-        panX: this.model.get("panX") + ui.offset.left/scale,
-        panY: this.model.get("panY") + ui.offset.top/scale
+        panX: this.model.get("panX") + deltaX/scale,
+        panY: this.model.get("panY") + deltaY/scale
       });
     },
     gotoParent: function () {
