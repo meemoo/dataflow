@@ -35,7 +35,12 @@
       left: -5px;
     }
   .dataflow-node.helper {
-    border-style: dotted;
+    width: 100px;
+    height: 75px;
+/*    font-size: 12px;
+    font-weight: normal;
+    font-family: "proxima-nova-bold";
+*/    border-style: dotted;
     background-color: rgba(255, 255, 255, 0.5);
   }
   .dataflow-node-title {

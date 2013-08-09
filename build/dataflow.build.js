@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-09 (4:46:00 PM EDT)
+/*! dataflow.js - v0.0.7 - 2013-08-09 (5:17:40 PM EDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -2977,7 +2977,7 @@
     var addNode = function(node, x, y) {
       return function(){
         // Deselect others
-        dataflow.currentGraph.view.$(".node").removeClass("ui-selected");
+        dataflow.currentGraph.view.$(".dataflow-node").removeClass("ui-selected");
 
         // Current zoom
         zoom = dataflow.get('state').get('zoom');
@@ -3015,7 +3015,7 @@
         .attr("title", "click or drag")
         .draggable({
           helper: function(){
-            var helper = $('<div class="node helper" style="width:100px; height:100px">'+name+'</div>');
+            var helper = $('<div class="dataflow-node helper"><div class="dataflow-node-title">'+name+'</div></div>');
             dataflow.$el.append(helper);
             return helper;
           },
