@@ -24,7 +24,9 @@
     "libs/jquery.ui.touch-punch.js",
     "libs/underscore.js",
     "libs/backbone.js",
-    "libs/hammer.min.js"
+    "libs/hammer.min.js",
+    "libs/polymer.min.js",
+    "src/elements/dataflow-card-edge.html"
   ],
   "fonts": [
     "fonts/fontawesome-webfont.eot",

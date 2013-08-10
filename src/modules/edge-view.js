@@ -15,17 +15,11 @@
     }
     return svg;
   };
-
-  var inspectTemplate = 
-    '<h1 class="dataflow-edge-inspector-title">Edge</h1>'+
-    '<div class="dataflow-edge-inspector-route-choose"></div>';
-    // '<div class="dataflow-edge-inspector-route route<%- route %>"><%- route %></div>';
   
   Edge.View = Backbone.View.extend({
     tagName: "div",
     className: "dataflow-edge",
     positions: null,
-    inspectTemplate: _.template(inspectTemplate),
     initialize: function() {
       this.positions = {
         from: null, 
@@ -239,10 +233,6 @@
       var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
       $inspector.children().detach();
       $inspector.append( this.getInspect() );
-
-      var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
-      $choose.children().removeClass("active");
-      $choose.children(".route"+this.model.get("route")).addClass("active");
     },
     bringToTop: function(){
       // this.model.bringToTop();
@@ -258,29 +248,13 @@
       this.model.source.view.bringToTop(this.model);
       this.model.target.view.bringToTop(this.model);
     },
-    $inspect: null,
+    inspect: null,
     getInspect: function() {
-      if (!this.$inspect) {
-        this.$inspect = $("<div>");
-        var model = this.model.toJSON();
-        this.$inspect.html( this.inspectTemplate(model) );
-        var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
-        var self = this;
-        var changeRoute = function(event){
-          var route = $(event.target).data("route");
-          self.model.set("route", route);
-          $choose.children().removeClass("active");
-          $choose.children(".route"+route).addClass("active");
-        };
-        for (var i=0; i<12; i++) {
-          var button = $("<button>")
-            .data("route", i)
-            .addClass("route"+i)
-            .click(changeRoute);
-          $choose.append(button);
-        }
+      if (!this.inspect) {
+        this.inspect = document.createElement("dataflow-card-edge");
+        this.inspect.edge = this.model;
       }
-      return this.$inspect;
+      return this.inspect;
     }
   });
 
