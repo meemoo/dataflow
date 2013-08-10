@@ -85,6 +85,7 @@
           var index = parseInt(button.attributes.index.value, 10);
           button.className = index === value ? "selected" : "";
         });
+        this.fire("change");
       },
       updateValue: function (event) {
         this.value = parseInt(event.target.attributes.index.value, 10);

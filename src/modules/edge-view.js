@@ -248,13 +248,15 @@
       this.model.source.view.bringToTop(this.model);
       this.model.target.view.bringToTop(this.model);
     },
-    inspect: null,
+    // inspect: null,
     getInspect: function() {
-      if (!this.inspect) {
-        this.inspect = document.createElement("dataflow-card-edge");
-        this.inspect.edge = this.model;
-      }
-      return this.inspect;
+      // if (!this.inspect) {
+      //   this.inspect = document.createElement("dataflow-card-edge");
+      //   this.inspect.edge = this.model;
+      // }
+      var inspect = document.createElement("dataflow-card-edge");
+      inspect.edge = this.model;
+      return inspect;
     }
   });
 

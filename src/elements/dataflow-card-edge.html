@@ -19,7 +19,6 @@
         this.$.routePicker.value = this.edge.get("route");
       },
       pickRoute: function () {
-        console.log(this.$.routePicker.value)
         if (this.edge) {
           this.edge.set("route", this.$.routePicker.value);
         }
