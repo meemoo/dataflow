@@ -42,12 +42,11 @@
       }
     </style>
 
-    <!--
     <template repeat="{{button in buttons}}">
-      <button id="route{{button.index}}" class="{{button.className}}" index="{{button.index}}" on-tap="updateValue"></button>
+      <button id="route{{button.index}}" class="{{button.className}}" index="{{button.index}}" on-click="updateValue"></button>
     </template>
-    -->
 
+    <!--
     <button id="route0" index="0" on-click="updateValue"></button>
     <button id="route1" index="1" on-click="updateValue"></button>
     <button id="route2" index="2" on-click="updateValue"></button>
@@ -60,6 +59,7 @@
     <button id="route9" index="9" on-click="updateValue"></button>
     <button id="route10" index="10" on-click="updateValue"></button>
     <button id="route11" index="11" on-click="updateValue"></button>
+    -->
     <!-- <button id="route12" index="12" on-click="updateValue" ></button> -->
 
   </template>
@@ -68,23 +68,23 @@
       value: 0,
       count: 12,
       ready: function() {
-        // this.buttons = [];
-        // for (var i=0; i<this.count; i++) {
-        //   this.buttons.push({
-        //     index: i,
-        //     className: ""
-        //   });
-        // }
+        this.buttons = [];
+        for (var i=0; i<this.count; i++) {
+          this.buttons.push({
+            index: i,
+            className: ""
+          });
+        }
       },
       valueChanged: function () {
         var value = this.value;
-        // this.buttons.forEach(function(button){
-        //   button.className = (button.index == value ? "selected" : "");
-        // });
-        this.shadowRoot.querySelectorAll("button").forEach(function(button){
-          var index = parseInt(button.attributes.index.value, 10);
-          button.className = index === value ? "selected" : "";
+        this.buttons.forEach(function(button){
+          button.className = (button.index == value ? "selected" : "");
         });
+        // this.shadowRoot.querySelectorAll("button").forEach(function(button){
+        //   var index = parseInt(button.attributes.index.value, 10);
+        //   button.className = index === value ? "selected" : "";
+        // });
         this.fire("change");
       },
       updateValue: function (event) {
