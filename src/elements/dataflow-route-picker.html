@@ -1,0 +1,94 @@
+<polymer-element name="dataflow-route-picker" attributes="value">
+  <template>
+    <style>
+      button {
+        width: 20px;
+        height: 20px;
+        margin-left: 1px;
+
+        vertical-align: middle;
+
+        border: none;
+        border-radius: 3px;
+
+        float: left;
+        
+        /*
+        -webkit-transition: all 0.2s ease-in-out;
+        -moz-transition: all 0.2s ease-in-out;
+        -o-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+        */      
+      }
+
+      #route0  { background-color: hsl(  0,  0%, 70%); }
+      #route1  { background-color: hsl(  0, 68%, 70%); }
+      #route2  { background-color: hsl( 30, 68%, 70%); }
+      #route3  { background-color: hsl( 60, 68%, 70%); }
+      #route4  { background-color: hsl( 90, 68%, 70%); }
+      #route5  { background-color: hsl(120, 68%, 70%); }
+      #route6  { background-color: hsl(150, 68%, 70%); }
+      #route7  { background-color: hsl(180, 68%, 70%); }
+      #route8  { background-color: hsl(210, 68%, 70%); }
+      #route9  { background-color: hsl(240, 68%, 70%); }
+      #route10 { background-color: hsl(270, 68%, 70%); }
+      #route11 { background-color: hsl(300, 68%, 70%); }
+      #route12 { background-color: hsl(330, 68%, 70%); }
+
+      button.selected {
+        width: 22px;
+        height: 22px;
+        border: 1px black solid;
+      }
+    </style>
+
+    <!--
+    <template repeat="{{button in buttons}}">
+      <button id="route{{button.index}}" class="{{button.className}}" index="{{button.index}}" on-tap="updateValue"></button>
+    </template>
+    -->
+
+    <button id="route0" index="0" on-click="updateValue"></button>
+    <button id="route1" index="1" on-click="updateValue"></button>
+    <button id="route2" index="2" on-click="updateValue"></button>
+    <button id="route3" index="3" on-click="updateValue"></button>
+    <button id="route4" index="4" on-click="updateValue"></button>
+    <button id="route5" index="5" on-click="updateValue"></button>
+    <button id="route6" index="6" on-click="updateValue"></button>
+    <button id="route7" index="7" on-click="updateValue"></button>
+    <button id="route8" index="8" on-click="updateValue"></button>
+    <button id="route9" index="9" on-click="updateValue"></button>
+    <button id="route10" index="10" on-click="updateValue"></button>
+    <button id="route11" index="11" on-click="updateValue"></button>
+    <!-- <button id="route12" index="12" on-click="updateValue" ></button> -->
+
+  </template>
+  <script>
+  	Polymer("dataflow-route-picker", {
+      value: 0,
+      count: 12,
+      ready: function() {
+        // this.buttons = [];
+        // for (var i=0; i<this.count; i++) {
+        //   this.buttons.push({
+        //     index: i,
+        //     className: ""
+        //   });
+        // }
+      },
+      valueChanged: function () {
+        var value = this.value;
+        // this.buttons.forEach(function(button){
+        //   button.className = (button.index == value ? "selected" : "");
+        // });
+        this.shadowRoot.querySelectorAll("button").forEach(function(button){
+          var index = parseInt(button.attributes.index.value, 10);
+          button.className = index === value ? "selected" : "";
+        });
+      },
+      updateValue: function (event) {
+        this.value = parseInt(event.target.attributes.index.value, 10);
+      }
+    });
+  </script>
+</polymer-element>

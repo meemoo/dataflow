@@ -1,87 +1,28 @@
+<link rel="import" href="dataflow-route-picker.html">
+
 <polymer-element name="dataflow-card-edge" attributes="edge">
   <template>
+
     <style>
-      #route-choose button {
-        width: 20px;
-        height: 20px;
-
-        border: none;
-        border-radius: 3px;
-
-        -webkit-transform: scale(1.0);
-        -moz-transform: scale(1.0);
-        -o-transform: scale(1.0);
-        transform: scale(1.0);
-
-        -webkit-transition: -webkit-transform 0.2s ease-in-out;
-        -moz-transition: -moz-transform 0.2s ease-in-out;
-        -o-transition: -o-transform 0.2s ease-in-out;
-        transition: transform 0.2s ease-in-out;
-      }
-      #route0  { background-color: hsl(  0,  0%, 70%); }
-      #route1  { background-color: hsl(  0, 68%, 70%); }
-      #route2  { background-color: hsl( 30, 68%, 70%); }
-      #route3  { background-color: hsl( 60, 68%, 70%); }
-      #route4  { background-color: hsl( 90, 68%, 70%); }
-      #route5  { background-color: hsl(120, 68%, 70%); }
-      #route6  { background-color: hsl(150, 68%, 70%); }
-      #route7  { background-color: hsl(180, 68%, 70%); }
-      #route8  { background-color: hsl(210, 68%, 70%); }
-      #route9  { background-color: hsl(240, 68%, 70%); }
-      #route10 { background-color: hsl(270, 68%, 70%); }
-      #route11 { background-color: hsl(300, 68%, 70%); }
-      #route12 { background-color: hsl(330, 68%, 70%); }
-
-      #route-choose button.active {
-        -webkit-transform: scale(1.15);
-        -moz-transform: scale(1.15);
-        -o-transform: scale(1.15);
-        transform: scale(1.15);
-      }
     </style>
+
     <h1 id="title">Edge</h1>
     <h2 id="id">{{edge.id}}</h2>
-    <div id="route-choose">
-      <button id="route0" data-route="0" ></button>
-      <button id="route1" data-route="1" ></button>
-      <button id="route2" data-route="2" ></button>
-      <button id="route3" data-route="3" ></button>
-      <button id="route4" data-route="4" ></button>
-      <button id="route5" data-route="5" ></button>
-      <button id="route6" data-route="6" ></button>
-      <button id="route7" data-route="7" ></button>
-      <button id="route8" data-route="8" ></button>
-      <button id="route9" data-route="9" ></button>
-      <button id="route10" data-route="10" ></button>
-      <button id="route11" data-route="11" ></button>
-      <!-- <button id="route12" data-route="12" ></button> -->
-    </div>
+    <dataflow-route-picker id="routePicker" on-change="pickRoute"></dataflow-route-picker>
 
   </template>
   <script>
   	Polymer("dataflow-card-edge", {
-      applyAuthorStyles: true,
       ready: function() {
-        var buttons = this.shadowRoot.querySelectorAll("button");
-        var self = this;
-        var setRoute = function (event) {
-          var route = event.target.dataset["route"];
-          route = parseInt(route, 10);
-          self.edge.set("route", route);
-          self.edgeChanged();
-        };
-        buttons.forEach(function(button){
-          button.onclick = setRoute;
-        });
       },
       edgeChanged: function () {
-        var route = this.edge.attributes.route;
-        var buttons = this.shadowRoot.querySelectorAll("button");
-        buttons.forEach(function(button){
-          button.className = "";
-        });
-        var active = this.shadowRoot.querySelector("#route"+route);
-        active.className = "active";
+        this.$.routePicker.value = this.edge.get("route");
+      },
+      pickRoute: function () {
+        console.log(this.$.routePicker.value)
+        if (this.edge) {
+          this.edge.set("route", this.$.routePicker.value);
+        }
       }
     });
   </script>
