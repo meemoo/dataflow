@@ -72,7 +72,7 @@
         for (var i=0; i<this.count; i++) {
           this.buttons.push({
             index: i,
-            className: ""
+            className: (i == this.value ? "selected" : "")
           });
         }
       },
