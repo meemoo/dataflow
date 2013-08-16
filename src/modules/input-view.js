@@ -11,6 +11,8 @@
     '<label class="dataflow-port-label in" title="<%= description %>">'+
       '<%= label %>'+
     '</label>';  
+
+  var zoom = 1;
  
   Input.View = Backbone.View.extend({
     template: _.template(template),
@@ -242,6 +244,8 @@
       });
       var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
       graphSVGElement.appendChild(this.previewEdgeNewView.el);
+
+      zoom = this.model.parentNode.parentGraph.get('zoom');
     },
     newEdgeDrag: function(event, ui){
       if (!this.previewEdgeNewView || !ui) {
@@ -250,9 +254,8 @@
       // Don't drag node
       event.stopPropagation();
 
-      var state = this.model.parentNode.parentGraph.dataflow.get('state');
-      ui.position.top = event.clientY / state.get('zoom');
-      ui.position.left = event.clientX / state.get('zoom');
+      ui.position.top = event.clientY / zoom;
+      ui.position.left = event.clientX / zoom;
       var df = this.model.parentNode.parentGraph.view.el;
       ui.position.left += df.scrollLeft;
       ui.position.top += df.scrollTop;
@@ -318,6 +321,8 @@
           });
           var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
           graphSVGElement.appendChild(this.previewEdgeChangeView.el);
+          
+          zoom = this.model.parentNode.parentGraph.get('zoom');
         }
       }
     },

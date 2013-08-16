@@ -142,15 +142,21 @@
   text-shadow: 0 1px white;
 }
 
-.dataflow-graph {
-  z-index: 1;
-
+.dataflow-g,
+.dataflow-graph,
+.dataflow-graph-panzoom {
   position: absolute;
-  margin-top: 0;
   top: 0px;
   right: 0px;
   bottom: 0px;
   left: 0px;
+}
+
+.dataflow-graph-panzoom {
+  z-index: 1;
+}
+.dataflow-graph {
+  z-index: 1;
 }
   .dataflow-edges {
     position: absolute;
@@ -162,7 +168,7 @@
     position: relative;
     top: 0;
     left: 0;  
-    z-index: 3;
+    z-index: 2;
 
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -171,10 +177,10 @@
     -ms-user-select: none;
     user-select: none;
   }
-  .dataflow-graph-controls {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 4;
-  }
+.dataflow-graph-controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
 

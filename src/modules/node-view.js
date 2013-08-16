@@ -128,7 +128,7 @@
       event.stopPropagation();
 
       // Current zoom
-      zoom = this.model.parentGraph.dataflow.get('state').get('zoom');
+      zoom = this.model.parentGraph.get('zoom');
 
       // Make helper and save start position of all other selected
       var self = this;

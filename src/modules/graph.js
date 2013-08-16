@@ -11,7 +11,8 @@
       nodes: [],
       edges: [],
       panX: 0,
-      panY: 0
+      panY: 0,
+      zoom: 1
     },
     initialize: function() {
       this.dataflow = this.get("dataflow");

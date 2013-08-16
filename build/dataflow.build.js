@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-09 (5:17:40 PM EDT)
+/*! dataflow.js - v0.0.7 - 2013-08-15 (10:47:17 PM EDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -694,7 +694,8 @@
       nodes: [],
       edges: [],
       panX: 0,
-      panY: 0
+      panY: 0,
+      zoom: 1
     },
     initialize: function() {
       this.dataflow = this.get("dataflow");
@@ -1164,23 +1165,30 @@
   var cssZoomSupported = document.createElement("div").style.hasOwnProperty("zoom");
 
   var template = 
-    '<div class="dataflow-edges">'+
-      '<svg class="dataflow-svg-edges" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="800" height="800"></svg>'+
+    '<div class="dataflow-graph-panzoom">'+
+      '<div class="dataflow-graph zoom-normal">'+
+        '<div class="dataflow-edges">'+
+          '<svg class="dataflow-svg-edges" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="800" height="800"></svg>'+
+        '</div>'+
+        '<div class="dataflow-nodes" />'+
+      '</div>'+
     '</div>'+
-    '<div class="dataflow-nodes" />'+
     '<div class="dataflow-graph-controls">'+
       '<button class="dataflow-graph-gotoparent"><i class="icon-chevron-left"></i> back to parent</button>'+
     '</div>';
 
   Graph.View = Backbone.View.extend({
     template: _.template(template),
-    className: "dataflow-graph zoom-normal",
+    className: "dataflow-g",
     events: {
-      "click": "deselect",
-      "click .dataflow-graph-gotoparent": "gotoParent",
-      "dragstart": "dragStart",
-      "drag": "drag",
-      "dragstop": "dragStop"
+      "click .dataflow-graph": "deselect",
+      "dragstart .dataflow-graph-panzoom": "panStart",
+      "drag .dataflow-graph-panzoom": "pan",
+      "dragstop .dataflow-graph-panzoom": "panStop",
+      "click .dataflow-graph-gotoparent": "gotoParent"
+      // ".dataflow-graph transformstart": "pinchStart",
+      // ".dataflow-graph transform": "pinch",
+      // ".dataflow-graph transformend": "pinchEnd"
     },
     initialize: function() {
       // Graph container
@@ -1206,7 +1214,7 @@
         this.$(".dataflow-graph-controls").hide();
       }
 
-      this.$el.draggable({
+      this.$(".dataflow-graph-panzoom").draggable({
         helper: function(){
           var h = $("<div>");
           this.model.dataflow.$el.append(h);
@@ -1214,41 +1222,40 @@
         }.bind(this)
       });
 
+      // Cache the graph div el
+      this.$graphEl = this.$(".dataflow-graph");
+      this.graphEl = this.$(".dataflow-graph")[0];
+
       // Default 3D transform
-      this.$el.css({
+      this.$graphEl.css({
         transform: "translate3d(0, 0, 0) " +
                    "scale3d(1, 1, 1) ",
         transformOrigin: "left top"
       });
 
-      this.pageX = this.$el.position();
-
-      // Handle zooming and scrolling
-      this.state = this.model.dataflow.get('state');
-
       this.bindInteraction();
     },
-    dragStartOffset: null,
-    dragStart: function (event, ui) {
+    panStartOffset: null,
+    panStart: function (event, ui) {
       if (!ui) { return; }
-      this.dragStartOffset = ui.offset;
+      this.panStartOffset = ui.offset;
     },
-    drag: function (event, ui) {
+    pan: function (event, ui) {
       if (!ui) { return; }
-      var scale = this.state.get('zoom');
-      var deltaX = ui.offset.left - this.dragStartOffset.left;
-      var deltaY = ui.offset.top - this.dragStartOffset.top;
-      this.$el.css({
+      var scale = this.model.get('zoom');
+      var deltaX = ui.offset.left - this.panStartOffset.left;
+      var deltaY = ui.offset.top - this.panStartOffset.top;
+      this.$(".dataflow-graph").css({
         transform: "translate3d("+deltaX/scale+"px, "+deltaY/scale+"px, 0)"
       });
     },
-    dragStop: function (event, ui) {
-      this.$el.css({
+    panStop: function (event, ui) {
+      this.$(".dataflow-graph").css({
         transform: "translate3d(0, 0, 0)"
       });
-      var scale = this.state.get('zoom');
-      var deltaX = ui.offset.left - this.dragStartOffset.left;
-      var deltaY = ui.offset.top - this.dragStartOffset.top;
+      var scale = this.model.get('zoom');
+      var deltaX = ui.offset.left - this.panStartOffset.left;
+      var deltaY = ui.offset.top - this.panStartOffset.top;
       this.model.set({
         panX: this.model.get("panX") + deltaX/scale,
         panY: this.model.get("panY") + deltaY/scale
@@ -1261,115 +1268,100 @@
       }
     },
     bindInteraction: function () {
-      var state = this.model.dataflow.get('state');
-      this.bindZoom(state);
-      this.bindScroll(state);
+      this.bindZoom();
+      this.bindScroll();
     },
-    bindZoom: function (state) {
+    bindZoom: function () {
       if (!window.Hammer) {
         return;
       }
-      if (!state.has('zoom')) {
-        // Initial zoom level
-        // TODO: calculate level where whole graph fits
-        state.set('zoom', 1);
-      }
-      var currentZoom, startX, startY, originX, originY, scale, deltaX, deltaY;
+      var currentZoom, startX, startY, originX, originY, scale, deltaX, deltaY, distance_to_origin_x, distance_to_origin_y;
       var self = this;
-      Hammer(this.el).on('transformstart', function (event) {
-        currentZoom = state.get('zoom');
-        startX = event.gesture.center.pageX;
-        startY = event.gesture.center.pageY;
-        originX = startX/currentZoom;
-        originY = startY/currentZoom;
-        self.$el.css({
-          transformOrigin: originX+"px "+originY+"px"
-          // transformOrigin: startX+"px "+startY+"px"
+      Hammer( this.$(".dataflow-graph-panzoom")[0] )
+        .on('transformstart', function (event) {
+          currentZoom = self.model.get('zoom');
+          startX = event.gesture.center.pageX;
+          startY = event.gesture.center.pageY;
+          originX = startX/currentZoom;
+          originY = startY/currentZoom;
+          var graphOffset = self.$el.offset();
+          distance_to_origin_x = originX - graphOffset.left;
+          distance_to_origin_y = originY - graphOffset.top;
+          self.$graphEl.css({
+            transformOrigin: originX+"px "+originY+"px"
+            // transformOrigin: startX+"px "+startY+"px"
+          });
+        })
+        .on('transform', function (event) {
+          scale = Math.max(minZoom/currentZoom, Math.min(event.gesture.scale, maxZoom/currentZoom));
+          deltaX = (event.gesture.center.pageX - startX) / currentZoom;
+          deltaY = (event.gesture.center.pageY - startY) / currentZoom;
+          self.$graphEl.css({
+            transform: "translate3d("+deltaX+"px,"+deltaY+"px, 0) " +
+                       "scale3d("+scale+","+scale+", 1) "
+          });
+        })
+        .on('transformend', function (event) {
+          // Reset 3D transform
+          self.$graphEl.css({
+            transform: "translate3d(0, 0, 0) " +
+                       "scale3d(1, 1, 1) "
+          });
+          // Zoom
+          var zoom = currentZoom * scale;
+          zoom = Math.max(minZoom, Math.min(zoom, maxZoom));
+          self.model.set('zoom', zoom);
+          distance_to_origin_x *= zoom;
+          distance_to_origin_y *= zoom;
+          self.model.set({
+            panX: self.model.get("panX") + deltaX,
+            panY: self.model.get("panY") + deltaY
+          });
+          console.log(self.model.attributes);
         });
-      });
-      Hammer(this.el).on('transform', function (event) {
-        scale = Math.max(minZoom/currentZoom, Math.min(event.gesture.scale, maxZoom/currentZoom));
-        deltaX = (event.gesture.center.pageX - startX) / currentZoom;
-        deltaY = (event.gesture.center.pageY - startY) / currentZoom;
-        self.$el.css({
-          transform: "translate3d("+deltaX+"px,"+deltaY+"px, 0) " +
-                     "scale3d("+scale+","+scale+", 1) "
-        });
-      });
-      Hammer(this.el).on('transformend', function (event) {
-        // Reset 3D transform
-        self.$el.css({
-          transform: "translate3d(0, 0, 0) " +
-                     "scale3d(1, 1, 1) "
-        });
-        // Zoom
-        var zoom = currentZoom * scale;
-        zoom = Math.max(minZoom, Math.min(zoom, maxZoom));
-        state.set('zoom', zoom);
-        // var scaleD = scale - currentZoom;
-        var width = self.$el.width();
-        var height = self.$el.height();
-        // console.log("panX", self.model.get("panX") );
-        // console.log("deltaX", deltaX); 
-        // console.log("width", width); 
-        // console.log("currentZoom", currentZoom); 
-        // console.log("scale", scale);
-        // console.log("zoom", zoom);
-        // console.log("-===============-");
-        //
-        // TODO : fix origin difference bump
-        self.model.set({
-          panX: self.model.get("panX") + deltaX,
-          panY: self.model.get("panY") + deltaY
-        });
-      });
 
       var onZoom = function () {
-        var z = state.get('zoom');
+        var z = self.model.get('zoom');
         var lastClass = self.zoomClass;
         self.zoomClass = z < 0.5 ? "zoom-tiny" : (z < 0.8 ? "zoom-small" : (z < 1.3 ? "zoom-normal" : "zoom-big"));
-        self.$el
+        self.$graphEl
           .removeClass(lastClass)
           .addClass(self.zoomClass);
-        self.el.style.zoom = state.get('zoom');
+        self.graphEl.style.zoom = self.model.get('zoom');
       };
 
-      state.on('change:zoom', onZoom);
+      this.model.on('change:zoom', onZoom);
 
-      // Initial zoom state from localStorage
-      if (state.get('zoom') !== 1) {
+      // Initial zoom this.model from localStorage
+      if (this.model.get('zoom') !== 1) {
         onZoom();
       }
     },
     zoomClass: 1,
     zoomIn: function () {
-      var currentZoom = this.state.get('zoom');
+      var currentZoom = this.model.get('zoom');
       var zoom = currentZoom * 0.9;
       zoom = Math.max(minZoom, zoom); 
       if (zoom !== currentZoom) {
-        this.state.set('zoom', zoom);
+        this.model.set('zoom', zoom);
       }
     },
     zoomOut: function () {
-      var currentZoom = this.state.get('zoom');
+      var currentZoom = this.model.get('zoom');
       var zoom = currentZoom * 1.1;
       zoom = Math.min(maxZoom, zoom); 
       if (zoom !== currentZoom) {
-        this.state.set('zoom', zoom);
+        this.model.set('zoom', zoom);
       }
     },
     zoomCenter: function () {
-      var currentZoom = this.state.get('zoom');
+      var currentZoom = this.model.get('zoom');
       var zoom = 1;
       if (zoom !== currentZoom) {
-        this.state.set('zoom', 1);
+        this.model.set('zoom', 1);
       }
     },
-    bindScroll: function (state) {
-      // this.el.addEventListener('scroll', function (event) {
-      //   state.set('scrollY', this.scrollTop);
-      //   state.set('scrollX', this.scrollLeft);
-      // });
+    bindScroll: function () {
     },
     render: function() {
       // HACK to get them to show correct positions on load
@@ -1602,7 +1594,7 @@
       event.stopPropagation();
 
       // Current zoom
-      zoom = this.model.parentGraph.dataflow.get('state').get('zoom');
+      zoom = this.model.parentGraph.get('zoom');
 
       // Make helper and save start position of all other selected
       var self = this;
@@ -1792,6 +1784,8 @@
     '<label class="dataflow-port-label in" title="<%= description %>">'+
       '<%= label %>'+
     '</label>';  
+
+  var zoom = 1;
  
   Input.View = Backbone.View.extend({
     template: _.template(template),
@@ -2023,6 +2017,8 @@
       });
       var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
       graphSVGElement.appendChild(this.previewEdgeNewView.el);
+
+      zoom = this.model.parentNode.parentGraph.get('zoom');
     },
     newEdgeDrag: function(event, ui){
       if (!this.previewEdgeNewView || !ui) {
@@ -2031,9 +2027,8 @@
       // Don't drag node
       event.stopPropagation();
 
-      var state = this.model.parentNode.parentGraph.dataflow.get('state');
-      ui.position.top = event.clientY / state.get('zoom');
-      ui.position.left = event.clientX / state.get('zoom');
+      ui.position.top = event.clientY / zoom;
+      ui.position.left = event.clientX / zoom;
       var df = this.model.parentNode.parentGraph.view.el;
       ui.position.left += df.scrollLeft;
       ui.position.top += df.scrollTop;
@@ -2099,6 +2094,8 @@
           });
           var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
           graphSVGElement.appendChild(this.previewEdgeChangeView.el);
+          
+          zoom = this.model.parentNode.parentGraph.get('zoom');
         }
       }
     },
@@ -2216,6 +2213,8 @@
     '<span class="dataflow-port-hole out" title="drag to make new wire"></span>'+
     '<span class="dataflow-port-plug out" title="drag to edit wire"></span>';
 
+  var zoom = 1;
+
   Output.View = Backbone.View.extend({
     template: _.template(template),
     tagName: "li",
@@ -2292,6 +2291,9 @@
       });
       var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
       graphSVGElement.appendChild(this.previewEdgeView.el);
+
+      zoom = this.model.parentNode.parentGraph.get('zoom');
+
     },
     newEdgeDrag: function(event, ui){
       // Don't drag node
@@ -2299,9 +2301,8 @@
       if (!this.previewEdgeView || !ui) {
         return;
       }
-      var state = this.model.parentNode.parentGraph.dataflow.get('state');
-      ui.position.top = event.clientY / state.get('zoom');
-      ui.position.left = event.clientX / state.get('zoom');
+      ui.position.top = event.clientY / zoom;
+      ui.position.left = event.clientX / zoom;
       var df = this.model.parentNode.parentGraph.view.el;
       ui.position.left += df.scrollLeft;
       ui.position.top += df.scrollTop;
@@ -2366,6 +2367,8 @@
           });
           var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
           graphSVGElement.appendChild(this.previewEdgeChangeView.el);
+
+          zoom = this.model.parentNode.parentGraph.get('zoom');
         }
       }
     },
@@ -2562,6 +2565,12 @@
       var source = this.model.source;
       var target = this.model.target;
       var dataflowParent, graphPos;
+      // TODO: match zoom
+      // if (previewPosition) {
+      //   var zoom = this.model.parentGraph.get('zoom');
+      //   previewPosition.left /= zoom;
+      //   previewPosition.top /= zoom;
+      // }
       if (source) {
         this.positions.from = source.view.holePosition();
       }
@@ -2586,10 +2595,10 @@
         };
       }
       // No half-pixels
-      this.positions.from.left = Math.floor(this.positions.from.left);
-      this.positions.from.top = Math.floor(this.positions.from.top);
-      this.positions.to.left = Math.floor(this.positions.to.left);
-      this.positions.to.top = Math.floor(this.positions.to.top);
+      // this.positions.from.left = Math.floor(this.positions.from.left);
+      // this.positions.from.top = Math.floor(this.positions.from.top);
+      // this.positions.to.left = Math.floor(this.positions.to.left);
+      // this.positions.to.top = Math.floor(this.positions.to.top);
       // Make and apply the path
       var pathD = this.edgePath(this.positions);
       this.elEdge.setAttribute("d", pathD);

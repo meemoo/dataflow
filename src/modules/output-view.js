@@ -10,6 +10,8 @@
     '<span class="dataflow-port-hole out" title="drag to make new wire"></span>'+
     '<span class="dataflow-port-plug out" title="drag to edit wire"></span>';
 
+  var zoom = 1;
+
   Output.View = Backbone.View.extend({
     template: _.template(template),
     tagName: "li",
@@ -86,6 +88,9 @@
       });
       var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
       graphSVGElement.appendChild(this.previewEdgeView.el);
+
+      zoom = this.model.parentNode.parentGraph.get('zoom');
+
     },
     newEdgeDrag: function(event, ui){
       // Don't drag node
@@ -93,9 +98,8 @@
       if (!this.previewEdgeView || !ui) {
         return;
       }
-      var state = this.model.parentNode.parentGraph.dataflow.get('state');
-      ui.position.top = event.clientY / state.get('zoom');
-      ui.position.left = event.clientX / state.get('zoom');
+      ui.position.top = event.clientY / zoom;
+      ui.position.left = event.clientX / zoom;
       var df = this.model.parentNode.parentGraph.view.el;
       ui.position.left += df.scrollLeft;
       ui.position.top += df.scrollTop;
@@ -160,6 +164,8 @@
           });
           var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
           graphSVGElement.appendChild(this.previewEdgeChangeView.el);
+
+          zoom = this.model.parentNode.parentGraph.get('zoom');
         }
       }
     },
