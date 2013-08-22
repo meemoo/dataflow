@@ -29,9 +29,9 @@
     className: "dataflow-g",
     events: {
       "click .dataflow-graph": "deselect",
-      "dragstart .dataflow-graph-panzoom": "panStart",
-      "drag .dataflow-graph-panzoom": "pan",
-      "dragstop .dataflow-graph-panzoom": "panStop",
+      // "dragstart .dataflow-graph-panzoom": "panStart",
+      // "drag .dataflow-graph-panzoom": "pan",
+      // "dragstop .dataflow-graph-panzoom": "panStop",
       "click .dataflow-graph-gotoparent": "gotoParent"
       // ".dataflow-graph transformstart": "pinchStart",
       // ".dataflow-graph transform": "pinch",
@@ -61,13 +61,13 @@
         this.$(".dataflow-graph-controls").hide();
       }
 
-      this.$(".dataflow-graph-panzoom").draggable({
-        helper: function(){
-          var h = $("<div>");
-          this.model.dataflow.$el.append(h);
-          return h;
-        }.bind(this)
-      });
+      // this.$(".dataflow-graph-panzoom").draggable({
+      //   helper: function(){
+      //     var h = $("<div>");
+      //     this.model.dataflow.$el.append(h);
+      //     return h;
+      //   }.bind(this)
+      // });
 
       // Cache the graph div el
       this.$graphEl = this.$(".dataflow-graph");
@@ -82,32 +82,6 @@
 
       this.bindInteraction();
     },
-    panStartOffset: null,
-    panStart: function (event, ui) {
-      if (!ui) { return; }
-      this.panStartOffset = ui.offset;
-    },
-    pan: function (event, ui) {
-      if (!ui) { return; }
-      var zoom = this.model.get('zoom');
-      var deltaX = ui.offset.left - this.panStartOffset.left;
-      var deltaY = ui.offset.top - this.panStartOffset.top;
-      this.$(".dataflow-graph").css({
-        transform: "translate3d("+deltaX/zoom+"px, "+deltaY/zoom+"px, 0)"
-      });
-    },
-    panStop: function (event, ui) {
-      this.$(".dataflow-graph").css({
-        transform: "translate3d(0, 0, 0)"
-      });
-      var zoom = this.model.get('zoom');
-      var deltaX = ui.offset.left - this.panStartOffset.left;
-      var deltaY = ui.offset.top - this.panStartOffset.top;
-      this.model.set({
-        panX: this.model.get("panX") + deltaX/zoom,
-        panY: this.model.get("panY") + deltaY/zoom
-      });
-    },
     gotoParent: function () {
       var parentNode = this.model.get("parentNode");
       if (parentNode){
@@ -116,7 +90,7 @@
     },
     bindInteraction: function () {
       this.bindZoom();
-      this.bindScroll();
+      this.bindPan();
     },
     bindZoom: function () {
       if (!window.Hammer) {
@@ -208,7 +182,40 @@
         this.model.set('zoom', 1);
       }
     },
-    bindScroll: function () {
+    bindPan: function () {
+      var zoom, deltaX, deltaY;
+      var self = this;
+
+      function panStart (event) {
+        if (!event.gesture) { return; }
+      }
+      function pan (event) {
+        if (!event.gesture) { return; }
+
+        zoom = self.model.get('zoom');
+        deltaX = event.gesture.deltaX/zoom;
+        deltaY = event.gesture.deltaY/zoom;
+        self.$(".dataflow-graph").css({
+          transform: "translate3d("+deltaX+"px, "+deltaY+"px, 0)"
+        });
+      }
+      function panEnd (event) {
+        if (!event.gesture) { return; }
+
+        self.$(".dataflow-graph").css({
+          transform: "translate3d(0, 0, 0)"
+        });
+        self.model.set({
+          panX: self.model.get("panX") + deltaX,
+          panY: self.model.get("panY") + deltaY
+        });
+      }
+
+      Hammer( this.$(".dataflow-graph-panzoom")[0] )
+        .on("dragstart", panStart)
+        .on("drag", pan)
+        .on("dragend", panEnd);
+
     },
     render: function() {
       // HACK to get them to show correct positions on load

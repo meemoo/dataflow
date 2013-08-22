@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-15 (10:47:17 PM EDT)
+/*! dataflow.js - v0.0.7 - 2013-08-21 (8:58:53 PM EDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1182,9 +1182,9 @@
     className: "dataflow-g",
     events: {
       "click .dataflow-graph": "deselect",
-      "dragstart .dataflow-graph-panzoom": "panStart",
-      "drag .dataflow-graph-panzoom": "pan",
-      "dragstop .dataflow-graph-panzoom": "panStop",
+      // "dragstart .dataflow-graph-panzoom": "panStart",
+      // "drag .dataflow-graph-panzoom": "pan",
+      // "dragstop .dataflow-graph-panzoom": "panStop",
       "click .dataflow-graph-gotoparent": "gotoParent"
       // ".dataflow-graph transformstart": "pinchStart",
       // ".dataflow-graph transform": "pinch",
@@ -1214,13 +1214,13 @@
         this.$(".dataflow-graph-controls").hide();
       }
 
-      this.$(".dataflow-graph-panzoom").draggable({
-        helper: function(){
-          var h = $("<div>");
-          this.model.dataflow.$el.append(h);
-          return h;
-        }.bind(this)
-      });
+      // this.$(".dataflow-graph-panzoom").draggable({
+      //   helper: function(){
+      //     var h = $("<div>");
+      //     this.model.dataflow.$el.append(h);
+      //     return h;
+      //   }.bind(this)
+      // });
 
       // Cache the graph div el
       this.$graphEl = this.$(".dataflow-graph");
@@ -1235,32 +1235,6 @@
 
       this.bindInteraction();
     },
-    panStartOffset: null,
-    panStart: function (event, ui) {
-      if (!ui) { return; }
-      this.panStartOffset = ui.offset;
-    },
-    pan: function (event, ui) {
-      if (!ui) { return; }
-      var scale = this.model.get('zoom');
-      var deltaX = ui.offset.left - this.panStartOffset.left;
-      var deltaY = ui.offset.top - this.panStartOffset.top;
-      this.$(".dataflow-graph").css({
-        transform: "translate3d("+deltaX/scale+"px, "+deltaY/scale+"px, 0)"
-      });
-    },
-    panStop: function (event, ui) {
-      this.$(".dataflow-graph").css({
-        transform: "translate3d(0, 0, 0)"
-      });
-      var scale = this.model.get('zoom');
-      var deltaX = ui.offset.left - this.panStartOffset.left;
-      var deltaY = ui.offset.top - this.panStartOffset.top;
-      this.model.set({
-        panX: this.model.get("panX") + deltaX/scale,
-        panY: this.model.get("panY") + deltaY/scale
-      });
-    },
     gotoParent: function () {
       var parentNode = this.model.get("parentNode");
       if (parentNode){
@@ -1269,7 +1243,7 @@
     },
     bindInteraction: function () {
       this.bindZoom();
-      this.bindScroll();
+      this.bindPan();
     },
     bindZoom: function () {
       if (!window.Hammer) {
@@ -1361,7 +1335,40 @@
         this.model.set('zoom', 1);
       }
     },
-    bindScroll: function () {
+    bindPan: function () {
+      var zoom, deltaX, deltaY;
+      var self = this;
+
+      function panStart (event) {
+        if (!event.gesture) { return; }
+      }
+      function pan (event) {
+        if (!event.gesture) { return; }
+
+        zoom = self.model.get('zoom');
+        deltaX = event.gesture.deltaX/zoom;
+        deltaY = event.gesture.deltaY/zoom;
+        self.$(".dataflow-graph").css({
+          transform: "translate3d("+deltaX+"px, "+deltaY+"px, 0)"
+        });
+      }
+      function panEnd (event) {
+        if (!event.gesture) { return; }
+
+        self.$(".dataflow-graph").css({
+          transform: "translate3d(0, 0, 0)"
+        });
+        self.model.set({
+          panX: self.model.get("panX") + deltaX,
+          panY: self.model.get("panY") + deltaY
+        });
+      }
+
+      Hammer( this.$(".dataflow-graph-panzoom")[0] )
+        .on("dragstart", panStart)
+        .on("drag", pan)
+        .on("dragend", panEnd);
+
     },
     render: function() {
       // HACK to get them to show correct positions on load
@@ -1496,8 +1503,6 @@
 
   var innerTemplate = "";
 
-  var zoom;
- 
   Node.View = Backbone.View.extend({
     template: _.template(template),
     innerTemplate: _.template(innerTemplate),
@@ -1506,13 +1511,10 @@
     events: function(){
       return {
         "click .dataflow-node-inspect": "showInspector",
-        "click .dataflow-node-header":  "select",
-        "dragstart": "dragStart",
-        "drag":      "drag",
-        "dragstop":  "dragStop"
-        // "click .dataflow-node-delete": "removeModel",
-        // "click .dataflow-node-cancel": "hideControls",
-        // "click .dataflow-node-save":   "saveLabel"
+        "click .dataflow-node-header":  "select"
+        // "mousedown .dataflow-node-title": "dragStart",
+        // "mousemove .dataflow-node-title": "drag",
+        // "mouseup .dataflow-node-title":   "dragEnd"
       };
     },
     initialize: function(options) {
@@ -1539,14 +1541,8 @@
         parent: this
       });
 
-      var self = this;
-      this.$el.draggable({
-        handle: "h1",
-        helper: function(){
-          return $('<div>');
-        }
-      });
-
+      this.makeDraggable();
+      
       this.$el.data("dataflow-node-view", this);
 
       // Inner template
@@ -1559,7 +1555,6 @@
       // }, this);
 
       // Listen for graph panning
-      // this.model.parentGraph.on("change:panX change:panY", this.bumpPosition, this);
       this.listenTo(this.model.parentGraph, "change:panX change:panY", this.bumpPosition);
 
       this.$inner = this.$(".dataflow-node-inner");
@@ -1580,39 +1575,33 @@
 
       return this;
     },
-    _alsoDrag: [],
-    _dragDelta: {},
-    $dragHelpers: null,
-    dragStart: function(event, ui){
-      if (!ui){ return; }
-      // Select this
-      if (!this.$el.hasClass("ui-selected")){
-        this.select(event, true);
-      }
-
-      // Don't drag graph
-      event.stopPropagation();
-
-      // Current zoom
-      zoom = this.model.parentGraph.get('zoom');
-
-      // Make helper and save start position of all other selected
+    makeDraggable: function(){
+      var deltaX, deltaY, zoom, alsoDrag, $dragHelpers;
       var self = this;
-      this._alsoDrag = [];
 
-      this.$dragHelpers = $('<div class="dataflow-nodes-helpers">');
-      this.$el.parent().append( this.$dragHelpers );
+      function dragStart(event) {
+        if (!event.gesture) { return; }
+        // Don't drag graph
+        event.stopPropagation();
+        event.gesture.preventDefault();
 
-      var helper = $('<div class="dataflow-node helper">').css({
-        width: this.$el.width(),
-        height: this.$el.height(),
-        left: parseInt(this.$el.css('left'), 10),
-        top: parseInt(this.$el.css('top'), 10)
-      });
-      this.$dragHelpers.append(helper);
+        dragStarted = true;
 
-      this.model.parentGraph.view.$(".ui-selected").each(function() {
-        if (self.el !== this) {
+        // Select this
+        if (!self.$el.hasClass("ui-selected")){
+          self.select(event, true);
+        }
+
+        // Current zoom
+        zoom = self.model.parentGraph.get('zoom');
+
+        // Make helper and save start position of all other selected
+        alsoDrag = [];
+
+        $dragHelpers = $('<div class="dataflow-nodes-helpers"></div>');
+        self.$el.parent().append( $dragHelpers );
+
+        self.model.parentGraph.view.$(".ui-selected").each(function() {
           var el = $(this);
           // Add helper
           var helper = $('<div class="dataflow-node helper">').css({
@@ -1621,48 +1610,65 @@
             left: parseInt(el.css('left'), 10),
             top: parseInt(el.css('top'), 10)
           });
-          self.$dragHelpers.append(helper);
+          $dragHelpers.append(helper);
           el.data("ui-draggable-alsodrag-helper", helper);
           // Add to array
-          self._alsoDrag.push(el);
-        }
-      });
-    },
-    drag: function(event, ui){
-      if (!ui){ return; }
-      // Don't drag graph
-      event.stopPropagation();
-
-      var x = (ui.position.left - ui.originalPosition.left) / zoom;
-      var y = (ui.position.top - ui.originalPosition.top) / zoom;
-      this.$dragHelpers.css({
-        transform: "translate3d("+x+"px,"+y+"px,0)"
-      });
-    },
-    dragStop: function(event, ui){
-      if (!ui){ return; }
-      // Don't drag graph
-      event.stopPropagation();
-
-      var panX = this.model.parentGraph.get("panX");
-      var panY = this.model.parentGraph.get("panY");
-      var deltaX = (ui.position.left - ui.originalPosition.left) / zoom;
-      var deltaY = (ui.position.top - ui.originalPosition.top) / zoom;
-      this.moveToPosition(this.model.get("x") + deltaX, this.model.get("y") + deltaY);
-      // Also drag
-      if (this._alsoDrag.length) {
-        _.each(this._alsoDrag, function(el){
-          var initial = el.data("ui-draggable-alsodrag-initial");
-          var helper = el.data("ui-draggable-alsodrag-helper");
-          var node = el.data("dataflow-node-view");
-          // Move other node
-          node.moveToPosition(node.model.get("x") + deltaX, node.model.get("y") + deltaY);
-          el.data("ui-draggable-alsodrag-helper", null);
+          alsoDrag.push(el);
         });
-        this._alsoDrag = [];
       }
-      // Remove helpers
-      this.$dragHelpers.remove();
+
+      function drag(event) {
+        if (!event.gesture) { return; }
+        // Don't drag graph
+        event.stopPropagation();
+        event.gesture.preventDefault();
+
+        deltaX = event.gesture.deltaX / zoom;
+        deltaY = event.gesture.deltaY / zoom;
+        $dragHelpers.css({
+          transform: "translate3d(" + deltaX + "px," + deltaY + "px,0)"
+        });
+      }
+
+      function dragEnd(event) {
+        if (!event.gesture) { return; }
+        // Don't drag graph
+        event.stopPropagation();
+        event.gesture.preventDefault();
+
+        var panX = self.model.parentGraph.get("panX");
+        var panY = self.model.parentGraph.get("panY");
+        // self.moveToPosition(self.model.get("x") + deltaX, self.model.get("y") + deltaY);
+        // Also drag
+        if (alsoDrag.length > 0) {
+          _.each(alsoDrag, function(el){
+            var initial = el.data("ui-draggable-alsodrag-initial");
+            var helper = el.data("ui-draggable-alsodrag-helper");
+            var node = el.data("dataflow-node-view");
+            // Move other node
+            node.moveToPosition(node.model.get("x") + deltaX, node.model.get("y") + deltaY);
+            el.data("ui-draggable-alsodrag-helper", null);
+          });
+          alsoDrag = [];
+        }
+        // Remove helpers
+        $dragHelpers.remove();
+      }
+
+      // Bind
+      Hammer( this.$(".dataflow-node-title")[0] )
+        .on("dragstart", dragStart)
+        .on("drag", drag)
+        .on("dragend", dragEnd);
+
+      // this.$(".dataflow-node-title")
+      //   .mousedown(mouseDown)
+      //   .mouseup(mouseUp);
+
+      // this.graph.$el
+      //   .mousemove(drag)
+      //   .mouseup(dragEnd);
+
     },
     bumpPosition: function () {
       this.$el.css({

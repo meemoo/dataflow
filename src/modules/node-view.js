@@ -30,8 +30,6 @@
 
   var innerTemplate = "";
 
-  var zoom;
- 
   Node.View = Backbone.View.extend({
     template: _.template(template),
     innerTemplate: _.template(innerTemplate),
@@ -105,22 +103,14 @@
       return this;
     },
     makeDraggable: function(){
-      var startX, startY, deltaX, deltaY, alsoDrag, $dragHelpers, isDragging, dragStarted;
+      var deltaX, deltaY, zoom, alsoDrag, $dragHelpers;
       var self = this;
 
-      function mouseDown(event) {
-        startX = event.clientX;
-        startY = event.clientY;
-        isDragging = true;
-      }
-
-      function mouseUp(event) {
-        isDragging = false;
-      }
-
       function dragStart(event) {
+        if (!event.gesture) { return; }
         // Don't drag graph
         event.stopPropagation();
+        event.gesture.preventDefault();
 
         dragStarted = true;
 
@@ -138,59 +128,44 @@
         $dragHelpers = $('<div class="dataflow-nodes-helpers"></div>');
         self.$el.parent().append( $dragHelpers );
 
-        var helper = $('<div class="dataflow-node helper">').css({
-          width: self.$el.width(),
-          height: self.$el.height(),
-          left: parseInt(self.$el.css('left'), 10),
-          top: parseInt(self.$el.css('top'), 10)
-        });
-        $dragHelpers.append(helper);
-
         self.model.parentGraph.view.$(".ui-selected").each(function() {
-          if (self.el !== this) {
-            var el = $(this);
-            // Add helper
-            var helper = $('<div class="dataflow-node helper">').css({
-              width: el.width(),
-              height: el.height(),
-              left: parseInt(el.css('left'), 10),
-              top: parseInt(el.css('top'), 10)
-            });
-            $dragHelpers.append(helper);
-            el.data("ui-draggable-alsodrag-helper", helper);
-            // Add to array
-            alsoDrag.push(el);
-          }
+          var el = $(this);
+          // Add helper
+          var helper = $('<div class="dataflow-node helper">').css({
+            width: el.width(),
+            height: el.height(),
+            left: parseInt(el.css('left'), 10),
+            top: parseInt(el.css('top'), 10)
+          });
+          $dragHelpers.append(helper);
+          el.data("ui-draggable-alsodrag-helper", helper);
+          // Add to array
+          alsoDrag.push(el);
         });
       }
 
       function drag(event) {
-        if (!isDragging) { return; }
-        if (!dragStarted) {
-          dragStart(event);
-        }
+        if (!event.gesture || !$dragHelpers) { return; }
         // Don't drag graph
         event.stopPropagation();
+        event.gesture.preventDefault();
 
-        deltaX = (event.clientX - startX) / zoom;
-        deltaY = (event.clientY - startY) / zoom;
+        deltaX = event.gesture.deltaX / zoom;
+        deltaY = event.gesture.deltaY / zoom;
         $dragHelpers.css({
           transform: "translate3d(" + deltaX + "px," + deltaY + "px,0)"
         });
       }
 
       function dragEnd(event) {
+        if (!event.gesture || !$dragHelpers) { return; }
         // Don't drag graph
         event.stopPropagation();
-
-        isDragging = false;
-
-        if (!dragStarted) { return; }
-        dragStarted = false;
+        event.gesture.preventDefault();
 
         var panX = self.model.parentGraph.get("panX");
         var panY = self.model.parentGraph.get("panY");
-        self.moveToPosition(self.model.get("x") + deltaX, self.model.get("y") + deltaY);
+        // self.moveToPosition(self.model.get("x") + deltaX, self.model.get("y") + deltaY);
         // Also drag
         if (alsoDrag.length > 0) {
           _.each(alsoDrag, function(el){
@@ -205,16 +180,22 @@
         }
         // Remove helpers
         $dragHelpers.remove();
+        $dragHelpers = null;
       }
 
       // Bind
-      this.$(".dataflow-node-title")
-        .mousedown(mouseDown)
-        .mouseup(mouseUp);
+      Hammer( this.$(".dataflow-node-title")[0] )
+        .on("dragstart", dragStart)
+        .on("drag", drag)
+        .on("dragend", dragEnd);
 
-      this.graph.$el
-        .mousemove(drag)
-        .mouseup(dragEnd);
+      // this.$(".dataflow-node-title")
+      //   .mousedown(mouseDown)
+      //   .mouseup(mouseUp);
+
+      // this.graph.$el
+      //   .mousemove(drag)
+      //   .mouseup(dragEnd);
 
     },
     bumpPosition: function () {
