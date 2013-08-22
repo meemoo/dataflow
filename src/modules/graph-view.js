@@ -29,13 +29,8 @@
     className: "dataflow-g",
     events: {
       "click .dataflow-graph": "deselect",
-      // "dragstart .dataflow-graph-panzoom": "panStart",
-      // "drag .dataflow-graph-panzoom": "pan",
-      // "dragstop .dataflow-graph-panzoom": "panStop",
-      "click .dataflow-graph-gotoparent": "gotoParent"
-      // ".dataflow-graph transformstart": "pinchStart",
-      // ".dataflow-graph transform": "pinch",
-      // ".dataflow-graph transformend": "pinchEnd"
+      "click .dataflow-graph-gotoparent": "gotoParent",
+      "mousewheel": "mouseWheel"
     },
     initialize: function() {
       // Graph container
@@ -183,7 +178,7 @@
       }
     },
     bindPan: function () {
-      var zoom, deltaX, deltaY, isDragging;
+      var zoom, isDragging;
       var self = this;
 
       function panStart (event) {
@@ -219,6 +214,9 @@
           panX: self.model.get("panX") + deltaX,
           panY: self.model.get("panY") + deltaY
         });
+
+        // HACK fix for stray node drag
+        $(".dataflow-nodes-helpers").remove();
       }
 
       Hammer( this.$(".dataflow-graph-panzoom")[0] )
@@ -226,6 +224,30 @@
         .on("drag", pan)
         .on("dragend", panEnd);
 
+    },
+    tempPanX: 0,
+    tempPanY: 0,
+    setPanDebounce: _.debounce(function () {
+      // Moves the graph back to 0,0 and changes pan, which will rerender wires
+      this.$(".dataflow-graph").css({
+        transform: "translate3d(0, 0, 0)"
+      });
+      this.model.set({
+        panX: this.model.get("panX") + this.tempPanX,
+        panY: this.model.get("panY") + this.tempPanY
+      });
+      this.tempPanX = 0;
+      this.tempPanY = 0;
+    }, 250),
+    mouseWheel: function (event) {
+      event.preventDefault();
+      var oe = event.originalEvent;
+      this.tempPanX += oe.wheelDeltaX/6;
+      this.tempPanY += oe.wheelDeltaY/6;
+      this.$(".dataflow-graph").css({
+        transform: "translate3d("+this.tempPanX+"px, "+this.tempPanY+"px, 0)"
+      });
+      this.setPanDebounce();
     },
     render: function() {
       // HACK to get them to show correct positions on load

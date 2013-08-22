@@ -179,8 +179,10 @@
           });
           alsoDrag = [];
         }
+
         // Remove helpers
-        $dragHelpers.remove();
+        $(".dataflow-nodes-helpers").remove();
+
         isDragging = false;
       }
 

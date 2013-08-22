@@ -17,6 +17,9 @@
       border: 2px #666 solid;
       top:-2px; right:-2px; bottom:-2px; left:-2px;
     }
+  .dataflow-nodes-helpers {
+    cursor: move;
+  }
   .dataflow-node.helper {
     border-style: dotted;
     background-color: rgba(255, 255, 255, 0.5);
