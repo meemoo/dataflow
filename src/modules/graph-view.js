@@ -89,23 +89,23 @@
     },
     pan: function (event, ui) {
       if (!ui) { return; }
-      var scale = this.model.get('zoom');
+      var zoom = this.model.get('zoom');
       var deltaX = ui.offset.left - this.panStartOffset.left;
       var deltaY = ui.offset.top - this.panStartOffset.top;
       this.$(".dataflow-graph").css({
-        transform: "translate3d("+deltaX/scale+"px, "+deltaY/scale+"px, 0)"
+        transform: "translate3d("+deltaX/zoom+"px, "+deltaY/zoom+"px, 0)"
       });
     },
     panStop: function (event, ui) {
       this.$(".dataflow-graph").css({
         transform: "translate3d(0, 0, 0)"
       });
-      var scale = this.model.get('zoom');
+      var zoom = this.model.get('zoom');
       var deltaX = ui.offset.left - this.panStartOffset.left;
       var deltaY = ui.offset.top - this.panStartOffset.top;
       this.model.set({
-        panX: this.model.get("panX") + deltaX/scale,
-        panY: this.model.get("panY") + deltaY/scale
+        panX: this.model.get("panX") + deltaX/zoom,
+        panY: this.model.get("panY") + deltaY/zoom
       });
     },
     gotoParent: function () {
