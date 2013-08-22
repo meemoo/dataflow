@@ -20,8 +20,6 @@
   "files": [
     "build/default/dataflow.min.css",
     "libs/jquery.js",
-    "libs/jquery-ui.js",
-    "libs/jquery.ui.touch-punch.js",
     "libs/underscore.js",
     "libs/backbone.js",
     "libs/hammer.min.js"
