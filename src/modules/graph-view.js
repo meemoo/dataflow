@@ -183,14 +183,20 @@
       }
     },
     bindPan: function () {
-      var zoom, deltaX, deltaY;
+      var zoom, deltaX, deltaY, isDragging;
       var self = this;
 
       function panStart (event) {
         if (!event.gesture) { return; }
+        // Don't drag other
+        event.stopPropagation();
+
+        isDragging = true;
       }
       function pan (event) {
-        if (!event.gesture) { return; }
+        if (!event.gesture || !isDragging) { return; }
+        // Don't drag other
+        event.stopPropagation();
 
         zoom = self.model.get('zoom');
         deltaX = event.gesture.deltaX/zoom;
@@ -200,7 +206,11 @@
         });
       }
       function panEnd (event) {
-        if (!event.gesture) { return; }
+        if (!event.gesture || !isDragging) { return; }
+        // Don't drag other
+        event.stopPropagation();
+
+        isDragging = false;
 
         self.$(".dataflow-graph").css({
           transform: "translate3d(0, 0, 0)"

@@ -103,16 +103,15 @@
       return this;
     },
     makeDraggable: function(){
-      var deltaX, deltaY, zoom, alsoDrag, $dragHelpers;
+      var deltaX, deltaY, zoom, alsoDrag, $dragHelpers, isDragging;
       var self = this;
 
       function dragStart(event) {
         if (!event.gesture) { return; }
         // Don't drag graph
         event.stopPropagation();
-        event.gesture.preventDefault();
 
-        dragStarted = true;
+        isDragging = true;
 
         // Select this
         if (!self.$el.hasClass("ui-selected")){
@@ -125,7 +124,11 @@
         // Make helper and save start position of all other selected
         alsoDrag = [];
 
-        $dragHelpers = $('<div class="dataflow-nodes-helpers"></div>');
+        if ($dragHelpers) {
+          $dragHelpers.empty();
+        } else {
+          $dragHelpers = $('<div class="dataflow-nodes-helpers"></div>');
+        }
         self.$el.parent().append( $dragHelpers );
 
         self.model.parentGraph.view.$(".ui-selected").each(function() {
@@ -145,10 +148,9 @@
       }
 
       function drag(event) {
-        if (!event.gesture || !$dragHelpers) { return; }
+        if (!event.gesture || !isDragging) { return; }
         // Don't drag graph
         event.stopPropagation();
-        event.gesture.preventDefault();
 
         deltaX = event.gesture.deltaX / zoom;
         deltaY = event.gesture.deltaY / zoom;
@@ -158,10 +160,9 @@
       }
 
       function dragEnd(event) {
-        if (!event.gesture || !$dragHelpers) { return; }
+        if (!event.gesture || !isDragging) { return; }
         // Don't drag graph
         event.stopPropagation();
-        event.gesture.preventDefault();
 
         var panX = self.model.parentGraph.get("panX");
         var panY = self.model.parentGraph.get("panY");
@@ -180,7 +181,7 @@
         }
         // Remove helpers
         $dragHelpers.remove();
-        $dragHelpers = null;
+        isDragging = false;
       }
 
       // Bind
