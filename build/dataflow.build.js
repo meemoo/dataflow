@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-15 (10:47:17 PM EDT)
+/*! dataflow.js - v0.0.7 - 2013-08-26 (6:13:39 PM EDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1159,8 +1159,8 @@
   var Node = Dataflow.prototype.module("node");
   var Edge = Dataflow.prototype.module("edge");
 
-  var minZoom = 0.25;
-  var maxZoom = 2.5;
+  var minZoom = 0.20;
+  var maxZoom = 1.1;
 
   var cssZoomSupported = document.createElement("div").style.hasOwnProperty("zoom");
 
@@ -1185,7 +1185,8 @@
       "dragstart .dataflow-graph-panzoom": "panStart",
       "drag .dataflow-graph-panzoom": "pan",
       "dragstop .dataflow-graph-panzoom": "panStop",
-      "click .dataflow-graph-gotoparent": "gotoParent"
+      "click .dataflow-graph-gotoparent": "gotoParent",
+      "mousewheel": "mouseWheel"
       // ".dataflow-graph transformstart": "pinchStart",
       // ".dataflow-graph transform": "pinch",
       // ".dataflow-graph transformend": "pinchEnd"
@@ -1260,6 +1261,30 @@
         panX: this.model.get("panX") + deltaX/scale,
         panY: this.model.get("panY") + deltaY/scale
       });
+    },
+    tempPanX: 0,
+    tempPanY: 0,
+    setPanDebounce: _.debounce(function () {
+      // Moves the graph back to 0,0 and changes pan, which will rerender wires
+      this.$(".dataflow-graph").css({
+        transform: "translate3d(0, 0, 0)"
+      });
+      this.model.set({
+        panX: this.model.get("panX") + this.tempPanX,
+        panY: this.model.get("panY") + this.tempPanY
+      });
+      this.tempPanX = 0;
+      this.tempPanY = 0;
+    }, 250),
+    mouseWheel: function (event) {
+      event.preventDefault();
+      var oe = event.originalEvent;
+      this.tempPanX += oe.wheelDeltaX/6;
+      this.tempPanY += oe.wheelDeltaY/6;
+      this.$(".dataflow-graph").css({
+        transform: "translate3d("+this.tempPanX+"px, "+this.tempPanY+"px, 0)"
+      });
+      this.setPanDebounce();
     },
     gotoParent: function () {
       var parentNode = this.model.get("parentNode");
@@ -1721,15 +1746,29 @@
       if (event) {
         event.stopPropagation();
       }
+      var toggle = false;
+      if (event && (event.ctrlKey || event.metaKey)) {
+        toggle = true;
+      } else {
+        deselectOthers = true;
+      }
       // De/select
       if (deselectOthers) {
         this.model.parentGraph.view.$(".ui-selected").removeClass("ui-selected");
       }
-      this.$el.addClass("ui-selected");
+      if (toggle) {
+        this.$el.toggleClass("ui-selected");
+      } else {
+        this.$el.addClass("ui-selected");
+      }
       this.bringToTop();
       // Fade / highlight
       this.model.parentGraph.view.fade();
-      this.unfade();
+      if (this.$el.hasClass("ui-selected")) {
+        this.unfade();
+      } else {
+        this.fade();
+      }
       // Trigger
       this.model.trigger("select");
       this.model.parentGraph.trigger("selectionChanged");

@@ -259,7 +259,7 @@
       if (event && (event.ctrlKey || event.metaKey)) {
         toggle = true;
       } else {
-        deselectOthers = true
+        deselectOthers = true;
       }
       // De/select
       if (deselectOthers) {
