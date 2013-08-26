@@ -6,8 +6,8 @@
   var Node = Dataflow.prototype.module("node");
   var Edge = Dataflow.prototype.module("edge");
 
-  var minZoom = 0.25;
-  var maxZoom = 2.5;
+  var minZoom = 0.20;
+  var maxZoom = 1.1;
 
   var cssZoomSupported = document.createElement("div").style.hasOwnProperty("zoom");
 

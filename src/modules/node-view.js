@@ -255,15 +255,29 @@
       if (event) {
         event.stopPropagation();
       }
+      var toggle = false;
+      if (event && (event.ctrlKey || event.metaKey)) {
+        toggle = true;
+      } else {
+        deselectOthers = true
+      }
       // De/select
       if (deselectOthers) {
         this.model.parentGraph.view.$(".ui-selected").removeClass("ui-selected");
       }
-      this.$el.addClass("ui-selected");
+      if (toggle) {
+        this.$el.toggleClass("ui-selected");
+      } else {
+        this.$el.addClass("ui-selected");
+      }
       this.bringToTop();
       // Fade / highlight
       this.model.parentGraph.view.fade();
-      this.unfade();
+      if (this.$el.hasClass("ui-selected")) {
+        this.unfade();
+      } else {
+        this.fade();
+      }
       // Trigger
       this.model.trigger("select");
       this.model.parentGraph.trigger("selectionChanged");
