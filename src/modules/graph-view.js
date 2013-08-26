@@ -6,7 +6,7 @@
   var Node = Dataflow.prototype.module("node");
   var Edge = Dataflow.prototype.module("edge");
 
-  var minZoom = 0.20;
+  var minZoom = 0.25;
   var maxZoom = 1.1;
 
   var cssZoomSupported = document.createElement("div").style.hasOwnProperty("zoom");
@@ -34,9 +34,6 @@
       "dragstop .dataflow-graph-panzoom": "panStop",
       "click .dataflow-graph-gotoparent": "gotoParent",
       "mousewheel": "mouseWheel"
-      // ".dataflow-graph transformstart": "pinchStart",
-      // ".dataflow-graph transform": "pinch",
-      // ".dataflow-graph transformend": "pinchEnd"
     },
     initialize: function() {
       // Graph container
@@ -84,9 +81,11 @@
       this.bindInteraction();
     },
     panStartOffset: null,
+    zoom: 1,
     panStart: function (event, ui) {
       if (!ui) { return; }
       this.panStartOffset = ui.offset;
+      this.zoom = this.model.get("zoom");
     },
     pan: function (event, ui) {
       if (!ui) { return; }
@@ -94,12 +93,14 @@
       var deltaX = ui.offset.left - this.panStartOffset.left;
       var deltaY = ui.offset.top - this.panStartOffset.top;
       this.$(".dataflow-graph").css({
-        transform: "translate3d("+deltaX/scale+"px, "+deltaY/scale+"px, 0)"
+        transform: "translate3d("+deltaX/scale+"px, "+deltaY/scale+"px, 0) " +
+                   "scale3d("+this.zoom+","+this.zoom+", 1) "
       });
     },
     panStop: function (event, ui) {
       this.$(".dataflow-graph").css({
-        transform: "translate3d(0, 0, 0)"
+        transform: "translate3d(0, 0, 0) " +
+                   "scale3d("+this.zoom+","+this.zoom+", 1) "
       });
       var scale = this.model.get('zoom');
       var deltaX = ui.offset.left - this.panStartOffset.left;
@@ -176,46 +177,49 @@
         .on('transformend', function (event) {
           // Reset 3D transform
           self.$graphEl.css({
-            transform: "translate3d(0, 0, 0) " +
-                       "scale3d(1, 1, 1) "
+            transform: "translate3d(0, 0, 0) "
           });
           // Zoom
           var zoom = currentZoom * scale;
           zoom = Math.max(minZoom, Math.min(zoom, maxZoom));
           self.model.set('zoom', zoom);
-          distance_to_origin_x *= zoom;
-          distance_to_origin_y *= zoom;
           self.model.set({
             panX: self.model.get("panX") + deltaX,
             panY: self.model.get("panY") + deltaY
           });
-          console.log(self.model.attributes);
         });
 
-      var onZoom = function () {
-        var z = self.model.get('zoom');
-        var lastClass = self.zoomClass;
-        self.zoomClass = z < 0.5 ? "zoom-tiny" : (z < 0.8 ? "zoom-small" : (z < 1.3 ? "zoom-normal" : "zoom-big"));
-        self.$graphEl
-          .removeClass(lastClass)
-          .addClass(self.zoomClass);
-        self.graphEl.style.zoom = self.model.get('zoom');
-      };
-
-      this.model.on('change:zoom', onZoom);
+      this.model.on('change:zoom', this.setZoom.bind(this));
 
       // Initial zoom this.model from localStorage
       if (this.model.get('zoom') !== 1) {
-        onZoom();
+        this.setZoom();
+        this.setScale();
       }
     },
+    setScale: function () {
+      var z = this.model.get('zoom');
+      this.$graphEl.css({
+        transformOrigin: "50% 50%",
+        transform: "scale3d("+z+", "+z+", 1)"
+      });
+    },
     zoomClass: 1,
+    setZoom: function () {
+      var z = this.model.get('zoom');
+      var lastClass = this.zoomClass;
+      this.zoomClass = z < 0.5 ? "zoom-tiny" : (z < 0.8 ? "zoom-small" : (z < 1.3 ? "zoom-normal" : "zoom-big"));
+      this.$graphEl
+        .removeClass(lastClass)
+        .addClass(this.zoomClass);
+    },
     zoomIn: function () {
       var currentZoom = this.model.get('zoom');
       var zoom = currentZoom * 0.9;
       zoom = Math.max(minZoom, zoom); 
       if (zoom !== currentZoom) {
         this.model.set('zoom', zoom);
+        this.setScale();
       }
     },
     zoomOut: function () {
@@ -224,6 +228,7 @@
       zoom = Math.min(maxZoom, zoom); 
       if (zoom !== currentZoom) {
         this.model.set('zoom', zoom);
+        this.setScale();
       }
     },
     zoomCenter: function () {
@@ -231,6 +236,7 @@
       var zoom = 1;
       if (zoom !== currentZoom) {
         this.model.set('zoom', 1);
+        this.setScale();
       }
     },
     bindScroll: function () {
