@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-22 (4:11:25 PM EDT)
+/*! dataflow.js - v0.0.7 - 2013-08-26 (2:52:14 PM EDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1335,16 +1335,22 @@
       var self = this;
 
       function panStart (event) {
+        // console.log("panStart",event);
         if (!event.gesture) { return; }
         // Don't drag other
         event.stopPropagation();
+        // event.stopImmediatePropagation();
+        // event.gesture.stopPropagation();
 
         isDragging = true;
       }
       function pan (event) {
+        // console.log("pan",event);
         if (!event.gesture || !isDragging) { return; }
         // Don't drag other
         event.stopPropagation();
+        // event.stopImmediatePropagation();
+        // event.gesture.stopPropagation();
 
         zoom = self.model.get('zoom');
         deltaX = event.gesture.deltaX/zoom;
@@ -1354,9 +1360,12 @@
         });
       }
       function panEnd (event) {
+        // console.log("panEnd",event);
         if (!event.gesture || !isDragging) { return; }
         // Don't drag other
         event.stopPropagation();
+        // event.stopImmediatePropagation();
+        // event.gesture.stopPropagation();
 
         isDragging = false;
 
@@ -1612,9 +1621,12 @@
       var self = this;
 
       function dragStart(event) {
+        console.log("dragStart",event);
         if (!event.gesture) { return; }
         // Don't drag graph
-        event.stopPropagation();
+        // event.stopPropagation();
+        // event.stopImmediatePropagation();
+        // event.gesture.stopPropagation();
 
         isDragging = true;
 
@@ -1653,9 +1665,12 @@
       }
 
       function drag(event) {
+        console.log("drag",event);
         if (!event.gesture || !isDragging) { return; }
         // Don't drag graph
-        event.stopPropagation();
+        // event.stopPropagation();
+        // event.stopImmediatePropagation();
+        // event.gesture.stopPropagation();
 
         deltaX = event.gesture.deltaX / zoom;
         deltaY = event.gesture.deltaY / zoom;
@@ -1665,9 +1680,12 @@
       }
 
       function dragEnd(event) {
+        console.log("dragEnd",event);
         if (!event.gesture || !isDragging) { return; }
         // Don't drag graph
-        event.stopPropagation();
+        // event.stopPropagation();
+        // event.stopImmediatePropagation();
+        // event.gesture.stopPropagation();
 
         var panX = self.model.parentGraph.get("panX");
         var panY = self.model.parentGraph.get("panY");

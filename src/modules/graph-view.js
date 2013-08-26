@@ -182,16 +182,22 @@
       var self = this;
 
       function panStart (event) {
+        // console.log("panStart",event);
         if (!event.gesture) { return; }
         // Don't drag other
         event.stopPropagation();
+        // event.stopImmediatePropagation();
+        // event.gesture.stopPropagation();
 
         isDragging = true;
       }
       function pan (event) {
+        // console.log("pan",event);
         if (!event.gesture || !isDragging) { return; }
         // Don't drag other
         event.stopPropagation();
+        // event.stopImmediatePropagation();
+        // event.gesture.stopPropagation();
 
         zoom = self.model.get('zoom');
         deltaX = event.gesture.deltaX/zoom;
@@ -201,9 +207,12 @@
         });
       }
       function panEnd (event) {
+        // console.log("panEnd",event);
         if (!event.gesture || !isDragging) { return; }
         // Don't drag other
         event.stopPropagation();
+        // event.stopImmediatePropagation();
+        // event.gesture.stopPropagation();
 
         isDragging = false;
 

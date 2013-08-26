@@ -107,9 +107,12 @@
       var self = this;
 
       function dragStart(event) {
+        console.log("dragStart",event);
         if (!event.gesture) { return; }
         // Don't drag graph
-        event.stopPropagation();
+        // event.stopPropagation();
+        // event.stopImmediatePropagation();
+        // event.gesture.stopPropagation();
 
         isDragging = true;
 
@@ -148,9 +151,12 @@
       }
 
       function drag(event) {
+        console.log("drag",event);
         if (!event.gesture || !isDragging) { return; }
         // Don't drag graph
-        event.stopPropagation();
+        // event.stopPropagation();
+        // event.stopImmediatePropagation();
+        // event.gesture.stopPropagation();
 
         deltaX = event.gesture.deltaX / zoom;
         deltaY = event.gesture.deltaY / zoom;
@@ -160,9 +166,12 @@
       }
 
       function dragEnd(event) {
+        console.log("dragEnd",event);
         if (!event.gesture || !isDragging) { return; }
         // Don't drag graph
-        event.stopPropagation();
+        // event.stopPropagation();
+        // event.stopImmediatePropagation();
+        // event.gesture.stopPropagation();
 
         var panX = self.model.parentGraph.get("panX");
         var panY = self.model.parentGraph.get("panY");
