@@ -32,7 +32,8 @@
       "dragstart .dataflow-graph-panzoom": "panStart",
       "drag .dataflow-graph-panzoom": "pan",
       "dragstop .dataflow-graph-panzoom": "panStop",
-      "click .dataflow-graph-gotoparent": "gotoParent"
+      "click .dataflow-graph-gotoparent": "gotoParent",
+      "mousewheel": "mouseWheel"
       // ".dataflow-graph transformstart": "pinchStart",
       // ".dataflow-graph transform": "pinch",
       // ".dataflow-graph transformend": "pinchEnd"
@@ -107,6 +108,30 @@
         panX: this.model.get("panX") + deltaX/scale,
         panY: this.model.get("panY") + deltaY/scale
       });
+    },
+    tempPanX: 0,
+    tempPanY: 0,
+    setPanDebounce: _.debounce(function () {
+      // Moves the graph back to 0,0 and changes pan, which will rerender wires
+      this.$(".dataflow-graph").css({
+        transform: "translate3d(0, 0, 0)"
+      });
+      this.model.set({
+        panX: this.model.get("panX") + this.tempPanX,
+        panY: this.model.get("panY") + this.tempPanY
+      });
+      this.tempPanX = 0;
+      this.tempPanY = 0;
+    }, 250),
+    mouseWheel: function (event) {
+      event.preventDefault();
+      var oe = event.originalEvent;
+      this.tempPanX += oe.wheelDeltaX/6;
+      this.tempPanY += oe.wheelDeltaY/6;
+      this.$(".dataflow-graph").css({
+        transform: "translate3d("+this.tempPanX+"px, "+this.tempPanY+"px, 0)"
+      });
+      this.setPanDebounce();
     },
     gotoParent: function () {
       var parentNode = this.model.get("parentNode");
