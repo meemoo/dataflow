@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-29 (3:43:42 PM EDT)
+/*! dataflow.js - v0.0.7 - 2013-08-29 (3:59:39 PM EDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1069,7 +1069,7 @@
         // Set up listener
         sourceNode.on("send:"+this.source.id, this.send, this);
 
-        // this.bringToTop();
+        this.bringToTop();
 
         // Selection event
         this.on("select", this.select, this);
@@ -1097,24 +1097,21 @@
         route: this.get("route")
       };
     },
-    // bringToTop: function(){
-    //   var topZ = 0;
-    //   this.parentGraph.edges.each(function(edge){
-    //     if (edge !== this) {
-    //       var thisZ = edge.get("z");
-    //       if (thisZ > topZ) {
-    //         topZ = thisZ;
-    //       }
-    //       if (edge.view){
-    //         edge.view.unhighlight();
-    //       }
-    //     }
-    //   }, this);
-    //   this.set("z", topZ+1);
-    //   if (this.collection) {
-    //     this.collection.sort();
-    //   }
-    // },
+    bringToTop: function(){
+      var topZ = 0;
+      this.parentGraph.edges.each(function(edge){
+        if (edge !== this) {
+          var thisZ = edge.get("z");
+          if (thisZ > topZ) {
+            topZ = thisZ;
+          }
+          if (edge.view){
+            edge.view.unhighlight();
+          }
+        }
+      }, this);
+      this.set("z", topZ+1);
+    },
     remove: function(){
       this.source.disconnect(this);
       this.target.disconnect(this);
@@ -2100,11 +2097,14 @@
     },
     getTopEdge: function() {
       var topEdge;
+      var topZ = -1;
       if (this.isConnected){
-        // Will get the last (top) matching edge
+        // Will get the top matching edge
         this.model.parentNode.parentGraph.edges.each(function(edge){
-          if(edge.target === this.model){
+          var thisZ = edge.get("z");
+          if(edge.target === this.model && thisZ > topZ ){
             topEdge = edge;
+            topZ = thisZ;
           }
           if (edge.view) {
             edge.view.unhighlight();
@@ -2389,11 +2389,14 @@
     },
     getTopEdge: function() {
       var topEdge;
+      var topZ = -1;
       if (this.isConnected){
-        // Will get the last (top) matching edge
+        // Will get the top matching edge
         this.model.parentNode.parentGraph.edges.each(function(edge){
-          if(edge.source === this.model){
+          var thisZ = edge.get("z");
+          if(edge.source === this.model && thisZ > topZ ){
             topEdge = edge;
+            topZ = thisZ;
           }
           if (edge.view) {
             edge.view.unhighlight();
@@ -2796,14 +2799,11 @@
       $choose.children(".route"+this.model.get("route")).addClass("active");
     },
     bringToTop: function(){
-      // this.model.bringToTop();
+      this.model.bringToTop();
       var parent = this.el.parentNode;
       if (parent) {
         parent.appendChild(this.el);
       }
-
-      // this.model.source.parentNode.view.unfade();
-      // this.model.target.parentNode.view.unfade();
 
       // Port hole color
       this.model.source.view.bringToTop(this.model);
