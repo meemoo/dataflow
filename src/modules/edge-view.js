@@ -247,14 +247,11 @@
       $choose.children(".route"+this.model.get("route")).addClass("active");
     },
     bringToTop: function(){
-      // this.model.bringToTop();
+      this.model.bringToTop();
       var parent = this.el.parentNode;
       if (parent) {
         parent.appendChild(this.el);
       }
-
-      // this.model.source.parentNode.view.unfade();
-      // this.model.target.parentNode.view.unfade();
 
       // Port hole color
       this.model.source.view.bringToTop(this.model);
