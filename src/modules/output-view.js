@@ -30,18 +30,29 @@
       this.$el.html(this.template(this.model.toJSON()));
       this.$el.addClass(this.model.get("type"));
 
+      this.parent = options.parent;
+
+      // Reset hole position
+      var node = this.parent.model;
+      var graph = node.parentGraph;
+      this.listenTo(node, "change:x change:y change:w", function(){
+        this._holePosition = null;
+      }.bind(this));
+      this.listenTo(graph, "change:panX change:panY", function(){
+        this._holePosition = null;
+      }.bind(this));
+
       if (!this.model.parentNode.parentGraph.dataflow.editable) {
         // No drag and drop
         return;
       }
 
       var self = this;
-      this.parent = options.parent;
       this.$(".dataflow-port-plug").draggable({
         cursor: "pointer",
         helper: function(){
           var helper = $('<span class="dataflow-port-plug out helper" />');
-          $('.dataflow-graph').append(helper);
+          self.parent.graph.$el.append(helper);
           return helper;
         },
         disabled: true,
@@ -54,7 +65,7 @@
         helper: function(){
           var helper = $('<span class="dataflow-port-plug in helper" />')
             .data({port: self.model});
-          $('.dataflow-graph').append(helper);
+          self.parent.graph.$el.append(helper);
           return helper;
         }
       });
@@ -221,18 +232,23 @@
       // Tells changeEdgeStop to remove to old edge
       ui.helper.data("removeChangeEdge", (oldLength < this.model.parentNode.parentGraph.edges.length));
     },
-    // _holePosition: null,
+    _holePosition: null,
     holePosition: function () {
-      var holePos = this.$(".dataflow-port-hole").offset();
-      if (!this.parent) {
-        this.parent = this.options.parent;
+      // this._holePosition gets reset when graph panned or node moved
+      if (!this._holePosition) {
+        if (!this.parent){
+          this.parent = this.options.parent;
+        }
+        var node = this.parent.model;
+        var graph = node.parentGraph;
+        var $graph = this.parent.graph.$el;
+        var index = this.$el.index();
+        var width = node.get("w") !== undefined ? node.get("w") : 175;
+        var left = graph.get("panX") + node.get("x") + width - 18;
+        var top = graph.get("panY") + node.get("y") + 48 + index*20;
+        this._holePosition = { left:left, top:top };
       }
-      var $graph = this.parent.graph.$el;
-      var graphPos = $graph.offset();
-      return {
-        left: $graph.scrollLeft() + holePos.left - graphPos.left + 5,
-        top: $graph.scrollTop() + holePos.top - graphPos.top + 8
-      };
+      return this._holePosition;
     },
     isConnected: false,
     plugSetActive: function(){

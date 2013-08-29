@@ -88,17 +88,12 @@
       var source = this.model.source;
       var target = this.model.target;
       var dataflowParent, graphPos;
-      // TODO: match zoom
-      // if (previewPosition) {
-      //   var zoom = this.model.parentGraph.get('zoom');
-      //   previewPosition.left /= zoom;
-      //   previewPosition.top /= zoom;
-      // }
       if (source) {
         this.positions.from = source.view.holePosition();
       }
       else {
         // Preview 
+        // TODO: match zoom
         dataflowParent = this.model.parentGraph.dataflow.$el.parent().position();
         graph = this.model.parentGraph.view.$el;
         this.positions.from = {
@@ -122,6 +117,7 @@
       // this.positions.from.top = Math.floor(this.positions.from.top);
       // this.positions.to.left = Math.floor(this.positions.to.left);
       // this.positions.to.top = Math.floor(this.positions.to.top);
+ 
       // Make and apply the path
       var pathD = this.edgePath(this.positions);
       this.elEdge.setAttribute("d", pathD);
