@@ -419,10 +419,20 @@
       this.isConnected = true;
     },
     plugCheckActive: function(){
-      var isConnected = this.model.parentNode.parentGraph.edges.some(function(edge){
-        return (edge.target === this.model);
+      var topEdge;
+      var topEdgeZ = -1;
+      this.model.parentNode.parentGraph.edges.each(function(edge){
+        if (edge.target === this.model) {
+          var z = edge.get("z");
+          if (z > topEdgeZ) {
+            topEdge = edge;
+            topEdgeZ = z;
+          }
+        }
       }, this);
-      if (!isConnected) {
+      if (topEdge) {
+        this.bringToTop(topEdge);
+      } else {
         try {
           this.$(".dataflow-port-plug").draggable("disable");
         } catch (e) { }

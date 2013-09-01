@@ -11,12 +11,15 @@
   var Output = Dataflow.prototype.module("output");
 
   Node.Model = Backbone.Model.extend({
-    defaults: {
-      label: "",
-      type: "test",
-      x: 200,
-      y: 100,
-      state: {}
+    defaults: function () {
+      return {
+        label: "",
+        type: "test",
+        x: 200,
+        y: 100,
+        state: {},
+        selected: false
+      };
     },
     initialize: function() {
       this.parentGraph = this.get("parentGraph");
@@ -59,11 +62,13 @@
       }
 
       // Selection event
-      this.on("select", this.select, this);
+      this.on("change:selected", this.changeSelected, this);
 
     },
-    select: function() {
-      this.parentGraph.trigger("select:node", this);
+    changeSelected: function() {
+      if (this.get("selected")){
+        this.parentGraph.trigger("select:node", this);
+      }
     },
     setState: function (name, value) {
       var state = this.get("state");

@@ -6,13 +6,9 @@
 
   Base.Model = Node.Model.extend({
     defaults: function(){
-      return {
-        label: "",
-        type: "base",
-        x: 200,
-        y: 100,
-        state: {}
-      };
+      var defaults = Node.Model.prototype.defaults.call(this);
+      defaults.type = "base";
+      return defaults;
     },
     initialize: function() {
       Node.Model.prototype.initialize.call(this);

@@ -99,17 +99,7 @@
       this.dataflow.trigger("select:edge", this, edge);
     },
     selectionChanged: function () {
-      this.selected = [];
-      if (!this.view) {
-        return;
-      }
-
-      this.nodes.each( function (node) {
-        if (node.view && node.view.$el.hasClass("ui-selected")) {
-          this.selected.push(node);
-        }
-      }, this);
-
+      this.selected = this.nodes.where({selected:true});
       this.dataflow.changeContext(this.selected);
     },
     remove: function(){

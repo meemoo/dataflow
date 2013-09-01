@@ -83,6 +83,9 @@
         self.click(event);
       });
 
+      // Listen for select
+      this.listenTo(this.model, "change:selected", this.selectedChange);
+
     },
     render: function(previewPosition){
       var source = this.model.source;
@@ -128,13 +131,20 @@
       }
     },
     fade: function(){
-      if (this.model.source.parentNode.view.$el.hasClass("ui-selected") || this.model.target.parentNode.view.$el.hasClass("ui-selected")) {
+      if (this.model.source.parentNode.get("selected") || this.model.target.parentNode.get("selected")) {
         return;
       }
       this.el.setAttribute("class", "dataflow-edge fade");
     },
     unfade: function(){
       this.el.setAttribute("class", "dataflow-edge");
+    },
+    selectedChange: function () {
+      if (this.model.get("selected")){
+        this.highlight();
+      } else {
+        this.unhighlight();
+      }
     },
     highlight: function(){
       this.el.setAttribute("class", "dataflow-edge highlight");
@@ -227,14 +237,25 @@
       if (event) {
         event.stopPropagation();
       }
-      // Highlight
-      this.highlight();
-      this.bringToTop();
-      this.model.trigger("select");
+      var selected;
+      if (event && (event.ctrlKey || event.metaKey)) {
+        // Toggle
+        selected = this.model.get("selected");
+        selected = !selected;
+      } else {
+        // Deselect all and select this
+        selected = true;
+        this.model.collection.invoke("set", {selected:false});
+      }
+      this.model.set({selected:selected});
+      if (selected) {
+        this.bringToTop();
+        this.model.trigger("select");
+        this.unfade();
+        this.showInspector();
+      }
       // Fade all and highlight related
       this.model.parentGraph.view.fade();
-      this.unfade();
-      this.showInspector();
     },
     showInspector: function(){
       this.model.parentGraph.dataflow.showMenu("inspector");

@@ -5,7 +5,8 @@
   Edge.Model = Backbone.Model.extend({
     defaults: {
       "z": 0,
-      "route": 0
+      "route": 0,
+      "selected": false
     },
     initialize: function() {
       var nodes, sourceNode, targetNode;

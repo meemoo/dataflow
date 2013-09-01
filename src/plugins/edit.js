@@ -26,9 +26,7 @@
     //
 
     function selectAll(){
-      dataflow.currentGraph.view.$(".dataflow-node")
-        .addClass("ui-selected")
-        .removeClass("fade");
+      dataflow.currentGraph.nodes.invoke("set", {selected:true});
     }
     buttons.children(".selectall").click(selectAll);
     Edit.selectAll = selectAll;
@@ -46,9 +44,7 @@
         node.y -= 50;
       });
       // Remove selected
-      var toRemove = dataflow.currentGraph.nodes.filter(function(node){
-        return node.view.$el.hasClass("ui-selected");
-      });
+      var toRemove = dataflow.currentGraph.nodes.where({selected:true});
       _.each(toRemove, function(node){
         node.remove();
       });
@@ -64,12 +60,8 @@
     function copy(){
       copied = {};
       // nodes
-      copied.nodes = [];
-      dataflow.currentGraph.nodes.each(function(node){
-        if (node.view.$el.hasClass("ui-selected")) {
-          copied.nodes.push( JSON.parse(JSON.stringify(node)) );
-        }
-      });
+      copied.nodes = dataflow.currentGraph.nodes.where({selected:true});
+      copied.nodes = JSON.parse(JSON.stringify(copied.nodes));
       // edges
       copied.edges = [];
       dataflow.currentGraph.edges.each(function(edge){
@@ -95,13 +87,14 @@
     function paste(){
       if (copied && copied.nodes && copied.nodes.length > 0) {
         // Deselect all
-        dataflow.currentGraph.view.$(".dataflow-node").removeClass("ui-selected");
+        dataflow.currentGraph.nodes.invoke("set", {selected:false});
         // Add nodes
         _.each(copied.nodes, function(node){
           // Offset pasted
           node.x += 50;
           node.y += 50;
           node.parentGraph = dataflow.currentGraph;
+          node.selected = true;
           var oldId = node.id;
           // Make unique id
           while (dataflow.currentGraph.nodes.get(node.id)){
@@ -120,8 +113,9 @@
           }
           var newNode = new dataflow.nodes[node.type].Model(node);
           dataflow.currentGraph.nodes.add(newNode);
-          // Select it
-          newNode.view.select();
+          // Select new node
+          newNode.view.bringToTop();
+          newNode.view.highlight();
         });
         // Add edges
         _.each(copied.edges, function(edge){

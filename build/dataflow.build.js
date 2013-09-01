@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-08-29 (3:59:39 PM EDT)
+/*! dataflow.js - v0.0.7 - 2013-09-01 (5:22:17 PM EDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -782,17 +782,7 @@
       this.dataflow.trigger("select:edge", this, edge);
     },
     selectionChanged: function () {
-      this.selected = [];
-      if (!this.view) {
-        return;
-      }
-
-      this.nodes.each( function (node) {
-        if (node.view && node.view.$el.hasClass("ui-selected")) {
-          this.selected.push(node);
-        }
-      }, this);
-
+      this.selected = this.nodes.where({selected:true});
       this.dataflow.changeContext(this.selected);
     },
     remove: function(){
@@ -819,12 +809,15 @@
   var Output = Dataflow.prototype.module("output");
 
   Node.Model = Backbone.Model.extend({
-    defaults: {
-      label: "",
-      type: "test",
-      x: 200,
-      y: 100,
-      state: {}
+    defaults: function () {
+      return {
+        label: "",
+        type: "test",
+        x: 200,
+        y: 100,
+        state: {},
+        selected: false
+      };
     },
     initialize: function() {
       this.parentGraph = this.get("parentGraph");
@@ -867,11 +860,13 @@
       }
 
       // Selection event
-      this.on("select", this.select, this);
+      this.on("change:selected", this.changeSelected, this);
 
     },
-    select: function() {
-      this.parentGraph.trigger("select:node", this);
+    changeSelected: function() {
+      if (this.get("selected")){
+        this.parentGraph.trigger("select:node", this);
+      }
     },
     setState: function (name, value) {
       var state = this.get("state");
@@ -1032,7 +1027,8 @@
   Edge.Model = Backbone.Model.extend({
     defaults: {
       "z": 0,
-      "route": 0
+      "route": 0,
+      "selected": false
     },
     initialize: function() {
       var nodes, sourceNode, targetNode;
@@ -1451,21 +1447,28 @@
       } catch (error) {}
     },
     deselect: function () {
-      this.$(".dataflow-node").removeClass("ui-selected");
+      this.model.nodes.invoke("set", {selected:false});
+      this.model.edges.invoke("set", {selected:false});
+      // this.model.nodes.each(function (node) {
+      //   node.set("selected", false);
+      // }, this);
       this.model.trigger("selectionChanged");
       this.unfade();
       this.model.dataflow.hideMenu();
     },
     fade: function () {
       this.model.nodes.each(function(node){
-        if (!node.view.$el.hasClass("ui-selected")){
-          if (node.view) {
-            node.view.fade();
-          }
+        if (node.view) {
+          node.view.fade();
         }
       });
+      this.fadeEdges();
+    },
+    fadeEdges: function () {
       this.model.edges.each(function(edge){
-        if (edge.view) {
+        if (edge.get("selected") || edge.source.parentNode.get("selected") || edge.target.parentNode.get("selected")) {
+          edge.view.unfade();
+        } else {
           edge.view.fade();
         }
       });
@@ -1581,8 +1584,10 @@
       // }, this);
 
       // Listen for graph panning
-      // this.model.parentGraph.on("change:panX change:panY", this.bumpPosition, this);
       this.listenTo(this.model.parentGraph, "change:panX change:panY", this.bumpPosition);
+
+      // Selected listener
+      this.listenTo(this.model, "change:selected", this.selectedChanged);
 
       this.$inner = this.$(".dataflow-node-inner");
     },
@@ -1604,11 +1609,11 @@
     },
     _alsoDrag: [],
     _dragDelta: {},
-    $dragHelpers: null,
+    $dragHelpers: $('<div class="dataflow-nodes-helpers">'),
     dragStart: function(event, ui){
       if (!ui){ return; }
       // Select this
-      if (!this.$el.hasClass("ui-selected")){
+      if (!this.model.get("selected")){
         this.select(event, true);
       }
 
@@ -1618,37 +1623,27 @@
       // Current zoom
       zoom = this.model.parentGraph.get('zoom');
 
-      // Make helper and save start position of all other selected
-      var self = this;
-      this._alsoDrag = [];
-
-      this.$dragHelpers = $('<div class="dataflow-nodes-helpers">');
+      this.$dragHelpers.css({
+        transform: "translate3d(0,0,0)"
+      });
       this.$el.parent().append( this.$dragHelpers );
 
-      var helper = $('<div class="dataflow-node helper">').css({
-        width: this.$el.width(),
-        height: this.$el.height(),
-        left: parseInt(this.$el.css('left'), 10),
-        top: parseInt(this.$el.css('top'), 10)
-      });
-      this.$dragHelpers.append(helper);
+      // Make helper and save start position of all other selected
+      var self = this;
+      this._alsoDrag = this.model.collection.where({selected:true});
 
-      this.model.parentGraph.view.$(".ui-selected").each(function() {
-        if (self.el !== this) {
-          var el = $(this);
-          // Add helper
-          var helper = $('<div class="dataflow-node helper">').css({
-            width: el.width(),
-            height: el.height(),
-            left: parseInt(el.css('left'), 10),
-            top: parseInt(el.css('top'), 10)
-          });
-          self.$dragHelpers.append(helper);
-          el.data("ui-draggable-alsodrag-helper", helper);
-          // Add to array
-          self._alsoDrag.push(el);
-        }
-      });
+      _.each(this._alsoDrag, function(node){
+        var $el = node.view.$el;
+        // Add helper
+        var helper = $('<div class="dataflow-node helper">').css({
+          width: $el.width(),
+          height: $el.height(),
+          left: parseInt($el.css('left'), 10),
+          top: parseInt($el.css('top'), 10)
+        });
+        this.$dragHelpers.append(helper);
+      }, this);
+
     },
     drag: function(event, ui){
       if (!ui){ return; }
@@ -1670,20 +1665,16 @@
       var panY = this.model.parentGraph.get("panY");
       var deltaX = (ui.position.left - ui.originalPosition.left) / zoom;
       var deltaY = (ui.position.top - ui.originalPosition.top) / zoom;
-      this.moveToPosition(this.model.get("x") + deltaX, this.model.get("y") + deltaY);
+      // this.moveToPosition(this.model.get("x") + deltaX, this.model.get("y") + deltaY);
       // Also drag
       if (this._alsoDrag.length) {
-        _.each(this._alsoDrag, function(el){
-          var initial = el.data("ui-draggable-alsodrag-initial");
-          var helper = el.data("ui-draggable-alsodrag-helper");
-          var node = el.data("dataflow-node-view");
-          // Move other node
-          node.moveToPosition(node.model.get("x") + deltaX, node.model.get("y") + deltaY);
-          el.data("ui-draggable-alsodrag-helper", null);
-        });
+        _.each(this._alsoDrag, function(node){
+          node.view.moveToPosition(node.get("x") + deltaX, node.get("y") + deltaY);
+        }, this);
         this._alsoDrag = [];
       }
       // Remove helpers
+      this.$dragHelpers.empty();
       this.$dragHelpers.remove();
     },
     bumpPosition: function () {
@@ -1744,46 +1735,45 @@
         event.stopPropagation();
       }
       var toggle = false;
+      var selected = this.model.get("selected");
       if (event && (event.ctrlKey || event.metaKey)) {
         toggle = true;
+        selected = !selected;
+        this.model.set("selected", selected);
+        if (!selected) {
+          this.fade();
+        }
       } else {
-        deselectOthers = true;
-      }
-      // De/select
-      if (deselectOthers) {
-        this.model.parentGraph.view.$(".ui-selected").removeClass("ui-selected");
-      }
-      if (toggle) {
-        this.$el.toggleClass("ui-selected");
-      } else {
-        this.$el.addClass("ui-selected");
+        // Deselect all
+        this.model.parentGraph.nodes.invoke("set",{selected:false});
+        this.model.parentGraph.view.fade();
+        selected = true;
+        this.model.set("selected", true);
       }
       this.bringToTop();
-      // Fade / highlight
-      this.model.parentGraph.view.fade();
-      if (this.$el.hasClass("ui-selected")) {
-        this.unfade();
-      } else {
-        this.fade();
-      }
-      // Trigger
-      this.model.trigger("select");
+      this.model.parentGraph.view.fadeEdges();
       this.model.parentGraph.trigger("selectionChanged");
     },
     fade: function(){
       this.$el.addClass("fade");
+      this.$el.removeClass("ui-selected");
     },
     unfade: function(){
       this.$el.removeClass("fade");
-      // Unfade related edges
-      var self = this;
-      this.model.parentGraph.edges.each(function(edge){
-        if (edge.source.parentNode.id === self.model.id || edge.target.parentNode.id === self.model.id) {
-          if (edge.view) {
-            edge.view.unfade();
-          }
-        }
-      });
+    },
+    selectedChanged: function () {
+      if (this.model.get("selected")) {
+        this.highlight();
+      } else {
+        this.unhighlight();
+      }
+    },
+    highlight: function () {
+      this.$el.removeClass("fade");
+      this.$el.addClass("ui-selected");
+    },
+    unhighlight: function () {
+      this.$el.removeClass("ui-selected");
     },
     $inputList: null,
     getInputList: function() {
@@ -2228,10 +2218,20 @@
       this.isConnected = true;
     },
     plugCheckActive: function(){
-      var isConnected = this.model.parentNode.parentGraph.edges.some(function(edge){
-        return (edge.target === this.model);
+      var topEdge;
+      var topEdgeZ = -1;
+      this.model.parentNode.parentGraph.edges.each(function(edge){
+        if (edge.target === this.model) {
+          var z = edge.get("z");
+          if (z > topEdgeZ) {
+            topEdge = edge;
+            topEdgeZ = z;
+          }
+        }
       }, this);
-      if (!isConnected) {
+      if (topEdge) {
+        this.bringToTop(topEdge);
+      } else {
         try {
           this.$(".dataflow-port-plug").draggable("disable");
         } catch (e) { }
@@ -2521,10 +2521,20 @@
       this.isConnected = true;
     },
     plugCheckActive: function(){
-      var isConnected = this.model.parentNode.parentGraph.edges.some(function(edge){
-        return (edge.source === this.model);
+      var topEdge;
+      var topEdgeZ = -1;
+      this.model.parentNode.parentGraph.edges.each(function(edge){
+        if (edge.source === this.model) {
+          var z = edge.get("z");
+          if (z > topEdgeZ) {
+            topEdge = edge;
+            topEdgeZ = z;
+          }
+        }
       }, this);
-      if (!isConnected) {
+      if (topEdge) {
+        this.bringToTop(topEdge);
+      } else {
         try {
           this.$(".dataflow-port-plug").draggable("disable");
         } catch (e) { }
@@ -2635,6 +2645,9 @@
         self.click(event);
       });
 
+      // Listen for select
+      this.listenTo(this.model, "change:selected", this.selectedChange);
+
     },
     render: function(previewPosition){
       var source = this.model.source;
@@ -2680,13 +2693,20 @@
       }
     },
     fade: function(){
-      if (this.model.source.parentNode.view.$el.hasClass("ui-selected") || this.model.target.parentNode.view.$el.hasClass("ui-selected")) {
+      if (this.model.source.parentNode.get("selected") || this.model.target.parentNode.get("selected")) {
         return;
       }
       this.el.setAttribute("class", "dataflow-edge fade");
     },
     unfade: function(){
       this.el.setAttribute("class", "dataflow-edge");
+    },
+    selectedChange: function () {
+      if (this.model.get("selected")){
+        this.highlight();
+      } else {
+        this.unhighlight();
+      }
     },
     highlight: function(){
       this.el.setAttribute("class", "dataflow-edge highlight");
@@ -2779,14 +2799,25 @@
       if (event) {
         event.stopPropagation();
       }
-      // Highlight
-      this.highlight();
-      this.bringToTop();
-      this.model.trigger("select");
+      var selected;
+      if (event && (event.ctrlKey || event.metaKey)) {
+        // Toggle
+        selected = this.model.get("selected");
+        selected = !selected;
+      } else {
+        // Deselect all and select this
+        selected = true;
+        this.model.collection.invoke("set", {selected:false});
+      }
+      this.model.set({selected:selected});
+      if (selected) {
+        this.bringToTop();
+        this.model.trigger("select");
+        this.unfade();
+        this.showInspector();
+      }
       // Fade all and highlight related
       this.model.parentGraph.view.fade();
-      this.unfade();
-      this.showInspector();
     },
     showInspector: function(){
       this.model.parentGraph.dataflow.showMenu("inspector");
@@ -2882,9 +2913,7 @@
     //
 
     function selectAll(){
-      dataflow.currentGraph.view.$(".dataflow-node")
-        .addClass("ui-selected")
-        .removeClass("fade");
+      dataflow.currentGraph.nodes.invoke("set", {selected:true});
     }
     buttons.children(".selectall").click(selectAll);
     Edit.selectAll = selectAll;
@@ -2902,9 +2931,7 @@
         node.y -= 50;
       });
       // Remove selected
-      var toRemove = dataflow.currentGraph.nodes.filter(function(node){
-        return node.view.$el.hasClass("ui-selected");
-      });
+      var toRemove = dataflow.currentGraph.nodes.where({selected:true});
       _.each(toRemove, function(node){
         node.remove();
       });
@@ -2920,12 +2947,8 @@
     function copy(){
       copied = {};
       // nodes
-      copied.nodes = [];
-      dataflow.currentGraph.nodes.each(function(node){
-        if (node.view.$el.hasClass("ui-selected")) {
-          copied.nodes.push( JSON.parse(JSON.stringify(node)) );
-        }
-      });
+      copied.nodes = dataflow.currentGraph.nodes.where({selected:true});
+      copied.nodes = JSON.parse(JSON.stringify(copied.nodes));
       // edges
       copied.edges = [];
       dataflow.currentGraph.edges.each(function(edge){
@@ -2951,13 +2974,14 @@
     function paste(){
       if (copied && copied.nodes && copied.nodes.length > 0) {
         // Deselect all
-        dataflow.currentGraph.view.$(".dataflow-node").removeClass("ui-selected");
+        dataflow.currentGraph.nodes.invoke("set", {selected:false});
         // Add nodes
         _.each(copied.nodes, function(node){
           // Offset pasted
           node.x += 50;
           node.y += 50;
           node.parentGraph = dataflow.currentGraph;
+          node.selected = true;
           var oldId = node.id;
           // Make unique id
           while (dataflow.currentGraph.nodes.get(node.id)){
@@ -2976,8 +3000,9 @@
           }
           var newNode = new dataflow.nodes[node.type].Model(node);
           dataflow.currentGraph.nodes.add(newNode);
-          // Select it
-          newNode.view.select();
+          // Select new node
+          newNode.view.bringToTop();
+          newNode.view.highlight();
         });
         // Add edges
         _.each(copied.edges, function(edge){
@@ -3439,13 +3464,9 @@
 
   Base.Model = Node.Model.extend({
     defaults: function(){
-      return {
-        label: "",
-        type: "base",
-        x: 200,
-        y: 100,
-        state: {}
-      };
+      var defaults = Node.Model.prototype.defaults.call(this);
+      defaults.type = "base";
+      return defaults;
     },
     initialize: function() {
       Node.Model.prototype.initialize.call(this);
@@ -3536,17 +3557,17 @@
   var Output = Dataflow.prototype.module("output");
 
   DataflowSubgraph.Model = BaseResizable.Model.extend({
-    defaults: {
-      label: "subgraph",
-      type: "dataflow-subgraph",
-      x: 200,
-      y: 100,
-      graph: {
+    defaults: function(){
+      var defaults = BaseResizable.Model.prototype.defaults.call(this);
+      defaults.label = "subgraph";
+      defaults.type = "dataflow-subgraph";
+      defaults.graph = {
         nodes:[
           {id: "1", label: "in", type:"dataflow-input",  x:180, y: 15},
           {id:"99", label:"out", type:"dataflow-output", x:975, y:500}
         ]
-      }
+      };
+      return defaults;
     },
     initialize: function() {
       BaseResizable.Model.prototype.initialize.call(this);

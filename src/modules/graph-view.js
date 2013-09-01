@@ -301,21 +301,28 @@
       } catch (error) {}
     },
     deselect: function () {
-      this.$(".dataflow-node").removeClass("ui-selected");
+      this.model.nodes.invoke("set", {selected:false});
+      this.model.edges.invoke("set", {selected:false});
+      // this.model.nodes.each(function (node) {
+      //   node.set("selected", false);
+      // }, this);
       this.model.trigger("selectionChanged");
       this.unfade();
       this.model.dataflow.hideMenu();
     },
     fade: function () {
       this.model.nodes.each(function(node){
-        if (!node.view.$el.hasClass("ui-selected")){
-          if (node.view) {
-            node.view.fade();
-          }
+        if (node.view) {
+          node.view.fade();
         }
       });
+      this.fadeEdges();
+    },
+    fadeEdges: function () {
       this.model.edges.each(function(edge){
-        if (edge.view) {
+        if (edge.get("selected") || edge.source.parentNode.get("selected") || edge.target.parentNode.get("selected")) {
+          edge.view.unfade();
+        } else {
           edge.view.fade();
         }
       });

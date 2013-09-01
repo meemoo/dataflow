@@ -38,9 +38,10 @@
 }
 
 .dataflow-edge.fade .dataflow-edge-wire {
-  stroke: hsl(220, 10%, 40%);
+  /*stroke: hsl(220, 10%, 40%);*/
+  opacity: 0.3;
 }
 .dataflow-edge.fade .dataflow-edge-shadow {  
   stroke: black;
-  opacity: 1;
+  stroke-width: 9px;
 }

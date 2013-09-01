@@ -93,8 +93,10 @@
       // }, this);
 
       // Listen for graph panning
-      // this.model.parentGraph.on("change:panX change:panY", this.bumpPosition, this);
       this.listenTo(this.model.parentGraph, "change:panX change:panY", this.bumpPosition);
+
+      // Selected listener
+      this.listenTo(this.model, "change:selected", this.selectedChanged);
 
       this.$inner = this.$(".dataflow-node-inner");
     },
@@ -116,11 +118,11 @@
     },
     _alsoDrag: [],
     _dragDelta: {},
-    $dragHelpers: null,
+    $dragHelpers: $('<div class="dataflow-nodes-helpers">'),
     dragStart: function(event, ui){
       if (!ui){ return; }
       // Select this
-      if (!this.$el.hasClass("ui-selected")){
+      if (!this.model.get("selected")){
         this.select(event, true);
       }
 
@@ -130,37 +132,27 @@
       // Current zoom
       zoom = this.model.parentGraph.get('zoom');
 
-      // Make helper and save start position of all other selected
-      var self = this;
-      this._alsoDrag = [];
-
-      this.$dragHelpers = $('<div class="dataflow-nodes-helpers">');
+      this.$dragHelpers.css({
+        transform: "translate3d(0,0,0)"
+      });
       this.$el.parent().append( this.$dragHelpers );
 
-      var helper = $('<div class="dataflow-node helper">').css({
-        width: this.$el.width(),
-        height: this.$el.height(),
-        left: parseInt(this.$el.css('left'), 10),
-        top: parseInt(this.$el.css('top'), 10)
-      });
-      this.$dragHelpers.append(helper);
+      // Make helper and save start position of all other selected
+      var self = this;
+      this._alsoDrag = this.model.collection.where({selected:true});
 
-      this.model.parentGraph.view.$(".ui-selected").each(function() {
-        if (self.el !== this) {
-          var el = $(this);
-          // Add helper
-          var helper = $('<div class="dataflow-node helper">').css({
-            width: el.width(),
-            height: el.height(),
-            left: parseInt(el.css('left'), 10),
-            top: parseInt(el.css('top'), 10)
-          });
-          self.$dragHelpers.append(helper);
-          el.data("ui-draggable-alsodrag-helper", helper);
-          // Add to array
-          self._alsoDrag.push(el);
-        }
-      });
+      _.each(this._alsoDrag, function(node){
+        var $el = node.view.$el;
+        // Add helper
+        var helper = $('<div class="dataflow-node helper">').css({
+          width: $el.width(),
+          height: $el.height(),
+          left: parseInt($el.css('left'), 10),
+          top: parseInt($el.css('top'), 10)
+        });
+        this.$dragHelpers.append(helper);
+      }, this);
+
     },
     drag: function(event, ui){
       if (!ui){ return; }
@@ -182,20 +174,16 @@
       var panY = this.model.parentGraph.get("panY");
       var deltaX = (ui.position.left - ui.originalPosition.left) / zoom;
       var deltaY = (ui.position.top - ui.originalPosition.top) / zoom;
-      this.moveToPosition(this.model.get("x") + deltaX, this.model.get("y") + deltaY);
+      // this.moveToPosition(this.model.get("x") + deltaX, this.model.get("y") + deltaY);
       // Also drag
       if (this._alsoDrag.length) {
-        _.each(this._alsoDrag, function(el){
-          var initial = el.data("ui-draggable-alsodrag-initial");
-          var helper = el.data("ui-draggable-alsodrag-helper");
-          var node = el.data("dataflow-node-view");
-          // Move other node
-          node.moveToPosition(node.model.get("x") + deltaX, node.model.get("y") + deltaY);
-          el.data("ui-draggable-alsodrag-helper", null);
-        });
+        _.each(this._alsoDrag, function(node){
+          node.view.moveToPosition(node.get("x") + deltaX, node.get("y") + deltaY);
+        }, this);
         this._alsoDrag = [];
       }
       // Remove helpers
+      this.$dragHelpers.empty();
       this.$dragHelpers.remove();
     },
     bumpPosition: function () {
@@ -256,46 +244,45 @@
         event.stopPropagation();
       }
       var toggle = false;
+      var selected = this.model.get("selected");
       if (event && (event.ctrlKey || event.metaKey)) {
         toggle = true;
+        selected = !selected;
+        this.model.set("selected", selected);
+        if (!selected) {
+          this.fade();
+        }
       } else {
-        deselectOthers = true;
-      }
-      // De/select
-      if (deselectOthers) {
-        this.model.parentGraph.view.$(".ui-selected").removeClass("ui-selected");
-      }
-      if (toggle) {
-        this.$el.toggleClass("ui-selected");
-      } else {
-        this.$el.addClass("ui-selected");
+        // Deselect all
+        this.model.parentGraph.nodes.invoke("set",{selected:false});
+        this.model.parentGraph.view.fade();
+        selected = true;
+        this.model.set("selected", true);
       }
       this.bringToTop();
-      // Fade / highlight
-      this.model.parentGraph.view.fade();
-      if (this.$el.hasClass("ui-selected")) {
-        this.unfade();
-      } else {
-        this.fade();
-      }
-      // Trigger
-      this.model.trigger("select");
+      this.model.parentGraph.view.fadeEdges();
       this.model.parentGraph.trigger("selectionChanged");
     },
     fade: function(){
       this.$el.addClass("fade");
+      this.$el.removeClass("ui-selected");
     },
     unfade: function(){
       this.$el.removeClass("fade");
-      // Unfade related edges
-      var self = this;
-      this.model.parentGraph.edges.each(function(edge){
-        if (edge.source.parentNode.id === self.model.id || edge.target.parentNode.id === self.model.id) {
-          if (edge.view) {
-            edge.view.unfade();
-          }
-        }
-      });
+    },
+    selectedChanged: function () {
+      if (this.model.get("selected")) {
+        this.highlight();
+      } else {
+        this.unhighlight();
+      }
+    },
+    highlight: function () {
+      this.$el.removeClass("fade");
+      this.$el.addClass("ui-selected");
+    },
+    unhighlight: function () {
+      this.$el.removeClass("ui-selected");
     },
     $inputList: null,
     getInputList: function() {

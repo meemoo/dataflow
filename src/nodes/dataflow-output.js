@@ -5,12 +5,11 @@
   var DataflowOutput = Dataflow.prototype.node("dataflow-output");
 
   DataflowOutput.Model = Base.Model.extend({
-    defaults: {
-      label: "",
-      type: "dataflow-output",
-      x: 200,
-      y: 100,
-      "output-type": "all"
+    defaults: function () {
+      var defaults = Base.Model.prototype.defaults.call(this);
+      defaults.type = "dataflow-output";
+      defaults["output-type"] = "all";
+      return defaults;
     },
     initialize: function (options){
       if (this.get("label")===""){
