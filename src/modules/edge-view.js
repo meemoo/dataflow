@@ -67,6 +67,7 @@
       // Color route
       if (this.model.get("route") !== undefined) {
         this.elEdge.setAttribute("class", "dataflow-edge-wire route"+this.model.get("route"));
+        // this.elEdge.classList.add("route"+this.model.get("route"));
       }
       // Change color on route change
       var self = this;
@@ -134,10 +135,10 @@
       if (this.model.source.parentNode.get("selected") || this.model.target.parentNode.get("selected")) {
         return;
       }
-      this.el.setAttribute("class", "dataflow-edge fade");
+      this.el.classList.add("fade");
     },
     unfade: function(){
-      this.el.setAttribute("class", "dataflow-edge");
+      this.el.classList.remove("fade");
     },
     selectedChange: function () {
       if (this.model.get("selected")){
@@ -147,10 +148,12 @@
       }
     },
     highlight: function(){
-      this.el.setAttribute("class", "dataflow-edge highlight");
+      this.el.classList.add("highlight");
+      // this.el.setAttribute("class", "dataflow-edge highlight");
     },
     unhighlight: function(){
-      this.el.setAttribute("class", "dataflow-edge");
+      this.el.classList.remove("highlight");
+      // this.el.setAttribute("class", "dataflow-edge");
     },
     edgePath: function(positions){
       var extend = 20;
@@ -245,6 +248,7 @@
       } else {
         // Deselect all and select this
         selected = true;
+        this.model.parentGraph.nodes.invoke("set", {selected:false});
         this.model.collection.invoke("set", {selected:false});
       }
       this.model.set({selected:selected});

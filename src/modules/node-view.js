@@ -254,7 +254,8 @@
         }
       } else {
         // Deselect all
-        this.model.parentGraph.nodes.invoke("set",{selected:false});
+        this.model.parentGraph.edges.invoke("set", {selected:false});
+        this.model.parentGraph.nodes.invoke("set", {selected:false});
         this.model.parentGraph.view.fade();
         selected = true;
         this.model.set("selected", true);
