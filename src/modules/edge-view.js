@@ -28,7 +28,7 @@
       // Works only here
       el.className = "dataflow-edge " + name;
     }
-  }
+  };
 
   var removeClass = function (el, name) {
     if (el.classList) {
@@ -36,7 +36,7 @@
     } else {
       el.className = "dataflow-edge"; 
     }
-  }
+  };
   
   Edge.View = Backbone.View.extend({
     tagName: "div",

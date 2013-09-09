@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-06 (2:20:40 PM GMT+0300)
+/*! dataflow.js - v0.0.7 - 2013-09-10 (1:42:51 AM GMT+0300)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -2583,6 +2583,23 @@
     '<h1 class="dataflow-edge-inspector-title">Edge</h1>'+
     '<div class="dataflow-edge-inspector-route-choose"></div>';
     // '<div class="dataflow-edge-inspector-route route<%- route %>"><%- route %></div>';
+
+  var addClass = function (el, name) {
+    if (el.classList) {
+      el.classList.add(name);
+    } else {
+      // Works only here
+      el.className = "dataflow-edge " + name;
+    }
+  };
+
+  var removeClass = function (el, name) {
+    if (el.classList) {
+      el.classList.remove(name);
+    } else {
+      el.className = "dataflow-edge"; 
+    }
+  };
   
   Edge.View = Backbone.View.extend({
     tagName: "div",
@@ -2630,7 +2647,6 @@
       // Color route
       if (this.model.get("route") !== undefined) {
         this.elEdge.setAttribute("class", "dataflow-edge-wire route"+this.model.get("route"));
-        // this.elEdge.classList.add("route"+this.model.get("route"));
       }
       // Change color on route change
       var self = this;
@@ -2698,10 +2714,10 @@
       if (this.model.source.parentNode.get("selected") || this.model.target.parentNode.get("selected")) {
         return;
       }
-      this.el.classList.add("fade");
+      addClass(this.el, "fade");
     },
     unfade: function(){
-      this.el.classList.remove("fade");
+      removeClass(this.el, "fade");
     },
     selectedChange: function () {
       if (this.model.get("selected")){
@@ -2711,12 +2727,10 @@
       }
     },
     highlight: function(){
-      this.el.classList.add("highlight");
-      // this.el.setAttribute("class", "dataflow-edge highlight");
+      addClass(this.el, "highlight");
     },
     unhighlight: function(){
-      this.el.classList.remove("highlight");
-      // this.el.setAttribute("class", "dataflow-edge");
+      removeClass(this.el, "highlight");
     },
     edgePath: function(positions){
       var extend = 20;
