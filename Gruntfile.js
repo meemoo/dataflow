@@ -31,6 +31,8 @@
             "src/modules/output-view.js",
             "src/modules/edge-view.js",
             "src/modules/card-view.js",
+            // Inspectors
+            "src/modules/node-inspect-view.js",
             // Plugins
             "src/plugins/edit.js",
             "src/plugins/elements.js",
