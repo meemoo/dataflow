@@ -23,14 +23,14 @@
             "src/modules/input.js",
             "src/modules/output.js",
             "src/modules/edge.js",
-            "src/modules/card.js",
+            // "src/modules/card.js",
             // Views
             "src/modules/graph-view.js",
             "src/modules/node-view.js",
             "src/modules/input-view.js",
             "src/modules/output-view.js",
             "src/modules/edge-view.js",
-            "src/modules/card-view.js",
+            // "src/modules/card-view.js",
             // Cards
             "src/modules/node-inspect-view.js",
             // Plugins
