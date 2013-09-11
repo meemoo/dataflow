@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-11 (5:45:28 PM GMT+0300)
+/*! dataflow.js - v0.0.7 - 2013-09-11 (6:12:31 PM GMT+0300)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1502,7 +1502,7 @@
   var template = 
     '<div class="outer" />'+
     '<div class="dataflow-node-header">'+
-      '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>"><%- label %>: <%- type %></h1>'+
+      '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>"><%- label %></h1>'+
     '</div>'+
     '<div class="dataflow-node-ports">'+
       '<div class="dataflow-node-ins"></div>'+
@@ -1593,9 +1593,6 @@
       this.$(".dataflow-node-controls").hide();
       this.$(".label-edit").hide();
 
-      // Set title
-      this.changeLabel();
-
       return this;
     },
     _alsoDrag: [],
@@ -1639,12 +1636,9 @@
     changeLabel: function () {
       var label = this.model.get("label");
       var type = this.model.get("type");
-      if (label !== type) {
-        label += ": " + type;
-      }
       this.$(".dataflow-node-title")
         .text( label )
-        .attr("title", label);
+        .attr("title", label + ": " + type);
     },
     drag: function(event, ui){
       if (!ui){ return; }
@@ -2900,10 +2894,6 @@
 ( function(Dataflow) {
 
   var Node = Dataflow.prototype.module("node");
-
-  // Dependencies
-  var Input = Dataflow.prototype.module("input");
-  var Output = Dataflow.prototype.module("output");
 
   var template = 
     '<div class="dataflow-plugin-inspector-title">'+

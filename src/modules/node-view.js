@@ -100,9 +100,6 @@
       this.$(".dataflow-node-controls").hide();
       this.$(".label-edit").hide();
 
-      // Set title
-      this.changeLabel();
-
       return this;
     },
     _alsoDrag: [],
