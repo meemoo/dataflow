@@ -9,7 +9,7 @@
   var template = 
     '<div class="outer" />'+
     '<div class="dataflow-node-header">'+
-      '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>"><%- label %>: <%- type %></h1>'+
+      '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>"><%- label %></h1>'+
     '</div>'+
     '<div class="dataflow-node-ports">'+
       '<div class="dataflow-node-ins"></div>'+
@@ -146,12 +146,9 @@
     changeLabel: function () {
       var label = this.model.get("label");
       var type = this.model.get("type");
-      if (label !== type) {
-        label += ": " + type;
-      }
       this.$(".dataflow-node-title")
         .text( label )
-        .attr("title", label);
+        .attr("title", label + ": " + type);
     },
     drag: function(event, ui){
       if (!ui){ return; }
