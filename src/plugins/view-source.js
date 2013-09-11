@@ -14,6 +14,10 @@
     );
     var $code = $form.find(".code");
 
+    $code.keydown(function(event){
+      event.stopPropagation();
+    });
+
     dataflow.addPlugin({
       id: "source", 
       name: "", 
