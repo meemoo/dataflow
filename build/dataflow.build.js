@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-11 (6:28:12 PM GMT+0300)
+/*! dataflow.js - v0.0.7 - 2013-09-11 (9:12:17 PM GMT+0300)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -3250,6 +3250,7 @@
     var $code = $form.find(".code");
 
     $code.keydown(function(event){
+      // Don't select / copy / paste nodes in the graph
       event.stopPropagation();
     });
 
