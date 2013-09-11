@@ -21,8 +21,6 @@
         if (lastSelected.view) {
           $inspector.children().detach();
           $inspector.append( lastSelected.view.getInputList() );
-          
-          lastSelected.view.highlightEdges();
         }
       }
     }

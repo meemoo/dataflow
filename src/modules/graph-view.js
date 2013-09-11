@@ -280,7 +280,9 @@
       this.$('.dataflow-svg-edges')[0].appendChild(edge.view.el);
     },
     removeEdge: function(edge){
-      edge.view.remove();
+      if (edge.view) {
+        edge.view.remove();
+      }
       this.edges[edge.id] = null;
       delete this.edges[edge.id];
     },

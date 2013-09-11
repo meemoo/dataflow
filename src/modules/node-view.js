@@ -9,8 +9,7 @@
   var template = 
     '<div class="outer" />'+
     '<div class="dataflow-node-header">'+
-      '<h1 class="dataflow-node-title"><span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
-      '<button title="properties" class="dataflow-node-inspect icon-cog"></button>'+
+      '<h1 class="dataflow-node-title"><span class="label"><%- label %></span></h1>'+
     '</div>'+
     '<div class="dataflow-node-ports">'+
       '<div class="dataflow-node-ins"></div>'+
@@ -22,6 +21,7 @@
   var inspectTemplate = 
     '<h1 class="dataflow-node-inspector-title"><%- label %></h1>'+
     // '<div class="dataflow-node-inspector-controls">'+
+    // '<input class="label-edit" value="<%- label %>" type="text" />'+
     //   '<button class="dataflow-node-delete">delete</button>'+
     //   '<button class="dataflow-node-save">save</button>'+
     //   '<button class="dataflow-node-cancel">cancel</button>'+
@@ -39,14 +39,10 @@
     className: "dataflow-node",
     events: function(){
       return {
-        "click .dataflow-node-inspect": "showInspector",
         "click .dataflow-node-header":  "select",
         "dragstart": "dragStart",
         "drag":      "drag",
         "dragstop":  "dragStop"
-        // "click .dataflow-node-delete": "removeModel",
-        // "click .dataflow-node-cancel": "hideControls",
-        // "click .dataflow-node-save":   "saveLabel"
       };
     },
     initialize: function(options) {
@@ -89,7 +85,6 @@
       // Listener to reset inputs list
       // this.inputs.on("change", function(input){
       //   this.$inputsList = null;
-      //   console.log("change");
       // }, this);
 
       // Listen for graph panning
@@ -203,19 +198,6 @@
       });
       this.bumpPosition();
     },
-    showInspector: function(){
-      this.model.parentGraph.dataflow.showMenu("inspector");
-      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
-      $inspector.children().detach();
-      $inspector.append( this.getInputList() );
-      
-      this.highlightEdges();
-    },
-    highlightEdges: function(){
-      
-    },
-    hideControls: function(){
-    },
     saveLabel: function(){
       // Save new label
       var newLabel = this.$(".title .label-edit").val();
@@ -223,7 +205,6 @@
         this.model.set("label", newLabel);
         this.$(".title .label").text(newLabel);
       }
-      this.hideControls();
     },
     removeModel: function(){
       this.model.remove();
@@ -259,10 +240,17 @@
         this.model.parentGraph.view.fade();
         selected = true;
         this.model.set("selected", true);
+        this.showInspector();
       }
       this.bringToTop();
       this.model.parentGraph.view.fadeEdges();
       this.model.parentGraph.trigger("selectionChanged");
+    },
+    showInspector: function(){
+      this.model.parentGraph.dataflow.showMenu("inspector");
+      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
+      $inspector.children().detach();
+      $inspector.append( this.getInputList() );
     },
     fade: function(){
       this.$el.addClass("fade");
