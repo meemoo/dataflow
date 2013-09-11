@@ -2,10 +2,6 @@
 
   var Node = Dataflow.prototype.module("node");
 
-  // Dependencies
-  var Input = Dataflow.prototype.module("input");
-  var Output = Dataflow.prototype.module("output");
-
   var template = 
     '<div class="dataflow-plugin-inspector-title">'+
       '<h1 class="dataflow-node-inspector-label" title="click to edit"><%- label %></h1>'+
