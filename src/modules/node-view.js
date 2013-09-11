@@ -9,7 +9,7 @@
   var template = 
     '<div class="outer" />'+
     '<div class="dataflow-node-header">'+
-      '<h1 class="dataflow-node-title"><span class="label"><%- label %></span></h1>'+
+      '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>"><%- label %>: <%- type %></h1>'+
     '</div>'+
     '<div class="dataflow-node-ports">'+
       '<div class="dataflow-node-ins"></div>'+
@@ -18,16 +18,6 @@
     '</div>'+
     '<div class="dataflow-node-inner"></div>';
 
-  var inspectTemplate = 
-    '<h1 class="dataflow-node-inspector-title"><%- label %></h1>'+
-    // '<div class="dataflow-node-inspector-controls">'+
-    // '<input class="label-edit" value="<%- label %>" type="text" />'+
-    //   '<button class="dataflow-node-delete">delete</button>'+
-    //   '<button class="dataflow-node-save">save</button>'+
-    //   '<button class="dataflow-node-cancel">cancel</button>'+
-    // '</div>'+
-    '<div class="dataflow-node-inspector-inputs"></div>';
-
   var innerTemplate = "";
 
   var zoom;
@@ -35,7 +25,6 @@
   Node.View = Backbone.View.extend({
     template: _.template(template),
     innerTemplate: _.template(innerTemplate),
-    inspectTemplate: _.template(inspectTemplate),
     className: "dataflow-node",
     events: function(){
       return {
@@ -93,6 +82,8 @@
       // Selected listener
       this.listenTo(this.model, "change:selected", this.selectedChanged);
 
+      this.listenTo(this.model, "change:label", this.changeLabel);
+
       this.$inner = this.$(".dataflow-node-inner");
     },
     render: function() {
@@ -108,6 +99,9 @@
       // Hide controls
       this.$(".dataflow-node-controls").hide();
       this.$(".label-edit").hide();
+
+      // Set title
+      this.changeLabel();
 
       return this;
     },
@@ -148,6 +142,16 @@
         this.$dragHelpers.append(helper);
       }, this);
 
+    },
+    changeLabel: function () {
+      var label = this.model.get("label");
+      var type = this.model.get("type");
+      if (label !== type) {
+        label += ": " + type;
+      }
+      this.$(".dataflow-node-title")
+        .text( label )
+        .attr("title", label);
     },
     drag: function(event, ui){
       if (!ui){ return; }
@@ -198,14 +202,6 @@
       });
       this.bumpPosition();
     },
-    saveLabel: function(){
-      // Save new label
-      var newLabel = this.$(".title .label-edit").val();
-      if (this.model.get("label") !== newLabel) {
-        this.model.set("label", newLabel);
-        this.$(".title .label").text(newLabel);
-      }
-    },
     removeModel: function(){
       this.model.remove();
     },
@@ -246,11 +242,18 @@
       this.model.parentGraph.view.fadeEdges();
       this.model.parentGraph.trigger("selectionChanged");
     },
-    showInspector: function(){
+    inspector: null,
+    getInspector: function () {
+      if (!this.inspector) {
+        this.inspector = new Node.InspectView({model:this.model});
+      }
+      return this.inspector;
+    },
+    showInspector: function () {
       this.model.parentGraph.dataflow.showMenu("inspector");
-      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
-      $inspector.children().detach();
-      $inspector.append( this.getInputList() );
+      var $inspectMenu = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
+      $inspectMenu.children().detach();
+      $inspectMenu.append( this.getInspector().el );
     },
     fade: function(){
       this.$el.addClass("fade");
@@ -272,25 +275,25 @@
     },
     unhighlight: function () {
       this.$el.removeClass("ui-selected");
-    },
-    $inputList: null,
-    getInputList: function() {
-      if (!this.$inputList) {
-        this.$inputList = $("<div>");
-        var model = this.model.toJSON();
-        this.$inputList.html( this.inspectTemplate(model) );
-        if (model.id !== model.label) {
-          this.$inputList.children(".dataflow-node-inspector-title").prepend(model.id + ": ");
-        }
-        var $inputs = this.$inputList.children(".dataflow-node-inspector-inputs");
-        this.model.inputs.each(function(input){
-          if (input.view && input.view.$input) {
-            $inputs.append( input.view.$input );
-          }
-        }, this);
-      }
-      return this.$inputList;
-    }
+    }//,
+    // $inputList: null,
+    // getInputList: function() {
+    //   if (!this.$inputList) {
+    //     this.$inputList = $("<div>");
+    //     var model = this.model.toJSON();
+    //     this.$inputList.html( this.inspectTemplate(model) );
+    //     if (model.id !== model.label) {
+    //       this.$inputList.children(".dataflow-node-inspector-title").prepend(model.id + ": ");
+    //     }
+    //     var $inputs = this.$inputList.children(".dataflow-node-inspector-inputs");
+    //     this.model.inputs.each(function(input){
+    //       if (input.view && input.view.$input) {
+    //         $inputs.append( input.view.$input );
+    //       }
+    //     }, this);
+    //   }
+    //   return this.$inputList;
+    // }
   });
 
 }(Dataflow) );

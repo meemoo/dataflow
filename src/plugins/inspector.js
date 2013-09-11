@@ -20,7 +20,7 @@
       if (lastSelected) {
         if (lastSelected.view) {
           $inspector.children().detach();
-          $inspector.append( lastSelected.view.getInputList() );
+          $inspector.append( lastSelected.view.getInspector().el );
         }
       }
     }
