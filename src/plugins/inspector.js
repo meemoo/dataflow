@@ -50,7 +50,7 @@
 
     function updateInspectorEdge (edge) {
       $inspector.children().detach();
-      $inspector.append( edge.view.getInspect() );
+      $inspector.append( edge.view.getInspector().el );
     }
 
     function selectEdge (graph, edge) {

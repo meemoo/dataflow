@@ -33,6 +33,7 @@
             // "src/modules/card-view.js",
             // Cards
             "src/modules/node-inspect-view.js",
+            "src/modules/edge-inspect-view.js",
             // Plugins
             "src/plugins/edit.js",
             "src/plugins/elements.js",

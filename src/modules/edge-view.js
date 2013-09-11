@@ -275,16 +275,6 @@
       // Fade all and highlight related
       this.model.parentGraph.view.fade();
     },
-    showInspector: function(){
-      this.model.parentGraph.dataflow.showMenu("inspector");
-      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
-      $inspector.children().detach();
-      $inspector.append( this.getInspect() );
-
-      var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
-      $choose.children().removeClass("active");
-      $choose.children(".route"+this.model.get("route")).addClass("active");
-    },
     bringToTop: function(){
       this.model.bringToTop();
       var parent = this.el.parentNode;
@@ -296,30 +286,20 @@
       this.model.source.view.bringToTop(this.model);
       this.model.target.view.bringToTop(this.model);
     },
-    $inspect: null,
-    getInspect: function() {
-      if (!this.$inspect) {
-        this.$inspect = $("<div>");
-        var model = this.model.toJSON();
-        this.$inspect.html( this.inspectTemplate(model) );
-        var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
-        var self = this;
-        var changeRoute = function(event){
-          var route = $(event.target).data("route");
-          self.model.set("route", route);
-          $choose.children().removeClass("active");
-          $choose.children(".route"+route).addClass("active");
-        };
-        for (var i=0; i<12; i++) {
-          var button = $("<button>")
-            .data("route", i)
-            .addClass("route"+i)
-            .click(changeRoute);
-          $choose.append(button);
-        }
+    inspector: null,
+    getInspector: function () {
+      if (!this.inspector) {
+        this.inspector = new Edge.InspectView({model:this.model});
       }
-      return this.$inspect;
+      return this.inspector;
+    },
+    showInspector: function(){
+      this.model.parentGraph.dataflow.showMenu("inspector");
+      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
+      $inspector.children().detach();
+      $inspector.append( this.getInspector().el );
     }
+
   });
 
 }(Dataflow) );
