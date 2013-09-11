@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-11 (9:15:39 PM GMT+0300)
+/*! dataflow.js - v0.0.7 - 2013-09-11 (9:36:20 PM GMT+0300)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -3126,7 +3126,7 @@
         dataflow.currentGraph.view.$(".dataflow-node").removeClass("ui-selected");
 
         // Current zoom
-        zoom = dataflow.get('state').get('zoom');
+        zoom = dataflow.currentGraph.get('zoom');
 
         // Find vacant id
         var id = 1;

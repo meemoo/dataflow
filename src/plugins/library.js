@@ -14,7 +14,7 @@
         dataflow.currentGraph.view.$(".dataflow-node").removeClass("ui-selected");
 
         // Current zoom
-        zoom = dataflow.get('state').get('zoom');
+        zoom = dataflow.currentGraph.get('zoom');
 
         // Find vacant id
         var id = 1;
