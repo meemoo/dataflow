@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-11 (9:36:20 PM GMT+0300)
+/*! dataflow.js - v0.0.7 - 2013-09-11 (10:33:28 PM GMT+0300)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -2811,16 +2811,6 @@
       // Fade all and highlight related
       this.model.parentGraph.view.fade();
     },
-    showInspector: function(){
-      this.model.parentGraph.dataflow.showMenu("inspector");
-      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
-      $inspector.children().detach();
-      $inspector.append( this.getInspect() );
-
-      var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
-      $choose.children().removeClass("active");
-      $choose.children(".route"+this.model.get("route")).addClass("active");
-    },
     bringToTop: function(){
       this.model.bringToTop();
       var parent = this.el.parentNode;
@@ -2832,30 +2822,20 @@
       this.model.source.view.bringToTop(this.model);
       this.model.target.view.bringToTop(this.model);
     },
-    $inspect: null,
-    getInspect: function() {
-      if (!this.$inspect) {
-        this.$inspect = $("<div>");
-        var model = this.model.toJSON();
-        this.$inspect.html( this.inspectTemplate(model) );
-        var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
-        var self = this;
-        var changeRoute = function(event){
-          var route = $(event.target).data("route");
-          self.model.set("route", route);
-          $choose.children().removeClass("active");
-          $choose.children(".route"+route).addClass("active");
-        };
-        for (var i=0; i<12; i++) {
-          var button = $("<button>")
-            .data("route", i)
-            .addClass("route"+i)
-            .click(changeRoute);
-          $choose.append(button);
-        }
+    inspector: null,
+    getInspector: function () {
+      if (!this.inspector) {
+        this.inspector = new Edge.InspectView({model:this.model});
       }
-      return this.$inspect;
+      return this.inspector;
+    },
+    showInspector: function(){
+      this.model.parentGraph.dataflow.showMenu("inspector");
+      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
+      $inspector.children().detach();
+      $inspector.append( this.getInspector().el );
     }
+
   });
 
 }(Dataflow) );
@@ -2924,6 +2904,64 @@
     },
     removeModel: function(){
       this.model.remove();
+    }
+  });
+
+}(Dataflow) );
+
+( function(Dataflow) {
+
+  var Edge = Dataflow.prototype.module("edge");
+
+  var template = 
+    '<h1 class="dataflow-plugin-inspector-title">Edge</h1>'+
+    '<div class="dataflow-edge-inspector-route-choose"></div>';
+  
+  Edge.InspectView = Backbone.View.extend({
+    tagName: "div",
+    className: "dataflow-edge-inspector",
+    positions: null,
+    template: _.template(template),
+    initialize: function() {
+      this.$el.html( this.template(this.model) );
+
+      var $choose = this.$el.children(".dataflow-edge-inspector-route-choose");
+
+      var changeRoute = function(event){
+        var route = $(event.target).data("route");
+        this.model.set("route", route);
+      }.bind(this);
+      
+      for (var i=0; i<12; i++) {
+        var button = $("<button>")
+          .data("route", i)
+          .addClass("route"+i)
+          .click(changeRoute);
+        if (i === this.model.get("route")){
+          button.addClass("active");
+        }
+        $choose.append(button);
+      }
+
+      this.listenTo(this.model, "change:route", this.render);
+    },
+    render: function(){
+      var route = this.model.get("route");
+      var $choose = this.$el.children(".dataflow-edge-inspector-route-choose");
+      $choose.children(".active").removeClass("active");
+      $choose.children(".route"+route).addClass("active");
+
+      return this;
+    },
+    showInspector: function(){
+      this.model.parentGraph.dataflow.showMenu("inspector");
+      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
+      $inspector.children().detach();
+      $inspector.append( this.getInspect() );
+
+      var $choose = this.$inspect.children(".dataflow-edge-inspector-route-choose");
+      $choose.children().removeClass("active");
+      $choose.children(".route"+this.model.get("route")).addClass("active");
     }
   });
 
@@ -3398,7 +3436,7 @@
 
     function updateInspectorEdge (edge) {
       $inspector.children().detach();
-      $inspector.append( edge.view.getInspect() );
+      $inspector.append( edge.view.getInspector().el );
     }
 
     function selectEdge (graph, edge) {
