@@ -37,6 +37,7 @@
       }
 
       this.listenTo(this.model, "change:route", this.render);
+      this.listenTo(this.model, "remove", this.remove);
     },
     render: function(){
       var route = this.model.get("route");
@@ -45,6 +46,10 @@
       $choose.children(".route"+route).addClass("active");
 
       return this;
+    },
+    remove: function(){
+      this.model.parentGraph.dataflow.hideMenu();
+      this.$el.remove();
     }
   });
 
