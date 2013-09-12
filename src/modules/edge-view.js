@@ -16,16 +16,10 @@
     return svg;
   };
 
-  var inspectTemplate = 
-    '<h1 class="dataflow-edge-inspector-title">Edge</h1>'+
-    '<div class="dataflow-edge-inspector-route-choose"></div>';
-    // '<div class="dataflow-edge-inspector-route route<%- route %>"><%- route %></div>';
-
   var addClass = function (el, name) {
     if (el.classList) {
       el.classList.add(name);
     } else {
-      // Works only here
       el.className = "dataflow-edge " + name;
     }
   };
@@ -42,7 +36,6 @@
     tagName: "div",
     className: "dataflow-edge",
     positions: null,
-    inspectTemplate: _.template(inspectTemplate),
     initialize: function() {
       this.positions = {
         from: null, 

@@ -3,7 +3,10 @@
   var Edge = Dataflow.prototype.module("edge");
 
   var template = 
-    '<h1 class="dataflow-plugin-inspector-title">Edge</h1>'+
+    '<div class="dataflow-plugin-inspector-title">'+
+      '<h1>Edge</h1>'+
+      '<h2 class="dataflow-edge-inspector-id"><%- id %></h2>'+
+    '</div>'+
     '<div class="dataflow-edge-inspector-route-choose"></div>';
   
   Edge.InspectView = Backbone.View.extend({
@@ -21,6 +24,7 @@
         this.model.set("route", route);
       }.bind(this);
       
+      // Make buttons
       for (var i=0; i<12; i++) {
         var button = $("<button>")
           .data("route", i)
