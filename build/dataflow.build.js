@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-17 (2:09:32 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-17 (4:39:34 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -367,14 +367,6 @@
       this.el.className = "dataflow";
       this.$el = $(this.el);
 
-      // Setup menu
-      var menu = $('<div class="dataflow-menu">');
-      var self = this;
-      var menuClose = $('<button class="dataflow-menu-close icon-remove"></button>')
-        .click( function(){ self.hideMenu(); } )
-        .appendTo(menu);
-      this.$el.append(menu);
-
       // Setup cards
       var Card = Dataflow.prototype.module("card");
       this.shownCards = new Card.Collection();
@@ -499,18 +491,11 @@
       this.plugins[name] = {};
       return this.plugins[name];
     },
-    hideMenu: function () {
-      this.$el.removeClass("menu-shown");
-    },
-    showMenu: function (id) {
-      this.$el.addClass("menu-shown");
-      this.$(".dataflow-menuitem").removeClass("shown");
-      this.$(".dataflow-menuitem-"+id).addClass("shown");
-    },
-    addCard: function (card) {
-      // Clear unpinned
-      var unpinned = this.shownCards.where({pinned:false});
-      this.shownCards.remove(unpinned);
+    addCard: function (card, leaveUnpinned) {
+      if (!leaveUnpinned) {
+        // Clear unpinned
+        this.hideCards();
+      }
       if (this.shownCards.get(card)) {
         // Bring to top
         this.shownCards.view.bringToTop(card);
@@ -518,6 +503,14 @@
         // Add to collection
         this.shownCards.add(card);
       }
+    },
+    removeCard: function (card) {
+      this.shownCards.remove(card);
+    },
+    hideCards: function () {
+      // Clear unpinned
+      var unpinned = this.shownCards.where({pinned:false});
+      this.shownCards.remove(unpinned);
     },
     addPlugin: function (info) {
       if (info.menu) {
@@ -1474,7 +1467,7 @@
       // }, this);
       this.model.trigger("selectionChanged");
       this.unfade();
-      this.model.dataflow.hideMenu();
+      this.model.dataflow.hideCards();
     },
     fade: function () {
       this.model.nodes.each(function(node){
@@ -1731,8 +1724,11 @@
         toggle = true;
         selected = !selected;
         this.model.set("selected", selected);
-        if (!selected) {
+        if (selected) {
+          this.showInspector(true);
+        } else {
           this.fade();
+          this.hideInspector();
         }
       } else {
         // Deselect all
@@ -1759,8 +1755,11 @@
       }
       return this.inspector;
     },
-    showInspector: function(){
-      this.model.parentGraph.dataflow.addCard( this.getInspector() );
+    showInspector: function(leaveUnpinned){
+      this.model.parentGraph.dataflow.addCard( this.getInspector(), leaveUnpinned );
+    },
+    hideInspector: function () {
+      this.model.parentGraph.dataflow.removeCard( this.getInspector() );
     },
     fade: function(){
       this.$el.addClass("fade");
@@ -2817,11 +2816,12 @@
       if (event) {
         event.stopPropagation();
       }
-      var selected;
+      var selected, leaveUnpinned;
       if (event && (event.ctrlKey || event.metaKey)) {
         // Toggle
         selected = this.model.get("selected");
         selected = !selected;
+        leaveUnpinned = true;
       } else {
         // Deselect all and select this
         selected = true;
@@ -2833,7 +2833,9 @@
         this.bringToTop();
         this.model.trigger("select");
         this.unfade();
-        this.showInspector();
+        this.showInspector(leaveUnpinned);
+      } else {
+        this.hideInspector();
       }
       // Fade all and highlight related
       this.model.parentGraph.view.fade();
@@ -2861,9 +2863,11 @@
       }
       return this.inspector;
     },
-    showInspector: function(){
-      // this.model.parentGraph.dataflow.shownCards.add( this.getInspector() );
-      this.model.parentGraph.dataflow.addCard( this.getInspector() );
+    showInspector: function(leaveUnpinned){
+      this.model.parentGraph.dataflow.addCard( this.getInspector(), leaveUnpinned );
+    },
+    hideInspector: function () {
+      this.model.parentGraph.dataflow.removeCard( this.getInspector() );
     }
 
   });
@@ -2913,18 +2917,25 @@
     initialize: function () {
       this.$el.html(this.template());
       this.$el.append(this.model.get("card").el);
+      this.listenTo(this.model, "change:pinned", this.pinnedChanged);
+      this.pinnedChanged();
     },
     pin: function () {
       var pinned = !this.model.get("pinned");
       this.model.set("pinned", pinned);
-      if (pinned) {
-        this.$(".dataflow-card-pin").addClass("active");
-      } else {
-        this.$(".dataflow-card-pin").removeClass("active");
+      if (!pinned) {
         this.hide();
       }
     },
+    pinnedChanged: function () {
+      if ( this.model.get("pinned") ) {
+        this.$(".dataflow-card-pin").addClass("active");
+      } else {
+        this.$(".dataflow-card-pin").removeClass("active");
+      }
+    },
     hide: function () {
+      this.model.set("pinned", false);
       this.model.hide();
     },
     remove: function () {
@@ -3061,10 +3072,6 @@
       $choose.children(".route"+route).addClass("active");
 
       return this;
-    },
-    remove: function(){
-      this.model.parentGraph.dataflow.hideMenu();
-      this.$el.remove();
     }
   });
 
@@ -3493,31 +3500,19 @@
 
   Inspector.initialize = function(dataflow){
 
-    var $inspector = $(
-      '<div class="dataflow-plugin-inspector"></div>'
-    );
-
-    // Doing this manually instead of dataflow.addPlugin()
-    var $menu = $("<div>")
-      .addClass("dataflow-menuitem dataflow-menuitem-inspector")
-      .append($inspector);
-    dataflow.$(".dataflow-menu").append($menu);
-
-    var lastSelected = null;
-
-    function updateInspector(){
-      if (lastSelected) {
-        if (lastSelected.view) {
-          $inspector.children().detach();
-          $inspector.append( lastSelected.view.getInspector().el );
-        }
-      }
-    }
-    // Inspector.updateInspector = updateInspector;
-
     function showInspector(){
-      dataflow.showMenu("inspector");
-      updateInspector();
+      var selectedNodes = dataflow.currentGraph.nodes.where({selected:true});
+      selectedNodes.forEach(function(node){
+        var inspector = node.view.getInspector();
+        inspector.set("pinned", true);
+        dataflow.addCard( inspector );
+      });
+      var selectedEdges = dataflow.currentGraph.edges.where({selected:true});
+      selectedEdges.forEach(function(edge){
+        var inspector = edge.view.getInspector();
+        inspector.set("pinned", true);
+        dataflow.addCard( inspector );
+      });
     }
 
     dataflow.addContext({
@@ -3527,42 +3522,6 @@
       action: showInspector,
       contexts: ["one", "twoplus"]
     });
-
-    function selectNode (graph, node) {
-      if (lastSelected !== node) {
-        lastSelected = node;
-        if ($menu.is(':visible')){
-          updateInspector();
-        }
-      }
-    }
-
-    function updateInspectorEdge (edge) {
-      $inspector.children().detach();
-      $inspector.append( edge.view.getInspector().el );
-    }
-
-    function selectEdge (graph, edge) {
-      if (lastSelected !== edge) {
-        lastSelected = edge;
-        if ($menu.is(':visible')){
-          updateInspectorEdge(edge);
-        }
-      }
-    }
-
-    Inspector.listeners = function(boo){
-      if (boo) {
-        // Selection changes
-        dataflow.on("select:node", selectNode);
-        dataflow.on("select:edge", selectEdge);
-      } else {
-        // Custom
-        dataflow.off("select:node", selectNode);
-        dataflow.off("select:edge", selectEdge);
-      }
-    };
-    Inspector.listeners(true);
 
   };
 
