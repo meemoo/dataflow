@@ -162,17 +162,18 @@
     },
     addPlugin: function (info) {
       if (info.menu) {
-        var menu = $("<div>")
-          .addClass("dataflow-menuitem dataflow-menuitem-"+info.id)
-          .append(info.menu);
-        this.$(".dataflow-menu").append( menu );
+        var Card = Dataflow.prototype.module("card");
+        var card = new Card.Model({
+          dataflow: this,
+          card: {el:info.menu} // HACK since plugins are not bb views
+        });
 
         this.actionBar.get('actions').add({
           id: info.id,
           icon: info.icon,
           label: info.name,
           showLabel: false,
-          action: function(){ this.showMenu(info.id); }
+          action: function(){ this.addCard(card); }
         });
       }
     },

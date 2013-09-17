@@ -27,6 +27,7 @@
         this.$(".dataflow-card-pin").addClass("active");
       } else {
         this.$(".dataflow-card-pin").removeClass("active");
+        this.hide();
       }
     },
     hide: function () {
