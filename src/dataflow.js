@@ -7,12 +7,22 @@
       this.el = document.createElement("div");
       this.el.className = "dataflow";
       this.$el = $(this.el);
+
+      // Setup menu
       var menu = $('<div class="dataflow-menu">');
       var self = this;
       var menuClose = $('<button class="dataflow-menu-close icon-remove"></button>')
         .click( function(){ self.hideMenu(); } )
         .appendTo(menu);
       this.$el.append(menu);
+
+      // Setup cards
+      var Card = Dataflow.prototype.module("card");
+      this.shownCards = new Card.Collection();
+      this.shownCards.view = new Card.CollectionView({
+        collection: this.shownCards
+      });
+      this.$el.append(this.shownCards.view.$el);
 
       // Debug mode
       this.debug = this.get("debug");
@@ -138,6 +148,18 @@
       this.$(".dataflow-menuitem").removeClass("shown");
       this.$(".dataflow-menuitem-"+id).addClass("shown");
     },
+    addCard: function (card) {
+      // Clear unpinned
+      var unpinned = this.shownCards.where({pinned:false});
+      this.shownCards.remove(unpinned);
+      if (this.shownCards.get(card)) {
+        // Bring to top
+        this.shownCards.view.bringToTop(card);
+      } else {
+        // Add to collection
+        this.shownCards.add(card);
+      }
+    },
     addPlugin: function (info) {
       if (info.menu) {
         var menu = $("<div>")
@@ -261,8 +283,10 @@
   // Simple collection view
   Backbone.CollectionView = Backbone.Model.extend({
     // this.tagName and this.itemView should be set
+    prepend: false,
     initialize: function(options){
       this.el = document.createElement(this.tagName);
+      this.el.className = this.className;
       this.$el = $(this.el);
       this.parent = options.parent;
       var collection = this.get("collection");
@@ -271,11 +295,18 @@
       collection.on("remove", this.removeItem, this);
     },
     addItem: function(item){
-      item.view = new this.itemView({
-        model:item,
-        parent: this.parent
-      });
-      this.$el.append(item.view.render().el);
+      if (!item.view) {
+        item.view = new this.itemView({
+          model:item,
+          parent: this.parent
+        });
+        item.view.render();
+      }
+      if (this.prepend) {
+        this.$el.prepend(item.view.el);
+      } else {
+        this.$el.append(item.view.el);
+      }
     },
     removeItem: function(item){
       item.view.remove();

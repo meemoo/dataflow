@@ -9,10 +9,6 @@
   left: 20px;
   width: 300px;
   overflow: auto;
-
-
-  
-  
   
   border: 1px solid hsla(0, 0%, 100%, 1);
   -moz-border-radius: 3px;
@@ -49,16 +45,6 @@
 
 .dataflow-menuitem li {
   margin-left: 1.2em;
-}
-
-.dataflow-plugin-inspector-title {
-  padding: 3px 20px;
-}
-.dataflow-plugin-inspector h1{
-  font-size:18px;
-}
-.dataflow-plugin-inspector h2{
-  font-size:16px;
 }
 
 .dataflow-plugin-overflow {

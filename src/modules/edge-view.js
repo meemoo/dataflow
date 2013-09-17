@@ -282,15 +282,18 @@
     inspector: null,
     getInspector: function () {
       if (!this.inspector) {
-        this.inspector = new Edge.InspectView({model:this.model});
+        var inspect = new Edge.InspectView({model:this.model});
+        var Card = Dataflow.prototype.module("card");
+        this.inspector = new Card.Model({
+          dataflow: this.model.parentGraph.dataflow,
+          card: inspect
+        });
       }
       return this.inspector;
     },
     showInspector: function(){
-      this.model.parentGraph.dataflow.showMenu("inspector");
-      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
-      $inspector.children().detach();
-      $inspector.append( this.getInspector().el );
+      // this.model.parentGraph.dataflow.shownCards.add( this.getInspector() );
+      this.model.parentGraph.dataflow.addCard( this.getInspector() );
     }
 
   });

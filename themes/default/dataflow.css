@@ -128,8 +128,10 @@
   color: hsl(0, 0%, 40%);
 }
   .dataflow button:active,
+  .dataflow button.active,
   .dataflow input[type="submit"]:active, 
   .dataflow .button:active {
+      background-color: #DDD;
   }
 
 .dataflow .dataflow-node-inspect{    

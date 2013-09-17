@@ -239,15 +239,17 @@
     inspector: null,
     getInspector: function () {
       if (!this.inspector) {
-        this.inspector = new Node.InspectView({model:this.model});
+        var inspect = new Node.InspectView({model:this.model});
+        var Card = Dataflow.prototype.module("card");
+        this.inspector = new Card.Model({
+          dataflow: this.model.parentGraph.dataflow,
+          card: inspect
+        });
       }
       return this.inspector;
     },
-    showInspector: function () {
-      this.model.parentGraph.dataflow.showMenu("inspector");
-      var $inspectMenu = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
-      $inspectMenu.children().detach();
-      $inspectMenu.append( this.getInspector().el );
+    showInspector: function(){
+      this.model.parentGraph.dataflow.addCard( this.getInspector() );
     },
     fade: function(){
       this.$el.addClass("fade");
