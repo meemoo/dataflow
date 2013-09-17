@@ -72,7 +72,7 @@
         var connectedTarget = _.any(copied.nodes, function(node){
           return (edge.target.parentNode.id === node.id);
         });
-        if (connectedSource && connectedTarget){
+        if (connectedSource || connectedTarget){
           copied.edges.push( JSON.parse(JSON.stringify(edge)) );
         }
       });
