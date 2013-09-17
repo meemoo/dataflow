@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-12 (3:23:10 PM GMT+0300)
+/*! dataflow.js - v0.0.7 - 2013-09-17 (2:09:32 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -366,12 +366,22 @@
       this.el = document.createElement("div");
       this.el.className = "dataflow";
       this.$el = $(this.el);
+
+      // Setup menu
       var menu = $('<div class="dataflow-menu">');
       var self = this;
       var menuClose = $('<button class="dataflow-menu-close icon-remove"></button>')
         .click( function(){ self.hideMenu(); } )
         .appendTo(menu);
       this.$el.append(menu);
+
+      // Setup cards
+      var Card = Dataflow.prototype.module("card");
+      this.shownCards = new Card.Collection();
+      this.shownCards.view = new Card.CollectionView({
+        collection: this.shownCards
+      });
+      this.$el.append(this.shownCards.view.$el);
 
       // Debug mode
       this.debug = this.get("debug");
@@ -497,19 +507,32 @@
       this.$(".dataflow-menuitem").removeClass("shown");
       this.$(".dataflow-menuitem-"+id).addClass("shown");
     },
+    addCard: function (card) {
+      // Clear unpinned
+      var unpinned = this.shownCards.where({pinned:false});
+      this.shownCards.remove(unpinned);
+      if (this.shownCards.get(card)) {
+        // Bring to top
+        this.shownCards.view.bringToTop(card);
+      } else {
+        // Add to collection
+        this.shownCards.add(card);
+      }
+    },
     addPlugin: function (info) {
       if (info.menu) {
-        var menu = $("<div>")
-          .addClass("dataflow-menuitem dataflow-menuitem-"+info.id)
-          .append(info.menu);
-        this.$(".dataflow-menu").append( menu );
+        var Card = Dataflow.prototype.module("card");
+        var card = new Card.Model({
+          dataflow: this,
+          card: {el:info.menu} // HACK since plugins are not bb views
+        });
 
         this.actionBar.get('actions').add({
           id: info.id,
           icon: info.icon,
           label: info.name,
           showLabel: false,
-          action: function(){ this.showMenu(info.id); }
+          action: function(){ this.addCard(card); }
         });
       }
     },
@@ -620,8 +643,10 @@
   // Simple collection view
   Backbone.CollectionView = Backbone.Model.extend({
     // this.tagName and this.itemView should be set
+    prepend: false,
     initialize: function(options){
       this.el = document.createElement(this.tagName);
+      this.el.className = this.className;
       this.$el = $(this.el);
       this.parent = options.parent;
       var collection = this.get("collection");
@@ -630,11 +655,18 @@
       collection.on("remove", this.removeItem, this);
     },
     addItem: function(item){
-      item.view = new this.itemView({
-        model:item,
-        parent: this.parent
-      });
-      this.$el.append(item.view.render().el);
+      if (!item.view) {
+        item.view = new this.itemView({
+          model:item,
+          parent: this.parent
+        });
+        item.view.render();
+      }
+      if (this.prepend) {
+        this.$el.prepend(item.view.el);
+      } else {
+        this.$el.append(item.view.el);
+      }
     },
     removeItem: function(item){
       item.view.remove();
@@ -1718,15 +1750,17 @@
     inspector: null,
     getInspector: function () {
       if (!this.inspector) {
-        this.inspector = new Node.InspectView({model:this.model});
+        var inspect = new Node.InspectView({model:this.model});
+        var Card = Dataflow.prototype.module("card");
+        this.inspector = new Card.Model({
+          dataflow: this.model.parentGraph.dataflow,
+          card: inspect
+        });
       }
       return this.inspector;
     },
-    showInspector: function () {
-      this.model.parentGraph.dataflow.showMenu("inspector");
-      var $inspectMenu = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
-      $inspectMenu.children().detach();
-      $inspectMenu.append( this.getInspector().el );
+    showInspector: function(){
+      this.model.parentGraph.dataflow.addCard( this.getInspector() );
     },
     fade: function(){
       this.$el.addClass("fade");
@@ -2818,20 +2852,97 @@
     inspector: null,
     getInspector: function () {
       if (!this.inspector) {
-        this.inspector = new Edge.InspectView({model:this.model});
+        var inspect = new Edge.InspectView({model:this.model});
+        var Card = Dataflow.prototype.module("card");
+        this.inspector = new Card.Model({
+          dataflow: this.model.parentGraph.dataflow,
+          card: inspect
+        });
       }
       return this.inspector;
     },
     showInspector: function(){
-      this.model.parentGraph.dataflow.showMenu("inspector");
-      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
-      $inspector.children().detach();
-      $inspector.append( this.getInspector().el );
+      // this.model.parentGraph.dataflow.shownCards.add( this.getInspector() );
+      this.model.parentGraph.dataflow.addCard( this.getInspector() );
     }
 
   });
 
 }(Dataflow) );
+
+(function(Dataflow){
+
+  var Card = Dataflow.prototype.module("card");
+
+  Card.Model = Backbone.Model.extend({
+    defaults: {
+      pinned: false
+    },
+    initialize: function () {
+      this.dataflow = this.get("dataflow");
+    },
+    hide: function () {
+      this.dataflow.shownCards.remove( this );
+    }
+  });
+
+  Card.Collection = Backbone.Collection.extend({
+    model: Card.Model
+  });
+
+}(Dataflow));
+
+(function(Dataflow){
+
+  var Card = Dataflow.prototype.module("card");
+
+  var template = 
+    '<div class="dataflow-card-control">'+
+      '<button title="pin" class="dataflow-card-pin icon-pushpin"></button>'+
+      '<button title="close" class="dataflow-card-close icon-remove"></button>'+
+    '</div>';
+
+  Card.View = Backbone.View.extend({
+    tagName: "div",
+    className: "dataflow-card",
+    template: _.template(template),
+    events: {
+      "click .dataflow-card-pin": "pin",
+      "click .dataflow-card-close": "hide"
+    },
+    initialize: function () {
+      this.$el.html(this.template());
+      this.$el.append(this.model.get("card").el);
+    },
+    pin: function () {
+      var pinned = !this.model.get("pinned");
+      this.model.set("pinned", pinned);
+      if (pinned) {
+        this.$(".dataflow-card-pin").addClass("active");
+      } else {
+        this.$(".dataflow-card-pin").removeClass("active");
+        this.hide();
+      }
+    },
+    hide: function () {
+      this.model.hide();
+    },
+    remove: function () {
+      this.$el.detach();
+    }
+  });
+
+  Card.CollectionView = Backbone.CollectionView.extend({
+    tagName: "div",
+    className: "dataflow-cards",
+    itemView: Card.View,
+    prepend: true,
+    bringToTop: function (card) {
+      this.$el.prepend( card.view.el );
+    }
+  });
+
+}(Dataflow));
 
 ( function(Dataflow) {
 
@@ -3033,7 +3144,7 @@
         var connectedTarget = _.any(copied.nodes, function(node){
           return (edge.target.parentNode.id === node.id);
         });
-        if (connectedSource && connectedTarget){
+        if (connectedSource || connectedTarget){
           copied.edges.push( JSON.parse(JSON.stringify(edge)) );
         }
       });
