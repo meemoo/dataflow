@@ -19,18 +19,25 @@
     initialize: function () {
       this.$el.html(this.template());
       this.$el.append(this.model.get("card").el);
+      this.listenTo(this.model, "change:pinned", this.pinnedChanged);
+      this.pinnedChanged();
     },
     pin: function () {
       var pinned = !this.model.get("pinned");
       this.model.set("pinned", pinned);
-      if (pinned) {
-        this.$(".dataflow-card-pin").addClass("active");
-      } else {
-        this.$(".dataflow-card-pin").removeClass("active");
+      if (!pinned) {
         this.hide();
       }
     },
+    pinnedChanged: function () {
+      if ( this.model.get("pinned") ) {
+        this.$(".dataflow-card-pin").addClass("active");
+      } else {
+        this.$(".dataflow-card-pin").removeClass("active");
+      }
+    },
     hide: function () {
+      this.model.set("pinned", false);
       this.model.hide();
     },
     remove: function () {

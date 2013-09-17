@@ -97,7 +97,6 @@
               'themes/default/modules/node.css',
               'themes/default/modules/edge.css',
               'themes/default/modules/port.css',
-              'themes/default/modules/menu.css',
               'themes/default/modules/card.css',
               'themes/default/modules/actionbar.css',
               'themes/default/modules/jqui.css'

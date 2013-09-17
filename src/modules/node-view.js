@@ -220,8 +220,11 @@
         toggle = true;
         selected = !selected;
         this.model.set("selected", selected);
-        if (!selected) {
+        if (selected) {
+          this.showInspector(true);
+        } else {
           this.fade();
+          this.hideInspector();
         }
       } else {
         // Deselect all
@@ -248,8 +251,11 @@
       }
       return this.inspector;
     },
-    showInspector: function(){
-      this.model.parentGraph.dataflow.addCard( this.getInspector() );
+    showInspector: function(leaveUnpinned){
+      this.model.parentGraph.dataflow.addCard( this.getInspector(), leaveUnpinned );
+    },
+    hideInspector: function () {
+      this.model.parentGraph.dataflow.removeCard( this.getInspector() );
     },
     fade: function(){
       this.$el.addClass("fade");

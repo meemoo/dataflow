@@ -310,7 +310,7 @@
       // }, this);
       this.model.trigger("selectionChanged");
       this.unfade();
-      this.model.dataflow.hideMenu();
+      this.model.dataflow.hideCards();
     },
     fade: function () {
       this.model.nodes.each(function(node){

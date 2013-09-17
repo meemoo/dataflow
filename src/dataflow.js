@@ -8,14 +8,6 @@
       this.el.className = "dataflow";
       this.$el = $(this.el);
 
-      // Setup menu
-      var menu = $('<div class="dataflow-menu">');
-      var self = this;
-      var menuClose = $('<button class="dataflow-menu-close icon-remove"></button>')
-        .click( function(){ self.hideMenu(); } )
-        .appendTo(menu);
-      this.$el.append(menu);
-
       // Setup cards
       var Card = Dataflow.prototype.module("card");
       this.shownCards = new Card.Collection();
@@ -140,18 +132,11 @@
       this.plugins[name] = {};
       return this.plugins[name];
     },
-    hideMenu: function () {
-      this.$el.removeClass("menu-shown");
-    },
-    showMenu: function (id) {
-      this.$el.addClass("menu-shown");
-      this.$(".dataflow-menuitem").removeClass("shown");
-      this.$(".dataflow-menuitem-"+id).addClass("shown");
-    },
-    addCard: function (card) {
-      // Clear unpinned
-      var unpinned = this.shownCards.where({pinned:false});
-      this.shownCards.remove(unpinned);
+    addCard: function (card, leaveUnpinned) {
+      if (!leaveUnpinned) {
+        // Clear unpinned
+        this.hideCards();
+      }
       if (this.shownCards.get(card)) {
         // Bring to top
         this.shownCards.view.bringToTop(card);
@@ -159,6 +144,14 @@
         // Add to collection
         this.shownCards.add(card);
       }
+    },
+    removeCard: function (card) {
+      this.shownCards.remove(card);
+    },
+    hideCards: function () {
+      // Clear unpinned
+      var unpinned = this.shownCards.where({pinned:false});
+      this.shownCards.remove(unpinned);
     },
     addPlugin: function (info) {
       if (info.menu) {

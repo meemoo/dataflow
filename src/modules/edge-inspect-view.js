@@ -46,10 +46,6 @@
       $choose.children(".route"+route).addClass("active");
 
       return this;
-    },
-    remove: function(){
-      this.model.parentGraph.dataflow.hideMenu();
-      this.$el.remove();
     }
   });
 

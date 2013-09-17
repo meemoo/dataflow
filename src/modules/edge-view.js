@@ -247,11 +247,12 @@
       if (event) {
         event.stopPropagation();
       }
-      var selected;
+      var selected, leaveUnpinned;
       if (event && (event.ctrlKey || event.metaKey)) {
         // Toggle
         selected = this.model.get("selected");
         selected = !selected;
+        leaveUnpinned = true;
       } else {
         // Deselect all and select this
         selected = true;
@@ -263,7 +264,9 @@
         this.bringToTop();
         this.model.trigger("select");
         this.unfade();
-        this.showInspector();
+        this.showInspector(leaveUnpinned);
+      } else {
+        this.hideInspector();
       }
       // Fade all and highlight related
       this.model.parentGraph.view.fade();
@@ -291,9 +294,11 @@
       }
       return this.inspector;
     },
-    showInspector: function(){
-      // this.model.parentGraph.dataflow.shownCards.add( this.getInspector() );
-      this.model.parentGraph.dataflow.addCard( this.getInspector() );
+    showInspector: function(leaveUnpinned){
+      this.model.parentGraph.dataflow.addCard( this.getInspector(), leaveUnpinned );
+    },
+    hideInspector: function () {
+      this.model.parentGraph.dataflow.removeCard( this.getInspector() );
     }
 
   });
