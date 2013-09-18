@@ -43,7 +43,7 @@
 
       this.listenTo(this.model, "change:route", this.render);
       this.listenTo(this.model, "remove", this.remove);
-      this.listenTo(this.model.get('log'), 'add', this.renderLog);
+      this.listenTo(this.model.get('log'), 'add', _.debounce(this.renderLog.bind(this), 200));
       this.renderLog();
     },
     render: function(){
