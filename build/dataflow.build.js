@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-17 (6:20:20 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-18 (11:21:47 AM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -517,7 +517,8 @@
         var Card = Dataflow.prototype.module("card");
         var card = new Card.Model({
           dataflow: this,
-          card: {el:info.menu} // HACK since plugins are not bb views
+          card: {el:info.menu}, // HACK since plugins are not bb views
+          pinned: (info.pinned ? true : false)
         });
 
         this.actionBar.get('actions').add({

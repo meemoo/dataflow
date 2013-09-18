@@ -158,7 +158,8 @@
         var Card = Dataflow.prototype.module("card");
         var card = new Card.Model({
           dataflow: this,
-          card: {el:info.menu} // HACK since plugins are not bb views
+          card: {el:info.menu}, // HACK since plugins are not bb views
+          pinned: (info.pinned ? true : false)
         });
 
         this.actionBar.get('actions').add({
