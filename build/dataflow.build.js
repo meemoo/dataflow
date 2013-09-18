@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-18 (3:56:15 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-18 (4:00:28 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -3084,7 +3084,7 @@
 
       this.listenTo(this.model, "change:route", this.render);
       this.listenTo(this.model, "remove", this.remove);
-      this.listenTo(this.model.get('log'), 'add', _.debounce(this.renderLog.bind(this), 200));
+      this.listenTo(this.model.get('log'), 'add', function () { requestAnimationFrame(this.renderLog.bind(this)); });
       this.renderLog();
     },
     render: function(){
