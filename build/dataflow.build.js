@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-18 (1:18:01 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-18 (1:33:08 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -3062,6 +3062,7 @@
       this.$el.html( this.template(this.model) );
 
       var $choose = this.$el.children(".dataflow-edge-inspector-route-choose");
+      this.$log = this.$el.children('.dataflow-edge-inspector-events');
 
       var changeRoute = function(event){
         var route = $(event.target).data("route");
@@ -3097,14 +3098,16 @@
       this.model.get('log').each(function (item) {
         this.renderLogItem(item, frag);
       }, this);
-      this.$('.dataflow-edge-inspector-events').html(frag);
+      this.$log.html(frag);
+      this.$log[0].scrollTop = this.$log[0].scrollHeight;
     },
     renderLogItem: function (item, fragment) {
       var html = $(_.template(logTemplate, item.toJSON()));
       if (fragment && fragment.appendChild) {
         fragment.appendChild(html[0]);
       } else {
-        this.$('.dataflow-edge-inspector-events').append(html);
+        this.$log.append(html);
+        this.$log[0].scrollTop = this.$log[0].scrollHeight;
       }
     }
   });

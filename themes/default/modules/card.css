@@ -132,9 +132,9 @@
 
 .dataflow-edge-inspector-events {
   list-style: none;
-  padding-left: 0px;
-  margin-left: 0px;
   margin-top: 1em;
+  max-height: 70px;
+  overflow: scroll;
 }
 
 .dataflow-edge-inspector-events .data {
