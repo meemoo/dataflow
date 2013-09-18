@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-18 (1:14:52 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-18 (1:18:01 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1106,11 +1106,6 @@
         sourceNode.on("send:"+this.source.id, this.send, this);
 
         this.bringToTop();
-
-        this.get('log').add({
-            type: 'data',
-            data: 'Foo bar'
-          });
 
         // Selection event
         this.on("select", this.select, this);
@@ -3105,7 +3100,6 @@
       this.$('.dataflow-edge-inspector-events').html(frag);
     },
     renderLogItem: function (item, fragment) {
-      console.log('render', item.toJSON());
       var html = $(_.template(logTemplate, item.toJSON()));
       if (fragment && fragment.appendChild) {
         fragment.appendChild(html[0]);
