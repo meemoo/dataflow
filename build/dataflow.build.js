@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-18 (11:21:47 AM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-18 (1:14:52 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1050,16 +1050,30 @@
 
   var Edge = Dataflow.prototype.module("edge");
 
+  var EdgeEvent = Backbone.Model.extend({
+    defaults: {
+      "type": "data",
+      "data": "",
+      "group": ""
+    }
+  });
+
+  var EdgeEventLog = Backbone.Collection.extend({
+    model: EdgeEvent
+  });
+
   Edge.Model = Backbone.Model.extend({
     defaults: {
       "z": 0,
       "route": 0,
-      "selected": false
+      "selected": false,
+      "log": null
     },
     initialize: function() {
       var nodes, sourceNode, targetNode;
       var preview = this.get("preview");
       this.parentGraph = this.get("parentGraph");
+      this.attributes.log = new EdgeEventLog();
       if (preview) {
         // Preview edge
         nodes = this.get("parentGraph").nodes;
@@ -1092,6 +1106,11 @@
         sourceNode.on("send:"+this.source.id, this.send, this);
 
         this.bringToTop();
+
+        this.get('log').add({
+            type: 'data',
+            data: 'Foo bar'
+          });
 
         // Selection event
         this.on("select", this.select, this);
@@ -3034,7 +3053,10 @@
       '<h1>Edge</h1>'+
       '<h2 class="dataflow-edge-inspector-id"><%- id %></h2>'+
     '</div>'+
-    '<div class="dataflow-edge-inspector-route-choose"></div>';
+    '<div class="dataflow-edge-inspector-route-choose"></div>'+
+    '<ul class="dataflow-edge-inspector-events"></ul>';
+
+  var logTemplate = '<li class="<%- type %>"><%- group %><%- data %></li>';
   
   Edge.InspectView = Backbone.View.extend({
     tagName: "div",
@@ -3065,14 +3087,31 @@
 
       this.listenTo(this.model, "change:route", this.render);
       this.listenTo(this.model, "remove", this.remove);
+      this.listenTo(this.model.get('log'), 'add', this.renderLogItem);
+      this.renderLog();
     },
     render: function(){
       var route = this.model.get("route");
       var $choose = this.$el.children(".dataflow-edge-inspector-route-choose");
       $choose.children(".active").removeClass("active");
       $choose.children(".route"+route).addClass("active");
-
       return this;
+    },
+    renderLog: function () {
+      var frag = document.createDocumentFragment();
+      this.model.get('log').each(function (item) {
+        this.renderLogItem(item, frag);
+      }, this);
+      this.$('.dataflow-edge-inspector-events').html(frag);
+    },
+    renderLogItem: function (item, fragment) {
+      console.log('render', item.toJSON());
+      var html = $(_.template(logTemplate, item.toJSON()));
+      if (fragment && fragment.appendChild) {
+        fragment.appendChild(html[0]);
+      } else {
+        this.$('.dataflow-edge-inspector-events').append(html);
+      }
     }
   });
 

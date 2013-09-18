@@ -2,16 +2,30 @@
 
   var Edge = Dataflow.prototype.module("edge");
 
+  var EdgeEvent = Backbone.Model.extend({
+    defaults: {
+      "type": "data",
+      "data": "",
+      "group": ""
+    }
+  });
+
+  var EdgeEventLog = Backbone.Collection.extend({
+    model: EdgeEvent
+  });
+
   Edge.Model = Backbone.Model.extend({
     defaults: {
       "z": 0,
       "route": 0,
-      "selected": false
+      "selected": false,
+      "log": null
     },
     initialize: function() {
       var nodes, sourceNode, targetNode;
       var preview = this.get("preview");
       this.parentGraph = this.get("parentGraph");
+      this.attributes.log = new EdgeEventLog();
       if (preview) {
         // Preview edge
         nodes = this.get("parentGraph").nodes;

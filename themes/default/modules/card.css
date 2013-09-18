@@ -129,3 +129,20 @@
   -o-transform: scale(1.15);
   transform: scale(1.15);
 }
+
+.dataflow-edge-inspector-events {
+  list-style: none;
+  padding-left: 0px;
+  margin-left: 0px;
+  margin-top: 1em;
+}
+
+.dataflow-edge-inspector-events .data {
+  color: hsl(30, 68%, 70%);
+}
+.dataflow-edge-inspector-events .begingroup {
+  color: hsl(0, 0%, 70%);
+}
+.dataflow-edge-inspector-events .endgroup {
+  color: hsl(0, 0%, 70%);
+}
