@@ -17,6 +17,7 @@
     className: "dataflow-edge-inspector",
     positions: null,
     template: _.template(template),
+    showLogs: 20,
     initialize: function() {
       this.$el.html( this.template(this.model) );
 
@@ -42,7 +43,7 @@
 
       this.listenTo(this.model, "change:route", this.render);
       this.listenTo(this.model, "remove", this.remove);
-      this.listenTo(this.model.get('log'), 'add', this.renderLogItem);
+      this.listenTo(this.model.get('log'), 'add', this.renderLog);
       this.renderLog();
     },
     render: function(){
@@ -54,7 +55,14 @@
     },
     renderLog: function () {
       var frag = document.createDocumentFragment();
-      this.model.get('log').each(function (item) {
+      var logs = this.model.get('log');
+      var logsToShow;
+      if (logs.length > this.showLogs) {
+        logsToShow = logs.rest(logs.length - this.showLogs);
+      } else {
+        logsToShow = logs.toArray();
+      }
+      _.each(logsToShow, function (item) {
         this.renderLogItem(item, frag);
       }, this);
       this.$log.html(frag);
