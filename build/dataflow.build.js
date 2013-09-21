@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-18 (5:09:47 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-21 (1:12:51 PM GMT+0300)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -2926,7 +2926,7 @@
     className: "dataflow-card",
     template: _.template(template),
     events: {
-      "click .dataflow-card-pin": "pin",
+      "click .dataflow-card-pin": "togglePin",
       "click .dataflow-card-close": "hide"
     },
     initialize: function () {
@@ -2935,7 +2935,7 @@
       this.listenTo(this.model, "change:pinned", this.pinnedChanged);
       this.pinnedChanged();
     },
-    pin: function () {
+    togglePin: function () {
       var pinned = !this.model.get("pinned");
       this.model.set("pinned", pinned);
       if (!pinned) {
@@ -2950,7 +2950,6 @@
       }
     },
     hide: function () {
-      this.model.set("pinned", false);
       this.model.hide();
     },
     remove: function () {
@@ -3178,6 +3177,14 @@
     buttons.children(".cut").click(cut);
     Edit.cut = cut;
 
+
+    function removeEdge(){
+      var selected = dataflow.currentGraph.edges.where({selected:true});
+      selected.forEach(function(edge){
+        edge.remove();
+      });
+    }
+
     //
     // C
     //
@@ -3264,6 +3271,9 @@
 
 
 
+
+
+
     // Add context actions for actionbar
 
     dataflow.addContext({
@@ -3286,6 +3296,16 @@
       label: "paste",
       action: paste,
       contexts: ["one", "twoplus"]
+    });
+
+
+
+    dataflow.addContext({
+      id: "edgeRemove",
+      icon: "cut",
+      label: "remove edges",
+      action: removeEdge,
+      contexts: ["edge"]
     });
 
 
@@ -3388,7 +3408,8 @@
       id: "library", 
       name: "", 
       menu: $container, 
-      icon: "plus"
+      icon: "plus",
+      pinned: true
     });
 
     Library.update = update;

@@ -52,6 +52,14 @@
     buttons.children(".cut").click(cut);
     Edit.cut = cut;
 
+
+    function removeEdge(){
+      var selected = dataflow.currentGraph.edges.where({selected:true});
+      selected.forEach(function(edge){
+        edge.remove();
+      });
+    }
+
     //
     // C
     //
@@ -138,6 +146,9 @@
 
 
 
+
+
+
     // Add context actions for actionbar
 
     dataflow.addContext({
@@ -160,6 +171,16 @@
       label: "paste",
       action: paste,
       contexts: ["one", "twoplus"]
+    });
+
+
+
+    dataflow.addContext({
+      id: "edgeRemove",
+      icon: "cut",
+      label: "remove edges",
+      action: removeEdge,
+      contexts: ["edge"]
     });
 
 

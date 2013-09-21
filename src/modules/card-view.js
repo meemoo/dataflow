@@ -13,7 +13,7 @@
     className: "dataflow-card",
     template: _.template(template),
     events: {
-      "click .dataflow-card-pin": "pin",
+      "click .dataflow-card-pin": "togglePin",
       "click .dataflow-card-close": "hide"
     },
     initialize: function () {
@@ -22,7 +22,7 @@
       this.listenTo(this.model, "change:pinned", this.pinnedChanged);
       this.pinnedChanged();
     },
-    pin: function () {
+    togglePin: function () {
       var pinned = !this.model.get("pinned");
       this.model.set("pinned", pinned);
       if (!pinned) {
@@ -37,7 +37,6 @@
       }
     },
     hide: function () {
-      this.model.set("pinned", false);
       this.model.hide();
     },
     remove: function () {

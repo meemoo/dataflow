@@ -81,7 +81,8 @@
       id: "library", 
       name: "", 
       menu: $container, 
-      icon: "plus"
+      icon: "plus",
+      pinned: true
     });
 
     Library.update = update;
