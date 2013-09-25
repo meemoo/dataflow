@@ -164,29 +164,46 @@
         this.plugins[info.id] = plugin = {};
       }
       plugin.info = info;
+      plugin.enabled = true;
 
       if (info.menu) {
-        var Card = Dataflow.prototype.module("card");
-        var card = new Card.Model({
-          dataflow: this,
-          card: {el:info.menu}, // HACK since plugins are not bb views
-          pinned: (info.pinned ? true : false)
-        });
+        if (!plugin.card) {
+          var Card = Dataflow.prototype.module("card");
+          var card = new Card.Model({
+            dataflow: this,
+            card: {el:info.menu}, // HACK since plugins are not bb views
+            pinned: (info.pinned ? true : false)
+          });
 
-        plugin.card = card;
+          plugin.card = card;
+        }
 
         this.actionBar.get('actions').add({
           id: info.id,
           icon: info.icon,
           label: info.name,
           showLabel: false,
-          action: function(){ this.addCard(card); }
+          action: function(){ this.addCard(plugin.card); }
         });
       }
     },
     showPlugin: function (name) {
       if (this.plugins[name] && this.plugins[name].card) {
         this.addCard( this.plugins[name].card );
+      }
+    },
+    enablePlugin: function (name) {
+      var plugin = this.plugins[name];
+      if (plugin) {
+        this.addPlugin(plugin.info);
+      }
+    },
+    disablePlugin: function (name) {
+      if ( this.actionBar.get("actions").get(name) ) {
+        this.actionBar.get("actions").remove(name);
+      }
+      if (this.plugins[name] && this.plugins[name].card) {
+        this.plugins[name].card.hide();
       }
     },
     showContextBar: function () {

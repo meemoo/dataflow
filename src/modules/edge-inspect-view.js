@@ -72,6 +72,7 @@
       } else {
         logsToShow = logs.toArray();
       }
+      //JANK warning, already taking 14ms with 20 log items
       _.each(logsToShow, function (item) {
         this.renderLogItem(item, frag);
       }, this);
