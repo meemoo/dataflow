@@ -19,8 +19,7 @@
     //   menu: buttons, 
     //   icon: "edit"
     // });
-
-
+    
     //
     // A
     //
@@ -34,6 +33,13 @@
     //
     // X
     //
+    
+    Edit.removeSelected = function () {
+      var toRemove = dataflow.currentGraph.nodes.where({selected:true});      
+      _.each(toRemove, function(node){
+        node.remove();
+      });      
+    }
 
     function cut(){
       // Copy selected
@@ -44,14 +50,12 @@
         node.y -= 50;
       });
       // Remove selected
-      var toRemove = dataflow.currentGraph.nodes.where({selected:true});
-      _.each(toRemove, function(node){
-        node.remove();
-      });
+      Edit.removeSelected()      
     }
     buttons.children(".cut").click(cut);
     Edit.cut = cut;
-
+    
+    
 
     function removeEdge(){
       var selected = dataflow.currentGraph.edges.where({selected:true});
@@ -59,6 +63,7 @@
         edge.remove();
       });
     }
+    Edit.removeEdge = removeEdge;
 
     //
     // C
