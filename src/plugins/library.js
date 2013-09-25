@@ -69,10 +69,14 @@
       options.exclude = options.exclude ? options.exclude : ["base", "base-resizable"];
 
       $library.empty();
-      _.each(dataflow.nodes, function(node, index){
-        if (options.exclude.indexOf(index) === -1) {
-          addLibraryItem(node, index);
+      var sortedLibrary = _.sortBy(Object.keys(dataflow.nodes), function (name) {
+        return name;
+      });
+      _.each(sortedLibrary, function (name) {
+        if (options.exclude.indexOf(name) !== -1) {
+          return;
         }
+        addLibraryItem(dataflow.nodes[name], name);
       });
     };
     update();
