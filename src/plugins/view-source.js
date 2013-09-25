@@ -23,7 +23,8 @@
       id: "source", 
       name: "", 
       menu: $form, 
-      icon: "cog"
+      icon: "cog",
+      pinned: true
     });
 
     var show = function(source) {

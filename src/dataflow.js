@@ -287,7 +287,7 @@
       this.el.className = this.className;
       this.$el = $(this.el);
       this.parent = options.parent;
-      var collection = this.get("collection");
+      var collection = this.collection = this.get("collection");
       collection.each(this.addItem, this);
       collection.on("add", this.addItem, this);
       collection.on("remove", this.removeItem, this);

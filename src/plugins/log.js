@@ -14,7 +14,8 @@
       id: "log", 
       name: "", 
       menu: $log, 
-      icon: "th-list"
+      icon: "th-list",
+      pinned: true
     });
 
     // Log message and scroll

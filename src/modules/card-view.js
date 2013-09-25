@@ -18,9 +18,15 @@
     },
     initialize: function () {
       this.$el.html(this.template());
-      this.$el.append(this.model.get("card").el);
+      this.card = this.model.get("card");
+      this.$el.append(this.card.el);
       this.listenTo(this.model, "change:pinned", this.pinnedChanged);
       this.pinnedChanged();
+    },
+    animate: function (timestamp) {
+      if (typeof this.card.animate === "function") {
+        this.card.animate(timestamp);
+      }
     },
     togglePin: function () {
       var pinned = !this.model.get("pinned");
@@ -44,11 +50,40 @@
     }
   });
 
+  // requestAnimationFrame shim
+  if (!window.requestAnimationFrame) {
+    window.requestAnimationFrame = (function(){
+      return  window.requestAnimationFrame       ||
+              window.webkitRequestAnimationFrame ||
+              window.mozRequestAnimationFrame    ||
+              window.oRequestAnimationFrame      ||
+              window.msRequestAnimationFrame     ||
+              function( callback ){
+                window.setTimeout(callback, 1000 / 20);
+              };
+    })();
+  }
+
   Card.CollectionView = Backbone.CollectionView.extend({
     tagName: "div",
     className: "dataflow-cards",
     itemView: Card.View,
     prepend: true,
+    initialize: function () {
+      // Super
+      Backbone.CollectionView.prototype.initialize.apply(this, arguments);
+      // Set up animation loop
+      var loop = function (timestamp) {
+        window.requestAnimationFrame(loop);
+        // Call all visible
+        this.collection.each(function(card){
+          if (card.view) {
+            card.view.animate(timestamp);
+          }
+        });
+      }.bind(this);
+      loop();
+    },
     bringToTop: function (card) {
       this.$el.prepend( card.view.el );
     }

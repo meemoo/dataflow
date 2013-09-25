@@ -41,11 +41,11 @@
         $choose.append(button);
       }
 
-      reqFrame = window.requestAnimationFrame ? window.requestAnimationFrame : window.webkitRequestAnimationFrame;
-
       this.listenTo(this.model, "change:route", this.render);
       this.listenTo(this.model, "remove", this.remove);
-      this.listenTo(this.model.get('log'), 'add', function () { reqFrame(this.renderLog.bind(this)); });
+      this.listenTo(this.model.get('log'), 'add', function () { 
+        this.logDirty = true; 
+      }.bind(this));
       this.renderLog();
     },
     render: function(){
@@ -54,6 +54,14 @@
       $choose.children(".active").removeClass("active");
       $choose.children(".route"+route).addClass("active");
       return this;
+    },
+    logDirty: false,
+    animate: function (timestamp) {
+      // Called from dataflow.shownCards collection (card-view.js)
+      if (this.logDirty) {
+        this.logDirty = false;
+        this.renderLog();
+      }
     },
     renderLog: function () {
       var frag = document.createDocumentFragment();
