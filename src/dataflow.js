@@ -8,6 +8,9 @@
       this.el.className = "dataflow";
       this.$el = $(this.el);
 
+      // Make available in console
+      this.$el.data("dataflow", this);
+
       // Setup cards
       var Card = Dataflow.prototype.module("card");
       this.shownCards = new Card.Collection();
