@@ -56,12 +56,10 @@ li {
     margin: 0px 10px 0px 0px;
 }
 .navbar .nav.pull-right {
-    /*float: right;*/
-    float: left;
     margin-right: 0px;
 }
 .navbar .nav > li {
-    float: left;
+    display: inline-block;
 }
 
 a {
@@ -87,22 +85,7 @@ a {
 }
 
 .navbar .brand {
-    padding: 10px 20px;
-    margin-left: -20px;
-
-    padding-right: 10px;
-    padding-left: 10px;
-    margin: 0px 0px 0px -5px;
-
-    display: block;
-    float: left;
-    font-size: 20px;
-    font-weight: 200;
-    color: rgb(119, 119, 119);
-    text-shadow: 0px 1px 0px rgb(255, 255, 255);
-
-    cursor: pointer;
-    display: none;
+  display: none;
 }
 
 
@@ -132,7 +115,7 @@ a {
 .navbar {
   
   width:300px;
-  height: 52px;
+  min-height: 52px;
   
   overflow: hidden;
 border: 1px solid hsl(0, 100%, 100%);
@@ -158,7 +141,6 @@ box-shadow: inset 0 1px 1px hsl(0, 100%, 100%), 0 2px 3px hsla(0, 0%, 0%, 0.7);
     padding: 10px 0;
     border-right: 1px solid hsl(0, 0%, 100%);
     border-left: 1px solid hsl(220, 10%, 93%);
-    
     box-sizing: border-box;
 }
 .navbar .nav > li i {
