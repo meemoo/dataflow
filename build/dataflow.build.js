@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-25 (10:59:10 AM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-25 (12:56:09 PM GMT+0300)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -646,7 +646,7 @@
       this.el.className = this.className;
       this.$el = $(this.el);
       this.parent = options.parent;
-      var collection = this.get("collection");
+      var collection = this.collection = this.get("collection");
       collection.each(this.addItem, this);
       collection.on("add", this.addItem, this);
       collection.on("remove", this.removeItem, this);
@@ -2934,9 +2934,15 @@
     },
     initialize: function () {
       this.$el.html(this.template());
-      this.$el.append(this.model.get("card").el);
+      this.card = this.model.get("card");
+      this.$el.append(this.card.el);
       this.listenTo(this.model, "change:pinned", this.pinnedChanged);
       this.pinnedChanged();
+    },
+    animate: function (timestamp) {
+      if (typeof this.card.animate === "function") {
+        this.card.animate(timestamp);
+      }
     },
     togglePin: function () {
       var pinned = !this.model.get("pinned");
@@ -2960,11 +2966,40 @@
     }
   });
 
+  // requestAnimationFrame shim
+  if (!window.requestAnimationFrame) {
+    window.requestAnimationFrame = (function(){
+      return  window.requestAnimationFrame       ||
+              window.webkitRequestAnimationFrame ||
+              window.mozRequestAnimationFrame    ||
+              window.oRequestAnimationFrame      ||
+              window.msRequestAnimationFrame     ||
+              function( callback ){
+                window.setTimeout(callback, 1000 / 20);
+              };
+    })();
+  }
+
   Card.CollectionView = Backbone.CollectionView.extend({
     tagName: "div",
     className: "dataflow-cards",
     itemView: Card.View,
     prepend: true,
+    initialize: function () {
+      // Super
+      Backbone.CollectionView.prototype.initialize.apply(this, arguments);
+      // Set up animation loop
+      var loop = function (timestamp) {
+        window.requestAnimationFrame(loop);
+        // Call all visible
+        this.collection.each(function(card){
+          if (card.view) {
+            card.view.animate(timestamp);
+          }
+        });
+      }.bind(this);
+      loop();
+    },
     bringToTop: function (card) {
       this.$el.prepend( card.view.el );
     }
@@ -3084,11 +3119,11 @@
         $choose.append(button);
       }
 
-      reqFrame = window.requestAnimationFrame ? window.requestAnimationFrame : window.webkitRequestAnimationFrame;
-
       this.listenTo(this.model, "change:route", this.render);
       this.listenTo(this.model, "remove", this.remove);
-      this.listenTo(this.model.get('log'), 'add', function () { reqFrame(this.renderLog.bind(this)); });
+      this.listenTo(this.model.get('log'), 'add', function () { 
+        this.logDirty = true; 
+      }.bind(this));
       this.renderLog();
     },
     render: function(){
@@ -3097,6 +3132,14 @@
       $choose.children(".active").removeClass("active");
       $choose.children(".route"+route).addClass("active");
       return this;
+    },
+    logDirty: false,
+    animate: function (timestamp) {
+      // Called from dataflow.shownCards collection (card-view.js)
+      if (this.logDirty) {
+        this.logDirty = false;
+        this.renderLog();
+      }
     },
     renderLog: function () {
       var frag = document.createDocumentFragment();
@@ -3455,7 +3498,8 @@
       id: "source", 
       name: "", 
       menu: $form, 
-      icon: "cog"
+      icon: "cog",
+      pinned: true
     });
 
     var show = function(source) {
@@ -3519,7 +3563,8 @@
       id: "log", 
       name: "", 
       menu: $log, 
-      icon: "th-list"
+      icon: "th-list",
+      pinned: true
     });
 
     // Log message and scroll
