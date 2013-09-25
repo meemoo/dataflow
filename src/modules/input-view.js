@@ -122,8 +122,8 @@
         }
         this.setInputValue(input, type, state[this.model.id]);
       }.bind(this));
-
-      var label = $("<label>")
+      
+      var label = $('<label class="input-type-' + type + '">')
         .append( input )
         .prepend( '<span>' + this.model.get("label") + "</span> " );
       this.$input = label;
@@ -141,7 +141,7 @@
         input.change(this.inputSelect.bind(this));
         return input;
       }
-
+      
       switch (type) {
         case 'int':
         case 'float':

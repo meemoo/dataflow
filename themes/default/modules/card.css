@@ -109,6 +109,10 @@
     vertical-align: top;
   }
 
+.dataflow-node-inspector-inputs input[type=checkbox] {  
+    display: none;  
+}  
+
 .dataflow-edge-inspector-route-choose button {
   width: 20px;
   height: 20px;
