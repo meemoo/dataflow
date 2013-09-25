@@ -5,7 +5,7 @@
   Library.initialize = function(dataflow){
 
     var $container = $('<div class="dataflow-plugin-overflow">');
-    var $library = $('<ul class="dataflow-plugin-library" style="list-style:none; padding:0; margin:15px 0;" />');
+    var $library = $('<ul class="dataflow-plugin-library" />');
     $container.append($library);
 
     var addNode = function(node, x, y) {

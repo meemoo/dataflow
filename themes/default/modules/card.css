@@ -1,5 +1,5 @@
 .dataflow-cards {
-  z-index: 3;
+  z-index: 4;
   position: absolute;
   top: 110px;
   left: 20px;
@@ -29,9 +29,27 @@
   right: 0;
 }
 
+.dataflow-plugin-library {
+  max-height: 300px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  list-style: none;
+  padding: 2px 2px;
+  margin: 0px;
+}
 
+.dataflow-plugin-library li {
+  margin-bottom: 4px;
+}
 
+.dataflow-plugin-library li:last-child {
+  margin-bottom: 0px;
+}
 
+.dataflow-plugin-library li .button {
+  margin-right: 4px;
+  padding: 2px 5px;
+}
 
 .dataflow-plugin-inspector-title {
   padding: 3px 20px;
