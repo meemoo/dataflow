@@ -178,7 +178,8 @@
   list-style: none;
   margin-top: 1em;
   max-height: 70px;
-  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .dataflow-edge-inspector-events .data {
