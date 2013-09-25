@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-24 (6:16:51 PM PDT)
+/*! dataflow.js - v0.0.7 - 2013-09-25 (10:26:09 AM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -366,6 +366,9 @@
       this.el = document.createElement("div");
       this.el.className = "dataflow";
       this.$el = $(this.el);
+
+      // Make available in console
+      this.$el.data("dataflow", this);
 
       // Setup cards
       var Card = Dataflow.prototype.module("card");
@@ -3401,10 +3404,14 @@
       options.exclude = options.exclude ? options.exclude : ["base", "base-resizable"];
 
       $library.empty();
-      _.each(dataflow.nodes, function(node, index){
-        if (options.exclude.indexOf(index) === -1) {
-          addLibraryItem(node, index);
+      var sortedLibrary = _.sortBy(Object.keys(dataflow.nodes), function (name) {
+        return name;
+      });
+      _.each(sortedLibrary, function (name) {
+        if (options.exclude.indexOf(name) !== -1) {
+          return;
         }
+        addLibraryItem(dataflow.nodes[name], name);
       });
     };
     update();
