@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-25 (12:46:00 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-25 (12:58:17 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -483,7 +483,9 @@
         return this.nodes[name];
       }
       // Create a node scaffold and save it under this name
-      this.nodes[name] = {};
+      this.nodes[name] = {
+        description: ''
+      };
       return this.nodes[name];
     },
     plugins: {},
@@ -995,7 +997,7 @@
   Input.Model = Backbone.Model.extend({
     defaults: {
       id: "input",
-      description: "Simple input node",
+      description: "",
       label: "",
       type: "all"
     },
@@ -3425,8 +3427,11 @@
 
     var itemTemplate = '<li><a class="button add"><i class="icon-plus"></i></a><span class="name"><%- name %></span><span class="description"><%-description %></span></li>';
 
-    var addLibraryItem = function(node) {
-      var $item = $(_.template(itemTemplate, node.toJSON()));
+    var addLibraryItem = function(name, node) {
+      var $item = $(_.template(itemTemplate, {
+        name: name,
+        description: node.description
+      }));
       var addButton = $('.button', $item)
         .attr("title", "click or drag")
         .draggable({
@@ -3455,7 +3460,7 @@
         if (options.exclude.indexOf(name) !== -1) {
           return;
         }
-        addLibraryItem(dataflow.nodes[name]);
+        addLibraryItem(name, dataflow.nodes[name]);
       });
     };
     update();
