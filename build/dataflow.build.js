@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-25 (10:26:09 AM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-25 (10:48:07 AM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -3340,7 +3340,7 @@
   Library.initialize = function(dataflow){
 
     var $container = $('<div class="dataflow-plugin-overflow">');
-    var $library = $('<ul class="dataflow-plugin-library" style="list-style:none; padding:0; margin:15px 0;" />');
+    var $library = $('<ul class="dataflow-plugin-library" />');
     $container.append($library);
 
     var addNode = function(node, x, y) {
