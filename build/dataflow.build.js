@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-25 (12:56:09 PM GMT+0300)
+/*! dataflow.js - v0.0.7 - 2013-09-25 (12:46:00 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -841,6 +841,7 @@
     defaults: function () {
       return {
         label: "",
+        description: "",
         type: "test",
         x: 200,
         y: 100,
@@ -994,9 +995,9 @@
   Input.Model = Backbone.Model.extend({
     defaults: {
       id: "input",
+      description: "Simple input node",
       label: "",
-      type: "all",
-      description: ""
+      type: "all"
     },
     initialize: function() {
       this.parentNode = this.get("parentNode");
@@ -3422,8 +3423,11 @@
 
     };
 
-    var addLibraryItem = function(node, name) {
-      var addButton = $('<a class="button">+</a>')
+    var itemTemplate = '<li><a class="button add"><i class="icon-plus"></i></a><span class="name"><%- name %></span><span class="description"><%-description %></span></li>';
+
+    var addLibraryItem = function(node) {
+      var $item = $(_.template(itemTemplate, node.toJSON()));
+      var addButton = $('.button', $item)
         .attr("title", "click or drag")
         .draggable({
           helper: function(){
@@ -3436,10 +3440,7 @@
           }
         })
         .click(addNode(node));
-      var item = $("<li />")
-        .append(addButton)
-        .append(name);
-      $library.append(item);
+      $library.append($item);
     };
 
     var update = function(options){
@@ -3454,7 +3455,7 @@
         if (options.exclude.indexOf(name) !== -1) {
           return;
         }
-        addLibraryItem(dataflow.nodes[name], name);
+        addLibraryItem(dataflow.nodes[name]);
       });
     };
     update();
