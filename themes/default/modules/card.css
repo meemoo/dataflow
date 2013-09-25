@@ -44,6 +44,7 @@
 }
 
 .dataflow-node-inspector-inputs label {
+  position:relative;
   padding: 15px 20px 10px;
   border-top: 1px solid hsla(0, 0%, 0%, .3);
   border-bottom: 1px solid hsl(220, 10%, 16%);
@@ -102,16 +103,40 @@
   box-shadow: 0 0 2px 1px hsla(210, 100%, 100%, 1)
   /*box-shadow: 0 0 2px 1px hsla(210, 100%, 100%, 1), 0 0 3px 2px hsla(210, 100%, 60%, 0.7);*/
 }
-  .input-select {
-    width: 5em;
-  }
-  .input-bang {
-    vertical-align: top;
-  }
+.input-select {
+  width: 5em;
+}
+.input-bang {
+  vertical-align: top;
+}
+
 
 .dataflow-node-inspector-inputs input[type=checkbox] {  
     display: none;  
 }  
+
+.dataflow-node-inspector-inputs .input-boolean-checkbox {  
+  position: absolute;
+  left: 123px;
+  top: 12px;
+  height: 20px;
+  width: 20px;
+  border-radius: 3px;
+  background-color: hsla(240, 7%, 11%, .8);
+  border: 1px solid hsla(0, 0%, 63%, .1);
+  box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, .2);
+}
+
+.dataflow-node-inspector-inputs input[type=checkbox]:checked + .input-boolean-checkbox:before {
+  content: "\2713";
+  text-shadow: 1px 1px 1px hsla(0, 0%, 0%, .2);
+  font-size: 15px;
+  text-align: center;
+  line-height: 15px;
+  position: relative;
+  top: 2px;
+  left: 5px;
+}
 
 .dataflow-edge-inspector-route-choose button {
   width: 20px;

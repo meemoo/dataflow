@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-24 (5:46:24 PM PDT)
+/*! dataflow.js - v0.0.7 - 2013-09-24 (6:16:51 PM PDT)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1987,7 +1987,7 @@
           }
           return input;
         case 'boolean':
-          input = $('<input type="checkbox" class="input input-boolean">');
+          input = $('<input type="checkbox" class="input input-boolean"><div class="input-boolean-checkbox"/>');
           input.change(this.inputBoolean.bind(this));
           return input;
         case 'object':
@@ -3163,8 +3163,8 @@
       var toRemove = dataflow.currentGraph.nodes.where({selected:true});      
       _.each(toRemove, function(node){
         node.remove();
-      });      
-    }
+      });
+    };
 
     function cut(){
       // Copy selected
@@ -3175,7 +3175,7 @@
         node.y -= 50;
       });
       // Remove selected
-      Edit.removeSelected()      
+      Edit.removeSelected();
     }
     buttons.children(".cut").click(cut);
     Edit.cut = cut;

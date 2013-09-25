@@ -166,7 +166,7 @@
           }
           return input;
         case 'boolean':
-          input = $('<input type="checkbox" class="input input-boolean">');
+          input = $('<input type="checkbox" class="input input-boolean"><div class="input-boolean-checkbox"/>');
           input.change(this.inputBoolean.bind(this));
           return input;
         case 'object':
