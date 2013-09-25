@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-25 (2:38:17 PM GMT+0300)
+/*! dataflow.js - v0.0.7 - 2013-09-25 (3:18:49 PM GMT+0300)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -523,29 +523,46 @@
         this.plugins[info.id] = plugin = {};
       }
       plugin.info = info;
+      plugin.enabled = true;
 
       if (info.menu) {
-        var Card = Dataflow.prototype.module("card");
-        var card = new Card.Model({
-          dataflow: this,
-          card: {el:info.menu}, // HACK since plugins are not bb views
-          pinned: (info.pinned ? true : false)
-        });
+        if (!plugin.card) {
+          var Card = Dataflow.prototype.module("card");
+          var card = new Card.Model({
+            dataflow: this,
+            card: {el:info.menu}, // HACK since plugins are not bb views
+            pinned: (info.pinned ? true : false)
+          });
 
-        plugin.card = card;
+          plugin.card = card;
+        }
 
         this.actionBar.get('actions').add({
           id: info.id,
           icon: info.icon,
           label: info.name,
           showLabel: false,
-          action: function(){ this.addCard(card); }
+          action: function(){ this.addCard(plugin.card); }
         });
       }
     },
     showPlugin: function (name) {
       if (this.plugins[name] && this.plugins[name].card) {
         this.addCard( this.plugins[name].card );
+      }
+    },
+    enablePlugin: function (name) {
+      var plugin = this.plugins[name];
+      if (plugin) {
+        this.addPlugin(plugin.info);
+      }
+    },
+    disablePlugin: function (name) {
+      if ( this.actionBar.get("actions").get(name) ) {
+        this.actionBar.get("actions").remove(name);
+      }
+      if (this.plugins[name] && this.plugins[name].card) {
+        this.plugins[name].card.hide();
       }
     },
     showContextBar: function () {
@@ -3166,6 +3183,7 @@
       } else {
         logsToShow = logs.toArray();
       }
+      //JANK warning, already taking 14ms with 20 log items
       _.each(logsToShow, function (item) {
         this.renderLogItem(item, frag);
       }, this);
