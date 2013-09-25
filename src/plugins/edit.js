@@ -38,8 +38,8 @@
       var toRemove = dataflow.currentGraph.nodes.where({selected:true});      
       _.each(toRemove, function(node){
         node.remove();
-      });      
-    }
+      });
+    };
 
     function cut(){
       // Copy selected
@@ -50,7 +50,7 @@
         node.y -= 50;
       });
       // Remove selected
-      Edit.removeSelected()      
+      Edit.removeSelected();
     }
     buttons.children(".cut").click(cut);
     Edit.cut = cut;
