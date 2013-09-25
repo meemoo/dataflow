@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-25 (12:56:09 PM GMT+0300)
+/*! dataflow.js - v0.0.7 - 2013-09-25 (2:37:24 PM GMT+0300)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -516,6 +516,12 @@
       this.shownCards.remove(unpinned);
     },
     addPlugin: function (info) {
+      var plugin = this.plugins[info.id];
+      if (!plugin) {
+        this.plugins[info.id] = plugin = {};
+      }
+      plugin.info = info;
+
       if (info.menu) {
         var Card = Dataflow.prototype.module("card");
         var card = new Card.Model({
@@ -524,6 +530,8 @@
           pinned: (info.pinned ? true : false)
         });
 
+        plugin.card = card;
+
         this.actionBar.get('actions').add({
           id: info.id,
           icon: info.icon,
@@ -531,6 +539,11 @@
           showLabel: false,
           action: function(){ this.addCard(card); }
         });
+      }
+    },
+    showPlugin: function (name) {
+      if (this.plugins[name] && this.plugins[name].card) {
+        this.addCard( this.plugins[name].card );
       }
     },
     showContextBar: function () {
