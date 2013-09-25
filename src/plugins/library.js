@@ -44,8 +44,14 @@
 
     };
 
-    var addLibraryItem = function(node, name) {
-      var addButton = $('<a class="button">+</a>')
+    var itemTemplate = '<li><a class="button add"><i class="icon-plus"></i></a><span class="name"><%- name %></span><span class="description"><%-description %></span></li>';
+
+    var addLibraryItem = function(name, node) {
+      var $item = $(_.template(itemTemplate, {
+        name: name,
+        description: node.description
+      }));
+      var addButton = $('.button', $item)
         .attr("title", "click or drag")
         .draggable({
           helper: function(){
@@ -58,10 +64,7 @@
           }
         })
         .click(addNode(node));
-      var item = $("<li />")
-        .append(addButton)
-        .append(name);
-      $library.append(item);
+      $library.append($item);
     };
 
     var update = function(options){
@@ -76,7 +79,7 @@
         if (options.exclude.indexOf(name) !== -1) {
           return;
         }
-        addLibraryItem(dataflow.nodes[name], name);
+        addLibraryItem(name, dataflow.nodes[name]);
       });
     };
     update();

@@ -36,10 +36,12 @@
   list-style: none;
   padding: 2px 2px;
   margin: 0px;
+  padding-top: 20px;
 }
 
 .dataflow-plugin-library li {
   margin-bottom: 4px;
+  clear: right;
 }
 
 .dataflow-plugin-library li:last-child {
@@ -47,8 +49,19 @@
 }
 
 .dataflow-plugin-library li .button {
-  margin-right: 4px;
+  float: right;
+  margin-left: 4px;
   padding: 2px 5px;
+  background-color: transparent;
+  border: none;
+  color: hsl(240, 68%, 70%);
+}
+.dataflow-plugin-library li .name {
+  font-weight: bold;
+  display: block;
+}
+.dataflow-plugin-library li .description {
+  color: #a0a0a0;
 }
 
 .dataflow-plugin-inspector-title {
