@@ -124,7 +124,9 @@
         return this.nodes[name];
       }
       // Create a node scaffold and save it under this name
-      this.nodes[name] = {};
+      this.nodes[name] = {
+        description: ''
+      };
       return this.nodes[name];
     },
     plugins: {},

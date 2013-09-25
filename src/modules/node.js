@@ -14,6 +14,7 @@
     defaults: function () {
       return {
         label: "",
+        description: "",
         type: "test",
         x: 200,
         y: 100,

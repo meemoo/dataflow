@@ -5,9 +5,9 @@
   Input.Model = Backbone.Model.extend({
     defaults: {
       id: "input",
+      description: "",
       label: "",
-      type: "all",
-      description: ""
+      type: "all"
     },
     initialize: function() {
       this.parentNode = this.get("parentNode");
