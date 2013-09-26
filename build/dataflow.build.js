@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-26 (6:30:26 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-26 (7:57:08 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1166,6 +1166,9 @@
       return ( this.source.parentNode === node || this.target.parentNode === node );
     },
     toString: function(){
+      if (this.id) {
+        return this.id;
+      }
       return this.get("source").node+":"+this.get("source").port+"::"+this.get("target").node+":"+this.get("target").port;
     },
     toJSON: function(){

@@ -76,6 +76,9 @@
       return ( this.source.parentNode === node || this.target.parentNode === node );
     },
     toString: function(){
+      if (this.id) {
+        return this.id;
+      }
       return this.get("source").node+":"+this.get("source").port+"::"+this.get("target").node+":"+this.get("target").port;
     },
     toJSON: function(){

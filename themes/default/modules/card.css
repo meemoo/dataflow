@@ -66,12 +66,16 @@
 /* */
 .dataflow-plugin-log {
   padding: 10px;
+  max-height: 300px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 .dataflow-plugin-log ol { counter-reset: item; margin:0px;}
 .dataflow-plugin-log li { 
   display: block;
   margin: .39em 0px; 
   font-size: 11px;
+  white-space: nowrap;
 }
 .dataflow-plugin-log li:before { 
   content: counter(item) ". "; counter-increment: item; 
