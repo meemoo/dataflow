@@ -1,7 +1,31 @@
+
+.dataflow-card ::-webkit-scrollbar {
+    width: 5px;
+}
+ 
+/* Track */
+.dataflow-card ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+ 
+/* Handle */
+.dataflow-card ::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    background: hsla(0,0%,0%,.2); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+.dataflow-card ::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+  background:none;
+}
+
 .dataflow-cards {
   z-index: 4;
   position: absolute;
-  top: 110px;
+  top: 90px;
   left: 20px;
   width: 300px;
   /* HACK */
@@ -9,16 +33,16 @@
   overflow: visible;
 }
 
+
 .dataflow-card {
   position: relative;
-  /*border: 1px solid hsl(220, 6%, 10%);*/
-  border: none;
+  border: 1px solid hsl(220, 10%, 17%);
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
-  background-color: hsla(225, 10%, 15%, .97);
-  box-shadow: inset 0 1px 1px hsla(0, 0%, 100%, .1), 0 3px 5px hsla(0, 0%, 0%, 0.5);
-  margin-bottom: 3px;
+  background-color: hsla(225, 10%, 15%, .98);
+  box-shadow: inset 0 1px 1px hsla(0, 0%, 100%, 0.1), 0 1px 2px 0px hsla(0, 0%, 0%, .3), 0 5px 10px hsla(0, 0%, 0%, 0.2);
+  margin-bottom: 12px;
   color: hsl(0, 100%, 100%);
   text-shadow: 0 1px hsl(0, 0%, 0%);
 }
@@ -28,7 +52,47 @@
   top: 0;
   right: 0;
 }
+.dataflow-card-control button, .dataflow-card-control button.active {
+  background: none;
+  border: none;
+}
+.dataflow-card-control button:before {
+  color: hsl(220, 10%, 45%);
+}
+.dataflow-card-control button.active:before {
+  color: hsl(206, 54%, 51%);
+}
 
+/* */
+.dataflow-plugin-log {
+  padding: 10px;
+}
+.dataflow-plugin-log ol { counter-reset: item; margin:0px;}
+.dataflow-plugin-log li { 
+  display: block;
+  margin: .39em 0px; 
+  font-size: 11px;
+}
+.dataflow-plugin-log li:before { 
+  content: counter(item) ". "; counter-increment: item; 
+  color: hsl(220, 10%, 45%); 
+  width: 2em;
+  display: block;
+  float: left;
+}
+
+/* */
+.dataflow-plugin-view-source textarea.code {
+  background-color: hsla(0, 0%, 0%, 0);
+  border: none;
+  padding: 10px;
+  color: hsl(220, 10%, 45%); 
+}
+.dataflow-plugin-view-source textarea.code:focus {
+  outline: none;
+}
+
+/* */
 .dataflow-plugin-library {
   max-height: 300px;
   overflow-y: scroll;
@@ -40,7 +104,9 @@
 }
 
 .dataflow-plugin-library li {
-  margin-bottom: 4px;
+  padding: 10px;
+  border-top: 1px solid hsla(0, 0%, 0%, .1);
+  border-bottom: 1px solid hsl(220, 10%, 16%);
   clear: right;
 }
 
@@ -54,14 +120,14 @@
   padding: 2px 5px;
   background-color: transparent;
   border: none;
-  color: hsl(240, 68%, 70%);
+  color: hsl(206, 54%, 51%);
 }
 .dataflow-plugin-library li .name {
   font-weight: bold;
   display: block;
 }
 .dataflow-plugin-library li .description {
-  color: #a0a0a0;
+  color: hsl(220, 10%, 45%);
 }
 
 .dataflow-plugin-inspector-title {
@@ -119,7 +185,7 @@
     border-radius: 3px;
     top: 31px;
     left: 100px;
-    width: 142px;
+    width: 140px;
     vertical-align: top;
     background-color: hsl(220, 20%, 97%);
     border: 1px solid hsl(220, 10%, 83%);
