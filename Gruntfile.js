@@ -42,6 +42,7 @@
             "src/plugins/log.js",
             "src/plugins/inspector.js",
             "src/plugins/keybinding.js",
+            "src/plugins/notification.js",
             // Nodes
             "src/nodes/base.js",
             "src/nodes/base-resizable.js",
