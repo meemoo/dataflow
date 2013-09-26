@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-26 (12:12:10 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-26 (3:17:29 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -542,13 +542,17 @@
           icon: info.icon,
           label: info.name,
           showLabel: false,
-          action: function(){ this.addCard(plugin.card); }
+          action: function(){ this.showPlugin(info.id); }
         });
       }
     },
     showPlugin: function (name) {
       if (this.plugins[name] && this.plugins[name].card) {
         this.addCard( this.plugins[name].card );
+        if (typeof this.plugins[name].onShow === 'function') {
+          // Let the plugin know it has been shown
+          this.plugins[name].onShow();
+        }
       }
     },
     enablePlugin: function (name) {

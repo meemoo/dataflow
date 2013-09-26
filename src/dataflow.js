@@ -183,13 +183,17 @@
           icon: info.icon,
           label: info.name,
           showLabel: false,
-          action: function(){ this.addCard(plugin.card); }
+          action: function(){ this.showPlugin(info.id); }
         });
       }
     },
     showPlugin: function (name) {
       if (this.plugins[name] && this.plugins[name].card) {
         this.addCard( this.plugins[name].card );
+        if (typeof this.plugins[name].onShow === 'function') {
+          // Let the plugin know it has been shown
+          this.plugins[name].onShow();
+        }
       }
     },
     enablePlugin: function (name) {
