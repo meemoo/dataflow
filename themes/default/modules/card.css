@@ -235,6 +235,10 @@
   left: 5px;
 }
 
+.dataflow-edge-inspector-route-choose {
+  padding-left: 20px;
+}
+
 .dataflow-edge-inspector-route-choose button {
   width: 20px;
   height: 20px;
