@@ -5,7 +5,7 @@
   var template = 
     '<div class="dataflow-plugin-inspector-title">'+
       '<h1>Edge</h1>'+
-      '<h2 class="dataflow-edge-inspector-id"><%- id %></h2>'+
+      '<h2 class="dataflow-edge-inspector-id"><%= id %></h2>'+
     '</div>'+
     '<div class="dataflow-edge-inspector-route-choose"></div>'+
     '<ul class="dataflow-edge-inspector-events"></ul>';
@@ -19,7 +19,11 @@
     template: _.template(template),
     showLogs: 20,
     initialize: function() {
-      this.$el.html( this.template(this.model) );
+      var templateData = this.model.toJSON();
+      if (this.model.id) {
+        templateData.id = this.model.id.replace('->', '&#8594;');
+      }
+      this.$el.html( this.template(templateData) );
 
       var $choose = this.$el.children(".dataflow-edge-inspector-route-choose");
       this.$log = this.$el.children('.dataflow-edge-inspector-events');

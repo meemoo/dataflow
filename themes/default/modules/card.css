@@ -235,6 +235,10 @@
   left: 5px;
 }
 
+h2.dataflow-edge-inspector-id {
+  font-size: 12px;
+}
+
 .dataflow-edge-inspector-route-choose {
   padding-left: 20px;
 }
