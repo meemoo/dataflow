@@ -167,16 +167,14 @@
       plugin.enabled = true;
 
       if (info.menu) {
-        if (!plugin.card) {
-          var Card = Dataflow.prototype.module("card");
-          var card = new Card.Model({
-            dataflow: this,
-            card: {el:info.menu}, // HACK since plugins are not bb views
-            pinned: (info.pinned ? true : false)
-          });
+        var Card = Dataflow.prototype.module("card");
+        var card = new Card.Model({
+          dataflow: this,
+          card: {el:info.menu}, // HACK since plugins are not bb views
+          pinned: (info.pinned ? true : false)
+        });
 
-          plugin.card = card;
-        }
+        plugin.card = card;
 
         this.actionBar.get('actions').add({
           id: info.id,

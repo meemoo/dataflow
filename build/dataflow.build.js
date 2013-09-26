@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-26 (3:17:29 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-26 (3:55:45 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -526,16 +526,14 @@
       plugin.enabled = true;
 
       if (info.menu) {
-        if (!plugin.card) {
-          var Card = Dataflow.prototype.module("card");
-          var card = new Card.Model({
-            dataflow: this,
-            card: {el:info.menu}, // HACK since plugins are not bb views
-            pinned: (info.pinned ? true : false)
-          });
+        var Card = Dataflow.prototype.module("card");
+        var card = new Card.Model({
+          dataflow: this,
+          card: {el:info.menu}, // HACK since plugins are not bb views
+          pinned: (info.pinned ? true : false)
+        });
 
-          plugin.card = card;
-        }
+        plugin.card = card;
 
         this.actionBar.get('actions').add({
           id: info.id,
