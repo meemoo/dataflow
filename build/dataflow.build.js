@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-26 (3:55:45 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-26 (6:30:26 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1043,9 +1043,13 @@
     connect: function(edge){
       this.connected.push(edge);
       this.connected = _.uniq(this.connected);
+      this.trigger('connected');
     },
     disconnect: function(edge){
       this.connected = _.without(this.connected, edge);
+      if (this.connected.length === 0) {
+        this.trigger('disconnected');
+      }
     },
     remove: function(){
       // Port removed from node's inputs collection
@@ -1981,12 +1985,21 @@
         }
         this.setInputValue(input, type, state[this.model.id]);
       }.bind(this));
-      
       var label = $('<label class="input-type-' + type + '">')
         .append( input )
         .prepend( '<span>' + this.model.get("label") + "</span> " );
       this.$input = label;
 
+      // Update connection state on the input field
+      if (this.model.connected.length) {
+        label.addClass('connected');
+      }
+      this.model.on('connected', function () {
+        this.$input.addClass('connected');
+      }, this);
+      this.model.on('disconnected', function () {
+        this.$input.removeClass('connected');
+      }, this);
     },
     renderInput: function (type, options) {
       var input;

@@ -122,12 +122,21 @@
         }
         this.setInputValue(input, type, state[this.model.id]);
       }.bind(this));
-      
       var label = $('<label class="input-type-' + type + '">')
         .append( input )
         .prepend( '<span>' + this.model.get("label") + "</span> " );
       this.$input = label;
 
+      // Update connection state on the input field
+      if (this.model.connected.length) {
+        label.addClass('connected');
+      }
+      this.model.on('connected', function () {
+        this.$input.addClass('connected');
+      }, this);
+      this.model.on('disconnected', function () {
+        this.$input.removeClass('connected');
+      }, this);
     },
     renderInput: function (type, options) {
       var input;

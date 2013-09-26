@@ -19,9 +19,13 @@
     connect: function(edge){
       this.connected.push(edge);
       this.connected = _.uniq(this.connected);
+      this.trigger('connected');
     },
     disconnect: function(edge){
       this.connected = _.without(this.connected, edge);
+      if (this.connected.length === 0) {
+        this.trigger('disconnected');
+      }
     },
     remove: function(){
       // Port removed from node's inputs collection
