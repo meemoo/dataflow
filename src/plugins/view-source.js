@@ -60,10 +60,12 @@
       if (allowed) {
         Source.updateAllowed = true;
         $button.show();
+        $code.removeAttr('readonly');
         return;
       }
       Source.updateAllowed = false;
       $button.hide();
+      $code.attr('readonly', 'readonly');
     };
 
     // Apply source to test graph

@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-27 (11:49:09 AM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-27 (11:55:09 AM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -3594,10 +3594,12 @@
       if (allowed) {
         Source.updateAllowed = true;
         $button.show();
+        $code.removeAttr('readonly');
         return;
       }
       Source.updateAllowed = false;
       $button.hide();
+      $code.attr('readonly', 'readonly');
     };
 
     // Apply source to test graph
