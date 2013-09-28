@@ -322,9 +322,6 @@
     },
     fadeEdges: function () {
       this.model.edges.each(function(edge){
-        if (!edge.source || !edge.target) {
-          return;
-        }
         if (edge.get("selected") || edge.source.parentNode.get("selected") || edge.target.parentNode.get("selected")) {
           edge.view.unfade();
         } else {

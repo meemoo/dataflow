@@ -98,9 +98,6 @@
 
     },
     render: function(previewPosition){
-      if (!this.model.source || !this.model.target) {
-        return;
-      }
       var source = this.model.source;
       var target = this.model.target;
       var dataflowParent, graphPos;

@@ -51,10 +51,6 @@
           // Dataflow.log("node or port not found for edge", this);
         }
 
-        if (!this.source || !this.target) {
-          return;
-        }
-
         this.source.connect(this);
         this.target.connect(this);
 
@@ -108,17 +104,13 @@
       this.set("z", topZ+1);
     },
     remove: function(){
-      if (this.source) {
-        this.source.disconnect(this);
-        // Remove listener
-        this.source.parentNode.off("send:"+this.source.id, this.send, this);
-      }
-      if (this.target) {
-        this.target.disconnect(this);
-      }
+      this.source.disconnect(this);
+      this.target.disconnect(this);
       if (this.collection) {
         this.collection.remove(this);
       }
+      // Remove listener
+      this.source.parentNode.off("send:"+this.source.id, this.send, this);
     }
   });
 

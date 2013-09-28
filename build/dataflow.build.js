@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-28 (8:11:10 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-28 (9:41:38 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1141,10 +1141,6 @@
           // Dataflow.log("node or port not found for edge", this);
         }
 
-        if (!this.source || !this.target) {
-          return;
-        }
-
         this.source.connect(this);
         this.target.connect(this);
 
@@ -1198,17 +1194,13 @@
       this.set("z", topZ+1);
     },
     remove: function(){
-      if (this.source) {
-        this.source.disconnect(this);
-        // Remove listener
-        this.source.parentNode.off("send:"+this.source.id, this.send, this);
-      }
-      if (this.target) {
-        this.target.disconnect(this);
-      }
+      this.source.disconnect(this);
+      this.target.disconnect(this);
       if (this.collection) {
         this.collection.remove(this);
       }
+      // Remove listener
+      this.source.parentNode.off("send:"+this.source.id, this.send, this);
     }
   });
 
@@ -1546,9 +1538,6 @@
     },
     fadeEdges: function () {
       this.model.edges.each(function(edge){
-        if (!edge.source || !edge.target) {
-          return;
-        }
         if (edge.get("selected") || edge.source.parentNode.get("selected") || edge.target.parentNode.get("selected")) {
           edge.view.unfade();
         } else {
@@ -2746,9 +2735,6 @@
 
     },
     render: function(previewPosition){
-      if (!this.model.source || !this.model.target) {
-        return;
-      }
       var source = this.model.source;
       var target = this.model.target;
       var dataflowParent, graphPos;
@@ -3320,15 +3306,9 @@
       dataflow.currentGraph.edges.each(function(edge){
         // Only copy the edges between nodes being copied
         var connectedSource = _.any(copied.nodes, function(node){
-          if (!edge.source) {
-            return false;
-          }
           return (edge.source.parentNode.id === node.id);
         });
         var connectedTarget = _.any(copied.nodes, function(node){
-          if (!edge.target) {
-            return false;
-          }
           return (edge.target.parentNode.id === node.id);
         });
         if (connectedSource || connectedTarget){
