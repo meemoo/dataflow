@@ -25,7 +25,7 @@
       id: "source", 
       name: "", 
       menu: $form, 
-      icon: "cog",
+      icon: "code",
       pinned: true
     });
 

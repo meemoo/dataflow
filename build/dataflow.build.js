@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-28 (10:27:24 AM GMT+0300)
+/*! dataflow.js - v0.0.7 - 2013-09-28 (4:28:43 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -3559,7 +3559,7 @@
       id: "source", 
       name: "", 
       menu: $form, 
-      icon: "cog",
+      icon: "code",
       pinned: true
     });
 
