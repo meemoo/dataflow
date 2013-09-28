@@ -143,7 +143,9 @@
 
 .dataflow-node-inspector-inputs label {
   position:relative;
-  padding: 15px 20px 10px;
+  box-sizing: border-box;
+  min-height: 43px;
+  padding: 0 20px;
   border-top: 1px solid hsla(0, 0%, 0%, .1);
   border-bottom: 1px solid hsl(220, 10%, 16%);
   display: block;
@@ -152,6 +154,7 @@
 
 .dataflow-node-inspector-inputs label span {
   display: inline-block;
+  margin-top:11px; /* centering in 43px label */
   width: 100px;
   color: hsl(220, 10%, 45%);
 }
@@ -182,12 +185,11 @@
   .input-float, 
   .input-select {
     padding: 8px 6px;
-    margin-top: -4px;
+    margin: 5px 0;
     border-radius: 3px;
     top: 31px;
     left: 100px;
     width: 140px;
-    vertical-align: top;
     background-color: hsl(220, 20%, 97%);
     border: 1px solid hsl(220, 10%, 83%);
 }
@@ -205,7 +207,7 @@
   width: 5em;
 }
 .input-bang {
-  vertical-align: top;
+  /*vertical-align: top;*/
 }
 
 
