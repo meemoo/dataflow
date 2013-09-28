@@ -108,14 +108,17 @@
       this.set("z", topZ+1);
     },
     remove: function(){
-      this.source.disconnect(this);
-      this.target.disconnect(this);
+      if (this.source) {
+        this.source.disconnect(this);
+        // Remove listener
+        this.source.parentNode.off("send:"+this.source.id, this.send, this);
+      }
+      if (this.target) {
+        this.target.disconnect(this);
+      }
       if (this.collection) {
         this.collection.remove(this);
       }
-
-      // Remove listener
-      this.source.parentNode.off("send:"+this.source.id, this.send, this);
     }
   });
 

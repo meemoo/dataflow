@@ -80,9 +80,15 @@
       dataflow.currentGraph.edges.each(function(edge){
         // Only copy the edges between nodes being copied
         var connectedSource = _.any(copied.nodes, function(node){
+          if (!edge.source) {
+            return false;
+          }
           return (edge.source.parentNode.id === node.id);
         });
         var connectedTarget = _.any(copied.nodes, function(node){
+          if (!edge.target) {
+            return false;
+          }
           return (edge.target.parentNode.id === node.id);
         });
         if (connectedSource || connectedTarget){
