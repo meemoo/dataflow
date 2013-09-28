@@ -51,6 +51,10 @@
           // Dataflow.log("node or port not found for edge", this);
         }
 
+        if (!this.source || !this.target) {
+          return;
+        }
+
         this.source.connect(this);
         this.target.connect(this);
 

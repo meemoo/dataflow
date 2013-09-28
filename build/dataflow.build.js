@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-28 (4:28:43 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-28 (5:49:52 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1141,6 +1141,10 @@
           // Dataflow.log("node or port not found for edge", this);
         }
 
+        if (!this.source || !this.target) {
+          return;
+        }
+
         this.source.connect(this);
         this.target.connect(this);
 
@@ -1539,6 +1543,9 @@
     },
     fadeEdges: function () {
       this.model.edges.each(function(edge){
+        if (!edge.source || !edge.target) {
+          return;
+        }
         if (edge.get("selected") || edge.source.parentNode.get("selected") || edge.target.parentNode.get("selected")) {
           edge.view.unfade();
         } else {
@@ -2736,6 +2743,9 @@
 
     },
     render: function(previewPosition){
+      if (!this.model.source || !this.model.target) {
+        return;
+      }
       var source = this.model.source;
       var target = this.model.target;
       var dataflowParent, graphPos;
