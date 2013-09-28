@@ -36,12 +36,13 @@
 
 .dataflow-card {
   position: relative;
-  border: 1px solid hsl(220, 10%, 17%);
+  
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
   background-color: hsla(225, 10%, 15%, .98);
-  box-shadow: inset 0 1px 1px hsla(0, 0%, 100%, 0.1), 0 1px 2px 0px hsla(0, 0%, 0%, .3), 0 5px 10px hsla(0, 0%, 0%, 0.2);
+  border: 1px solid hsl(220, 10%, 11%);
+  box-shadow: inset 0 1px 1px hsla(0, 0%, 66%, 0.1), 0 1px 3px 0px hsla(0, 0%, 0%, 0.3), 0 3px 13px 0px hsla(0, 0%, 0%, 0.1);
   margin-bottom: 12px;
   color: hsl(0, 100%, 100%);
   text-shadow: 0 1px hsl(0, 0%, 0%);
@@ -132,7 +133,7 @@
 
 .dataflow-plugin-inspector-title {
   padding: 3px 20px;
-  border-bottom: 1px solid hsla(220, 20%, 0%, .4);
+  border-bottom: 1px solid hsla(220, 20%, 0%, .3);
 }
 .dataflow-plugin-inspector-title h1{
   font-size:18px;
@@ -146,8 +147,8 @@
   box-sizing: border-box;
   min-height: 43px;
   padding: 0 20px;
-  border-top: 1px solid hsla(0, 0%, 0%, .1);
-  border-bottom: 1px solid hsl(220, 10%, 16%);
+  /*border-top: 1px solid hsla(0, 0%, 0%, .1);*/
+  border-bottom: 1px solid hsl(220, 10%, 14%);
   display: block;
   background-color: hsla(0, 100%, 0%, 0.1);
 }
