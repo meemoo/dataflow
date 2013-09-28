@@ -66,16 +66,12 @@
 /* */
 .dataflow-plugin-log {
   padding: 10px;
-  max-height: 300px;
-  overflow-y: scroll;
-  overflow-x: hidden;
 }
 .dataflow-plugin-log ol { counter-reset: item; margin:0px;}
 .dataflow-plugin-log li { 
   display: block;
   margin: .39em 0px; 
   font-size: 11px;
-  white-space: nowrap;
 }
 .dataflow-plugin-log li:before { 
   content: counter(item) ". "; counter-increment: item; 
@@ -239,18 +235,16 @@
   left: 5px;
 }
 
-h2.dataflow-edge-inspector-id {
-  font-size: 12px;
-}
-
 .dataflow-edge-inspector-route-choose {
-  padding-left: 20px;
+  padding: 10px;
+  background-color: hsla(220,10%,0%,.2);
 }
 
 .dataflow-edge-inspector-route-choose button {
-  width: 20px;
-  height: 20px;
-
+  width: 23px;
+  height: 23px;
+  position:relative;
+  
   -webkit-transform: scale(1.0);
   -moz-transform: scale(1.0);
   -o-transform: scale(1.0);
@@ -260,6 +254,14 @@ h2.dataflow-edge-inspector-id {
   -moz-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
+  
+  cursor: pointer;
+  border-radius: 0px;
+  border: none;
+  color: hsl(0, 0%, 0%);
+  margin: 0px;
+  padding: 3px 6px;
+  box-shadow: inset 0 1px 1px hsla(220, 0%, 90%, .4), inset 1px 0px 0px hsla(220, 0%, 00%, 0.1), inset -1px 0px 0px hsla(220, 0%, 100%, 0.1);
 }
 
 .dataflow-edge-inspector-route-choose button.route0  { background-color: hsl(  0,  0%, 70%); }
@@ -281,6 +283,7 @@ h2.dataflow-edge-inspector-id {
   -moz-transform: scale(1.15);
   -o-transform: scale(1.15);
   transform: scale(1.15);
+  z-index: 2;
 }
 
 .dataflow-edge-inspector-events {
