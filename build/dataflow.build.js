@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-28 (5:49:52 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-28 (8:11:10 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1198,14 +1198,17 @@
       this.set("z", topZ+1);
     },
     remove: function(){
-      this.source.disconnect(this);
-      this.target.disconnect(this);
+      if (this.source) {
+        this.source.disconnect(this);
+        // Remove listener
+        this.source.parentNode.off("send:"+this.source.id, this.send, this);
+      }
+      if (this.target) {
+        this.target.disconnect(this);
+      }
       if (this.collection) {
         this.collection.remove(this);
       }
-
-      // Remove listener
-      this.source.parentNode.off("send:"+this.source.id, this.send, this);
     }
   });
 
@@ -3317,9 +3320,15 @@
       dataflow.currentGraph.edges.each(function(edge){
         // Only copy the edges between nodes being copied
         var connectedSource = _.any(copied.nodes, function(node){
+          if (!edge.source) {
+            return false;
+          }
           return (edge.source.parentNode.id === node.id);
         });
         var connectedTarget = _.any(copied.nodes, function(node){
+          if (!edge.target) {
+            return false;
+          }
           return (edge.target.parentNode.id === node.id);
         });
         if (connectedSource || connectedTarget){
