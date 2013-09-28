@@ -132,6 +132,7 @@
 
 .dataflow-plugin-inspector-title {
   padding: 3px 20px;
+  border-bottom: 1px solid hsla(220, 20%, 0%, .4);
 }
 .dataflow-plugin-inspector-title h1{
   font-size:18px;
@@ -235,33 +236,59 @@
   left: 5px;
 }
 
+.dataflow-edge-inspector-route-choose:after {
+  content: '';
+  display: block;
+  position: absolute;
+  background-color: hsla(0, 0%, 0%, .5);
+  border-radius: 3px;
+  border: 1px solid hsla(220,10%,90%,.1);
+     top:7px; 
+  bottom:7px; 
+    left:7px; 
+   right:7px;
+   
+  
+}
+
 .dataflow-edge-inspector-route-choose {
+  position:relative;
   padding: 10px;
-  background-color: hsla(220,10%,0%,.2);
+  background-color: hsla(220,10%,0%,.2);  
+  box-shadow: inset 0 1px hsla(220, 10%, 50%, .1);
 }
 
 .dataflow-edge-inspector-route-choose button {
   width: 23px;
   height: 23px;
   position:relative;
+  z-index: 1;
   
   -webkit-transform: scale(1.0);
   -moz-transform: scale(1.0);
   -o-transform: scale(1.0);
   transform: scale(1.0);
 
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.1s ease-in-out;
+  -moz-transition: all 0.1s ease-in-out;
+  -o-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
   
   cursor: pointer;
   border-radius: 0px;
   border: none;
   color: hsl(0, 0%, 0%);
   margin: 0px;
-  padding: 3px 6px;
-  box-shadow: inset 0 1px 1px hsla(220, 0%, 90%, .4), inset 1px 0px 0px hsla(220, 0%, 00%, 0.1), inset -1px 0px 0px hsla(220, 0%, 100%, 0.1);
+  padding: 7px;
+  box-shadow: inset 0 1px 1px hsla(220, 0%, 90%, .3), inset 1px 0px 0px hsla(220, 0%, 00%, 0.1), inset -1px 0px 0px hsla(220, 0%, 100%, 0.05);
+}
+
+.dataflow-edge-inspector-route-choose button:first-child {
+ border-radius: 3px 0 0 3px; 
+}
+
+.dataflow-edge-inspector-route-choose button:last-child {
+ border-radius: 0 3px 3px 0; 
 }
 
 .dataflow-edge-inspector-route-choose button.route0  { background-color: hsl(  0,  0%, 70%); }
@@ -278,12 +305,27 @@
 .dataflow-edge-inspector-route-choose button.route11 { background-color: hsl(300, 68%, 70%); }
 .dataflow-edge-inspector-route-choose button.route12 { background-color: hsl(330, 68%, 70%); }
 
+ .dataflow-edge-inspector-route-choose button.route0:hover  { background-color: hsl(  0,  0%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route1:hover  { background-color: hsl(  0, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route2:hover  { background-color: hsl( 30, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route3:hover  { background-color: hsl( 60, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route4:hover  { background-color: hsl( 90, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route5:hover  { background-color: hsl(120, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route6:hover  { background-color: hsl(150, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route7:hover  { background-color: hsl(180, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route8:hover  { background-color: hsl(210, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route9:hover  { background-color: hsl(240, 70%, 65%); }
+.dataflow-edge-inspector-route-choose button.route10:hover  { background-color: hsl(270, 70%, 65%); }
+.dataflow-edge-inspector-route-choose button.route11:hover  { background-color: hsl(300, 70%, 65%); }
+.dataflow-edge-inspector-route-choose button.route12:hover  { background-color: hsl(330, 70%, 65%); }
+
 .dataflow-edge-inspector-route-choose button.active {
   -webkit-transform: scale(1.15);
   -moz-transform: scale(1.15);
   -o-transform: scale(1.15);
   transform: scale(1.15);
   z-index: 2;
+  border-radius: 3px;
 }
 
 .dataflow-edge-inspector-events {
