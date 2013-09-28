@@ -1,0 +1,46 @@
+/*------------------------------------*\
+    $Fonts
+\*------------------------------------*/
+@font-face {
+    font-family: "proxima-nova-light";
+    src: url("../../fonts/proximanova-light-webfont.eot");
+    src: local("?"),
+        url("../../fonts/proximanova-light-webfont.woff") format("woff"),
+        url("../../fonts/proximanova-light-webfont.ttf") format("truetype"),
+        url("../../fonts/proximanova-light-webfont.svg#webfont") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "proxima-nova-regular";
+    src: url("../../fonts/proximanova-regular-webfont.eot");
+    src: local("?"),
+        url("../../fonts/proximanova-regular-webfont.woff") format("woff"),
+        url("../../fonts/proximanova-regular-webfont.ttf") format("truetype"),
+        url("../../fonts/proximanova-regular-webfont.svg#webfont") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "proxima-nova-bold";
+    src: url("../../fonts/proximanova-bold-webfont.eot");
+    src: local("?"),
+        url("../../fonts/proximanova-bold-webfont.woff") format("woff"),
+        url("../../fonts/proximanova-bold-webfont.ttf") format("truetype"),
+        url("../../fonts/proximanova-bold-webfont.svg#webfont") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "proxima-nova-semibold";
+    src: url("../../fonts/proximanova-semibold-webfont.eot");
+    src: local("?"),
+        url("../../fonts/proximanova-semibold-webfont.woff") format("woff"),
+        url("../../fonts/proximanova-semibold-webfont.ttf") format("truetype"),
+        url("../../fonts/proximanova-semibold-webfont.svg#webfont") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}

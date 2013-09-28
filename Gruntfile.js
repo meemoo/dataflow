@@ -55,7 +55,8 @@
         options: {
           banner: banner,
           report: 'min',
-          sourceMap: 'build/<%= pkg.name %>.min.js.map'
+          sourceMap: 'build/<%= pkg.name %>.min.js.map',
+          sourceMappingURL: '<%= pkg.name %>.min.js.map'
         },
         dist: {
           files: {
@@ -94,6 +95,8 @@
           },
           files: {
             'build/default/dataflow.min.css': [
+              'themes/default/font-proximanova.css',
+              'themes/default/font-awesome.css',
               'themes/default/dataflow.css',
               'themes/default/modules/node.css',
               'themes/default/modules/edge.css',
