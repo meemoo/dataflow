@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-30 (4:05:18 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-30 (4:14:54 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -3999,12 +3999,12 @@
 
     Search.results = results;
 
-    for (name in dataflow.plugins) {
-      if (!dataflow.plugins[name].onSearch) {
-        continue;
+    _.each(dataflow.plugins, function (plugin, name) {
+      if (!plugin.onSearch) {
+        return;
       }
-      Search.searchPlugin(results, text, dataflow.plugins[name]);
-    }
+      Search.searchPlugin(results, text, plugin);
+    });
   };
 
   Search.searchPlugin = function (results, text, plugin) {

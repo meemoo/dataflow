@@ -73,12 +73,12 @@
 
     Search.results = results;
 
-    for (name in dataflow.plugins) {
-      if (!dataflow.plugins[name].onSearch) {
-        continue;
+    _.each(dataflow.plugins, function (plugin, name) {
+      if (!plugin.onSearch) {
+        return;
       }
-      Search.searchPlugin(results, text, dataflow.plugins[name]);
-    }
+      Search.searchPlugin(results, text, plugin);
+    });
   };
 
   Search.searchPlugin = function (results, text, plugin) {
