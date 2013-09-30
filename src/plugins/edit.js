@@ -161,31 +161,37 @@
       icon: "cut",
       label: "cut",
       action: cut,
-      contexts: ["one", "twoplus"]
+      contexts: ["node", "nodes"]
     });
     dataflow.addContext({
       id: "copy",
       icon: "copy",
       label: "copy",
       action: copy,
-      contexts: ["one", "twoplus"]
+      contexts: ["node", "nodes"]
     });
     dataflow.addContext({
       id: "paste",
       icon: "paste",
       label: "paste",
       action: paste,
-      contexts: ["one", "twoplus"]
+      contexts: ["node", "nodes"]
     });
-
-
 
     dataflow.addContext({
       id: "edgeRemove",
-      icon: "cut",
-      label: "remove edges",
+      icon: "remove",
+      label: "remove edge",
       action: removeEdge,
       contexts: ["edge"]
+    });
+
+    dataflow.addContext({
+      id: "edgeRemove",
+      icon: "remove",
+      label: "remove edges",
+      action: removeEdge,
+      contexts: ["edges"]
     });
 
     Edit.onSearch = function (text, callback) {

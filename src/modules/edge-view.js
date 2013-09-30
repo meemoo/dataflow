@@ -155,6 +155,7 @@
       } else {
         this.unhighlight();
       }
+      this.model.parentGraph.trigger("selectionChanged");
     },
     highlight: function(){
       addClass(this.el, "highlight");

@@ -39,8 +39,9 @@
   });
 
   Search.initialize = function (dataflow) {
-    var $search = $('<div class="dataflow-plugin-search"><input type="search" results="5" /></div>');
+    var $search = $('<div class="dataflow-plugin-search"><input type="search" placeholder="Search" results="5" /><button><i class="icon-reorder"></i></button></div>');
     var $input = $search.find('input');
+    var $button = $search.find('button');
     dataflow.$el.prepend($search);
 
     $input.on('keyup', function (event) {
@@ -48,6 +49,10 @@
         return;
       }
       Search.search($input.val(), dataflow);
+    });
+
+    $button.on('click', function () {
+      dataflow.showPlugin('menu');
     });
   };
 

@@ -12,8 +12,6 @@
         },
         dist: {
           src: [
-            // Libs
-            'libs/actionbar/js/actionbar.js',
             // Main
             'src/dataflow.js',
             'src/state.js',
@@ -32,9 +30,12 @@
             // Cards
             "src/modules/card.js",
             "src/modules/card-view.js",
+            "src/modules/menucard.js",
+            "src/modules/menucard-view.js",
             "src/modules/node-inspect-view.js",
             "src/modules/edge-inspect-view.js",
             // Plugins
+            "src/plugins/menu.js",
             "src/plugins/edit.js",
             "src/plugins/elements.js",
             "src/plugins/library.js",
@@ -103,7 +104,6 @@
               'themes/default/modules/edge.css',
               'themes/default/modules/port.css',
               'themes/default/modules/card.css',
-              'themes/default/modules/actionbar.css',
               'themes/default/modules/jqui.css',
               'themes/default/modules/search.css'
             ]

@@ -25,7 +25,7 @@
 .dataflow-cards {
   z-index: 4;
   position: absolute;
-  top: 130px;
+  top: 70px;
   left: 20px;
   width: 300px;
   /* HACK */
@@ -347,4 +347,26 @@
 }
 .dataflow-edge-inspector-events .endgroup {
   color: hsl(0, 0%, 70%);
+}
+
+.dataflow-menu {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+.dataflow-menu li {
+  display: inline;
+}
+
+.dataflow-menu li button {
+  padding: 10px 15px;
+  color: hsl(206, 54%, 51%);
+  border: none;
+  background-color: transparent;
+  font-size: 20px;
+}
+
+.dataflow-menu li button .name {
+  display: none;
 }

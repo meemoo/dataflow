@@ -315,7 +315,9 @@
     fade: function () {
       this.model.nodes.each(function(node){
         if (node.view) {
-          node.view.fade();
+          if (!node.get('selected')) {
+            node.view.fade();
+          }
         }
       });
       this.fadeEdges();

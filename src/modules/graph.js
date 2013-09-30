@@ -99,8 +99,9 @@
       this.dataflow.trigger("select:edge", this, edge);
     },
     selectionChanged: function () {
-      this.selected = this.nodes.where({selected:true});
-      this.dataflow.changeContext(this.selected);
+      var selectedNodes = this.nodes.where({selected:true});
+      var selectedEdges = this.edges.where({selected:true});
+      this.dataflow.changeContext(selectedNodes, selectedEdges);
     },
     remove: function(){
       while(this.nodes.length > 0){
