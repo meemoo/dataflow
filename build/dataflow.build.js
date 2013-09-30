@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-28 (9:41:38 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-30 (12:00:46 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -1910,6 +1910,11 @@
         this._holePosition = null;
       }.bind(this));
 
+      var nodeState = node.get('state');
+      if (nodeState && nodeState[this.model.id]) {
+        this.$el.addClass('hasvalue');
+      }
+
       if (!this.model.parentNode.parentGraph.dataflow.editable) {
         // No drag and drop
         return;
@@ -1983,10 +1988,13 @@
       this.model.parentNode.on('change:state', function () {
         var state = this.model.parentNode.get('state');
         if (!state || state[this.model.id] === undefined) {
+          this.$el.removeClass('hasvalue');
           return;
         }
         this.setInputValue(input, type, state[this.model.id]);
+        this.$el.addClass('hasvalue');
       }.bind(this));
+
       var label = $('<label class="input-type-' + type + '">')
         .append( input )
         .prepend( '<span>' + this.model.get("label") + "</span> " );
