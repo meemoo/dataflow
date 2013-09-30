@@ -94,6 +94,25 @@
 
     Library.update = update;
 
+    Library.onSearch = function (text, callback) {
+      var results = [];
+      _.each(dataflow.nodes, function (node, name) {
+        if (name.indexOf(text) === -1) {
+          return;
+        }
+        results.push({
+          source: 'library',
+          icon: 'plus',
+          action: function () {
+            addNode(node).call();
+          },
+          label: name,
+          description: node.description
+        });
+      });
+      callback(results);
+    };
+
   };
 
 }(Dataflow) );

@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-30 (12:00:46 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-30 (4:05:18 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -676,6 +676,12 @@
     // this.tagName and this.itemView should be set
     prepend: false,
     initialize: function(options){
+      if (options.tagName) {
+        this.tagName = options.tagName;
+      }
+      if (options.className) {
+        this.className = options.className;
+      }
       this.el = document.createElement(this.tagName);
       this.el.className = this.className;
       this.$el = $(this.el);
@@ -3422,9 +3428,29 @@
       contexts: ["edge"]
     });
 
+    Edit.onSearch = function (text, callback) {
+      if (!dataflow.currentGraph) {
+        return;
+      }
+      var results = [];
+      dataflow.currentGraph.nodes.each(function (node) {
+        if (node.get('label').indexOf(text) === -1) {
+          return;
+        }
+        results.push({
+          source: 'edit',
+          icon: 'sign-blank',
+          label: node.get('label'),
+          description: node.type,
+          action: function () {
+            node.view.select();
+          }
+        });
+      });
+      callback(results);
+    };
 
   };
-
 
 }(Dataflow) );
 
@@ -3534,6 +3560,25 @@
     });
 
     Library.update = update;
+
+    Library.onSearch = function (text, callback) {
+      var results = [];
+      _.each(dataflow.nodes, function (node, name) {
+        if (name.indexOf(text) === -1) {
+          return;
+        }
+        results.push({
+          source: 'library',
+          icon: 'plus',
+          action: function () {
+            addNode(node).call();
+          },
+          label: name,
+          description: node.description
+        });
+      });
+      callback(results);
+    };
 
   };
 
@@ -3878,6 +3923,104 @@
   };
 
 }(Dataflow) );
+
+(function (Dataflow) {
+  var Search = Dataflow.prototype.plugin("search");
+
+  var SearchResult = Backbone.Model.extend({
+    defaults: {
+      source: '',
+      icon: '',
+      action: null,
+      label: '',
+      description: ''
+    }
+  });
+
+  var SearchResults = Backbone.Collection.extend({
+    model: SearchResult,
+    initialize: function (models, options) {
+      if (!options) {
+        options = {};
+      }
+      this.search = options.search;
+    }
+  });
+
+  var ResultView = Backbone.View.extend({
+    tagName: 'li',
+    template: '<i class="icon-<%- icon %>"></i><span class="name"><%- label %></span><span class="description"><%- description %></span>',
+    events: {
+      'click': 'clicked'
+    },
+    render: function () {
+      this.$el.html(_.template(this.template, this.model.toJSON()));
+    },
+    clicked: function () {
+      if (!this.model.get('action')) {
+        return;
+      }
+      this.model.get('action')();
+    }
+  });
+
+  Search.initialize = function (dataflow) {
+    var $search = $('<div class="dataflow-plugin-search"><input type="search" results="5" /></div>');
+    var $input = $search.find('input');
+    dataflow.$el.prepend($search);
+
+    $input.on('keyup', function (event) {
+      if (!$input.val()) {
+        return;
+      }
+      Search.search($input.val(), dataflow);
+    });
+  };
+
+  Search.search = function (text, dataflow) {
+    var Card = Dataflow.prototype.module('card');
+    var results = new SearchResults([], {
+      search: text
+    });
+    var ResultsView = new Backbone.CollectionView({
+      tagName: 'ul',
+      className: 'dataflow-plugin-search-results',
+      collection: results
+    });
+    ResultsView.itemView = ResultView;
+    var ResultsCard = new Card.Model({
+      dataflow: dataflow,
+      card: ResultsView,
+      pinned: false
+    });
+    results.on('add', function () {
+      dataflow.addCard(ResultsCard);
+    });
+
+    Search.results = results;
+
+    for (name in dataflow.plugins) {
+      if (!dataflow.plugins[name].onSearch) {
+        continue;
+      }
+      Search.searchPlugin(results, text, dataflow.plugins[name]);
+    }
+  };
+
+  Search.searchPlugin = function (results, text, plugin) {
+    plugin.onSearch(text, function (pluginResults) {
+      if (text !== Search.results.search) {
+        // Search has changed, ignore results
+        return;
+      }
+
+      pluginResults.forEach(function (result) {
+        results.add(result);
+      });
+    });
+  };
+
+}(Dataflow));
 
 ( function(Dataflow) {
  

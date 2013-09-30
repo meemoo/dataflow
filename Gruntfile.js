@@ -43,6 +43,7 @@
             "src/plugins/inspector.js",
             "src/plugins/keybinding.js",
             "src/plugins/notification.js",
+            "src/plugins/search.js",
             // Nodes
             "src/nodes/base.js",
             "src/nodes/base-resizable.js",
@@ -103,7 +104,8 @@
               'themes/default/modules/port.css',
               'themes/default/modules/card.css',
               'themes/default/modules/actionbar.css',
-              'themes/default/modules/jqui.css'
+              'themes/default/modules/jqui.css',
+              'themes/default/modules/search.css'
             ]
           }
         }
