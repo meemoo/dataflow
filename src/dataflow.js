@@ -317,6 +317,12 @@
     // this.tagName and this.itemView should be set
     prepend: false,
     initialize: function(options){
+      if (options.tagName) {
+        this.tagName = options.tagName;
+      }
+      if (options.className) {
+        this.className = options.className;
+      }
       this.el = document.createElement(this.tagName);
       this.el.className = this.className;
       this.$el = $(this.el);
