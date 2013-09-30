@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-30 (4:14:54 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-09-30 (4:21:49 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(Backbone) {
   var ensure = function (obj, key, type) {
@@ -3434,7 +3434,7 @@
       }
       var results = [];
       dataflow.currentGraph.nodes.each(function (node) {
-        if (node.get('label').indexOf(text) === -1) {
+        if (node.get('label').toLowerCase().indexOf(text.toLowerCase()) === -1) {
           return;
         }
         results.push({
@@ -3474,6 +3474,8 @@
     var $container = $('<div class="dataflow-plugin-overflow">');
     var $library = $('<ul class="dataflow-plugin-library" />');
     $container.append($library);
+
+    Library.excluded = ["base", "base-resizable"];
 
     var addNode = function(node, x, y) {
       return function(){
@@ -3536,14 +3538,14 @@
 
     var update = function(options){
       options = options ? options : {};
-      options.exclude = options.exclude ? options.exclude : ["base", "base-resizable"];
+      Library.excluded = options.exclude ? options.exclude : Library.excluded;
 
       $library.empty();
       var sortedLibrary = _.sortBy(Object.keys(dataflow.nodes), function (name) {
         return name;
       });
       _.each(sortedLibrary, function (name) {
-        if (options.exclude.indexOf(name) !== -1) {
+        if (Library.excluded.indexOf(name) !== -1) {
           return;
         }
         addLibraryItem(name, dataflow.nodes[name]);
@@ -3556,7 +3558,7 @@
       name: "", 
       menu: $container, 
       icon: "plus",
-      pinned: true
+      pinned: false
     });
 
     Library.update = update;
@@ -3564,7 +3566,10 @@
     Library.onSearch = function (text, callback) {
       var results = [];
       _.each(dataflow.nodes, function (node, name) {
-        if (name.indexOf(text) === -1) {
+        if (Library.excluded.indexOf(name) !== -1) {
+          return;
+        }
+        if (name.toLowerCase().indexOf(text.toLowerCase()) === -1) {
           return;
         }
         results.push({

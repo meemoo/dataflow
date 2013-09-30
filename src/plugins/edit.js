@@ -194,7 +194,7 @@
       }
       var results = [];
       dataflow.currentGraph.nodes.each(function (node) {
-        if (node.get('label').indexOf(text) === -1) {
+        if (node.get('label').toLowerCase().indexOf(text.toLowerCase()) === -1) {
           return;
         }
         results.push({
