@@ -18,7 +18,7 @@
       return;
     }
 
-    if (Notification.hasPermission) {
+    if (Notification.hasPermission()) {
       // We already have the permission
       return;
     }
