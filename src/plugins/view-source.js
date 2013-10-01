@@ -16,11 +16,6 @@
     );
     var $code = $form.find(".code");
 
-    $code.keydown(function(event){
-      // Don't select / copy / paste nodes in the graph
-      event.stopPropagation();
-    });
-
     dataflow.addPlugin({
       id: "source", 
       name: "", 
