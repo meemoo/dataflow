@@ -1,13 +1,13 @@
-<element name="dataflow-edge" attributes="sourcenode sourceport targetnode targetport">
+<polymer-element name="dataflow-edge" attributes="sourcenode sourceport targetnode targetport">
   <template>
 
     <p>Edge {{sourcenode}}: {{sourceport}} -> {{targetnode}}: {{targetport}}</p>
 
   </template>
   <script>
-    Polymer.register(this, {
-      ready: function() {
+    Polymer("dataflow-edge", {
+      complete: function() {
       }
     });
   </script>
-</element>
+</polymer-element>

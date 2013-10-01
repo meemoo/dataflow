@@ -2,24 +2,25 @@
 <link rel="import" href="dataflow-edge.html">
 <link rel="import" href="dataflow-node.html">
 
-<element name="dataflow-graph" attributes="graph">
+<polymer-element name="dataflow-graph" attributes="graph">
   <template>
 
     <div id="edges">
-      <template repeat="{{edges}}">
-        <dataflow-edge sourcenode="{{source.node}}" sourceport="{{source.port}}" targetnode="{{target.node}}" targetport="{{target.port}}"></dataflow-edge>
+      <template repeat="{{connections}}">
+        <dataflow-edge sourcenode="{{src.process}}" sourceport="{{src.port}}" targetnode="{{tgt.process}}" targetport="{{tgt.port}}"></dataflow-edge>
       </template>
     </div>
     <div id="nodes">
-      <template repeat="{{nodes}}">
-        <dataflow-node id="{{id}}" type="{{type}}" label="{{label}}"></dataflow-node>
+      <template repeat="{{processes}}">
+        <dataflow-node id="{{id}}" type="{{type}}" label="{{metadata.label}}"></dataflow-node>
       </template>
     </div>
 
   </template>
   <script>
-    Polymer.register(this, {
-      ready: function() {
+    Polymer("dataflow-graph", {
+      created: function() {
+        console.log(this);
         if (this.graph) {
           this.graphChanged();
         }
@@ -30,9 +31,9 @@
         } else {
           this.parsedGraph = this.graph;
         }
-        this.nodes = this.parsedGraph.nodes;
-        this.edges = this.parsedGraph.edges;
+        this.processes = this.parsedGraph.processes;
+        this.connections = this.parsedGraph.connections;
       }
     });
   </script>
-</element>
+</polymer-element>
