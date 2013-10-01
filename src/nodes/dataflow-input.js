@@ -4,13 +4,13 @@
   var Base = Dataflow.prototype.node("base");
   var DataflowInput = Dataflow.prototype.node("dataflow-input");
 
+  DataflowInput.description = 'Simple input component';
   DataflowInput.Model = Base.Model.extend({
-    defaults: {
-      label: "",
-      type: "dataflow-input",
-      x: 200,
-      y: 100,
-      "input-type": "all"
+    defaults: function () {
+      var defaults = Base.Model.prototype.defaults.call(this);
+      defaults.type = "dataflow-input";
+      defaults["input-type"] = "all";
+      return defaults;
     },
     initialize: function(options) {
       if (this.get("label")===""){

@@ -1,362 +1,9 @@
+<<<<<<< HEAD
 /*! dataflow.js - v0.0.7 - 2013-08-10 (4:34:30 PM EDT)
+=======
+/*! dataflow.js - v0.0.7 - 2013-09-30 (7:21:56 PM GMT+0200)
+>>>>>>> master
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
-(function(Backbone) {
-  var ensure = function (obj, key, type) {
-    if (!obj[key]) {
-      obj[key] = new type();
-    }
-    if (!(obj[key] instanceof type)) {
-      obj[key] = new type(obj[key]);
-    }
-  };
-
-  var ActionItem = Backbone.Model.extend({
-    defaults: {
-      action: null,
-      label: '',
-      disabled: false,
-      icon: ''
-    }
-  });
-
-  var ActionList = Backbone.Collection.extend({
-    model: ActionItem
-  });
-
-  var ActionBar = Backbone.Model.extend({
-    view: null,
-    context: null,
-
-    defaults: {
-      control: null,
-      actions: null,
-      overflow: null,
-      className: 'actionbar'
-    },
-
-    initialize: function (attributes, context) {
-      ensure(this.attributes, 'control', ActionItem);
-      ensure(this.attributes, 'actions', ActionList);
-      ensure(this.attributes, 'overflow', ActionList);
-      this.context = context;
-    },
-
-    render: function () {
-      this.view = new ActionBarView({
-        model: this,
-        context: this.context
-      });
-      return this.view.render().el;
-    },
-
-    show: function () {
-      var bar = this.render();
-      Backbone.$('body').prepend(bar);
-    },
-
-    hide: function () {
-      if (!this.view) {
-        return;
-      }
-      this.view.$el.remove();
-      this.view = null;
-    }
-  });
-
-  var ContextBar = Backbone.Model.extend({
-    view: null,
-    context: null,
-
-    defaults: {
-      control: null,
-      actions: null,
-      className: 'contextbar'
-    },
-
-    initialize: function (attributes, context) {
-      ensure(this.attributes, 'control', ActionItem);
-      ensure(this.attributes, 'actions', ActionList);
-      this.context = context;
-    },
-
-    render: function () {
-      this.view = new ContextBarView({
-        model: this,
-        context: this.context
-      });
-      return this.view.render().el;
-    },
-
-    show: function () {
-      var bar = this.render();
-      Backbone.$('body').prepend(bar);
-    },
-
-    hide: function () {
-      if (!this.view) {
-        return;
-      }
-      this.view.$el.remove();
-      this.view = null;
-    }
-  });
-
-  var ActionBarView = Backbone.View.extend({
-    tagName: 'div',
-    className: 'navbar navbar-fixed-top',
-    template: '<div class="navbar-inner"></div>',
-    $inner: null,
-    $control: null,
-    $actions: null,
-    context: null,
-
-    events: {
-      'click .control-up': 'handleUp',
-      'click .control-icon': 'handleIcon',
-      'click .control-label': 'handleLabel'
-    },
-
-    initialize: function (options) {
-      this.listenTo(this.model.get('control'), 'change', this.renderControl);
-      this.context = options.context;
-    },
-
-    handleUp: function (event) {
-      event.preventDefault();
-      if (this.model.get('control').get('disabled')) {
-       return;
-      }
-      if (!this.model.get('control').get('up')) {
-        return;
-      }
-      this.model.get('control').get('up').call(this.context);
-    },
-
-    handleIcon: function (event) {
-      if (this.model.get('control').get('up')) {
-        this.handleUp(event);
-        return;
-      }
-      this.handleLabel(event);
-    },
-
-    handleLabel: function (event) {
-      event.preventDefault();
-      if (this.model.get('control').get('disabled')) {
-       return;
-      }
-      if (!this.model.get('control').get('action')) {
-        return;
-      }
-      this.model.get('control').get('action').call(this.context);
-    },
-
-    render: function () {
-      this.$el.html(this.template);
-      this.$el.addClass(this.model.get('className'));
-      this.$inner = Backbone.$('.navbar-inner', this.$el);
-      this.$control = null;
-      this.$actions = null;
-      this.renderControl();
-      this.renderActions();
-      this.renderOverflow();
-      return this;
-    },
-
-    renderControl: function () {
-      if (!this.model.get('control')) {
-        return;
-      }
-      if (!this.$control) {
-        this.$control = Backbone.$('<a>');
-        this.$control.addClass('brand');
-        this.$inner.prepend(this.$control);
-      }
-      var icon = this.model.get('control').get('icon');
-      var up = this.model.get('control').get('up');
-      var label = this.model.get('control').get('label');
-      this.$control.empty();
-      if (up) {
-        this.$control.append(Backbone.$('<i class="control-up icon-chevron-left"></i><span class="control-up">&nbsp;</span>'));
-      }
-      if (icon) {
-        this.$control.append(Backbone.$('<i class="control-icon icon-' + icon + '"></i>'));
-      }
-      if (label) {
-        this.$control.append('<span class="control-label">&nbsp;' + label + '</span>');
-      }
-    },
-
-    renderActions: function () {
-      if (this.$actions) {
-        return;
-      }
-      var view = new ActionListView({
-        collection: this.model.get('actions'),
-        context: this.context
-      });
-      this.$inner.append(view.render().$el);
-      this.$actions = view.$el;
-    },
-
-    renderOverflow: function () {
-    }
-  });
-
-  var ContextBarView = Backbone.View.extend({
-    tagName: 'div',
-    className: 'navbar navbar-inverse navbar-fixed-top',
-    template: '<div class="navbar-inner"></div>',
-    $inner: null,
-    $control: null,
-    $actions: null,
-    context: null,
-
-    events: {
-      'click .control-icon': 'handleControl',
-      'click .control-label': 'handleControl'
-    },
-
-    handleControl: function (event) {
-      event.preventDefault();
-      if (this.model.get('control').get('disabled')) {
-       return;
-      }
-      if (!this.model.get('control').get('action')) {
-        return;
-      }
-      this.model.get('control').get('action').call(this.context);
-    },
-
-    initialize: function (options) {
-      this.listenTo(this.model.get('control'), 'change', this.renderControl);
-      this.context = options.context;
-    },
-
-    render: function () {
-      this.$el.html(this.template);
-      this.$el.addClass(this.model.get('className'));
-      this.$inner = Backbone.$('.navbar-inner', this.$el);
-      this.$control = null;
-      this.$actions = null;
-      this.renderControl();
-      this.renderActions();
-      return this;
-    },
-
-    renderControl: function () {
-      if (!this.$control) {
-        this.$control = Backbone.$('<a>');
-        this.$control.addClass('brand');
-        this.$inner.prepend(this.$control);
-      }
-      var icon = this.model.get('control').get('icon');
-      var label = this.model.get('control').get('label');
-      this.$control.empty();
-      if (icon) {
-        this.$control.append(Backbone.$('<i class="control-icon icon-' + icon + '"></i>'));
-      }
-      if (label) {
-        this.$control.append('<span class="control-label"> ' + label + '</span>');
-      }
-    },
-
-    renderActions: function () {
-      if (this.$actions) {
-        return;
-      }
-      var view = new ActionListView({
-        collection: this.model.get('actions'),
-        context: this.context
-      });
-      this.$inner.append(view.render().$el);
-      this.$actions = view.$el;
-    }
-  });
-
-  var ActionListView = Backbone.View.extend({
-    tagName: 'ul',
-    className: 'nav pull-right',
-    views: {},
-    context: null,
-
-    initialize: function (options) {
-      this.collection = options.collection;
-      this.context = options.context;
-      this.listenTo(this.collection, 'add', this.addItem);
-      this.listenTo(this.collection, 'remove', this.removeItem);
-      this.listenTo(this.collection, 'reset', this.render);
-    },
-
-    render: function () {
-      this.$el.empty();
-      this.collection.each(this.addItem, this);
-      return this;
-    },
-
-    addItem: function (action) {
-      var view = new ActionItemView({
-        model: action,
-        context: this.context
-      });
-      this.$el.append(view.render().el);
-      this.views[action.cid] = view;
-    },
-
-    removeItem: function (action) {
-      if (!this.views[action.cid]) {
-        return;
-      }
-
-      this.views[action.cid].$el.remove();
-      delete this.views[action.cid];
-    }
-  });
-
-  var ActionItemView = Backbone.View.extend({
-    tagName: 'li',
-    template: '<a></a>',
-    context: null,
-
-    events: {
-      'click': 'handleClick'
-    },
-    
-    initialize: function (options) {
-      this.context = options.context;
-      this.listenTo(this.model, 'change', this.render);
-    },
-
-    handleClick: function (event) {
-      event.preventDefault();
-      if (this.model.get('disabled')) {
-        return;
-      }
-      if (!this.model.get('action')) {
-        return;
-      }
-      this.model.get('action').call(this.context);
-    },
-
-    render: function () {
-      this.$el.html(this.template);
-      var $btn = Backbone.$('a', this.$el);
-      $btn.append(Backbone.$('<i class="icon-' + this.model.get('icon') + '"></i>'));
-      $btn.append( this.model.get('label') );
-
-      if (this.model.get('disabled')) {
-        this.$el.addClass('disabled');
-      } else {
-        this.$el.removeClass('disabled');
-      }
-      return this;
-    }
-  });
-
-  window.ActionBar = ActionBar;
-  window.ContextBar = ContextBar;
-})(Backbone);
-
 (function(){
   var App = Backbone.Model.extend({
     "$": function(query) {
@@ -366,12 +13,17 @@
       this.el = document.createElement("div");
       this.el.className = "dataflow";
       this.$el = $(this.el);
-      var menu = $('<div class="dataflow-menu">');
-      var self = this;
-      var menuClose = $('<button class="dataflow-menu-close icon-remove"></button>')
-        .click( function(){ self.hideMenu(); } )
-        .appendTo(menu);
-      this.$el.append(menu);
+
+      // Make available in console
+      this.$el.data("dataflow", this);
+
+      // Setup cards
+      var Card = Dataflow.prototype.module("card");
+      this.shownCards = new Card.Collection();
+      this.shownCards.view = new Card.CollectionView({
+        collection: this.shownCards
+      });
+      this.$el.append(this.shownCards.view.$el);
 
       // Debug mode
       this.debug = this.get("debug");
@@ -384,10 +36,6 @@
       }
 
       if (this.controls) {
-        // Setup actionbar
-        this.prepareActionBar();
-        this.renderActionBar();
-
         // Add plugins
         for (var name in this.plugins) {
           if (this.plugins[name].initialize) {
@@ -431,32 +79,7 @@
       // Initialize state
       this.loadState();
     },
-    prepareActionBar: function () {
-      this.actionBar = new ActionBar({}, this);
-      this.actionBar.get('control').set({
-        label: 'Dataflow',
-        icon: 'retweet'
-      });
-      this.contextBar = new ContextBar({}, this);
-      this.contextBar.get('control').set({
-        label: '1 selected',
-        icon: 'ok',
-        action: function () {
-          if (this.currentGraph && this.currentGraph.view) {
-            this.currentGraph.view.deselect();
-          }
-        }
-      });
-    },
-    renderActionBar: function () {
-      this.$el.append( this.actionBar.render() );
-      this.$(".brand").attr({
-        href: "https://github.com/meemoo/dataflow",
-        target: "_blank"
-      });
-      this.$el.append( this.contextBar.render() );
-      this.contextBar.view.$el.hide();
-    },
+    
     // Create the object to contain the modules
     modules: {},
     module: function(name) {
@@ -478,7 +101,9 @@
         return this.nodes[name];
       }
       // Create a node scaffold and save it under this name
-      this.nodes[name] = {};
+      this.nodes[name] = {
+        description: ''
+      };
       return this.nodes[name];
     },
     plugins: {},
@@ -489,70 +114,135 @@
       this.plugins[name] = {};
       return this.plugins[name];
     },
-    hideMenu: function () {
-      this.$el.removeClass("menu-shown");
+    addCard: function (card, leaveUnpinned) {
+      if (!leaveUnpinned) {
+        // Clear unpinned
+        this.hideCards();
+      }
+      if (this.shownCards.get(card)) {
+        // Bring to top
+        this.shownCards.view.bringToTop(card);
+      } else {
+        // Add to collection
+        this.shownCards.add(card);
+      }
     },
-    showMenu: function (id) {
-      this.$el.addClass("menu-shown");
-      this.$(".dataflow-menuitem").removeClass("shown");
-      this.$(".dataflow-menuitem-"+id).addClass("shown");
+    removeCard: function (card) {
+      this.shownCards.remove(card);
+    },
+    hideCards: function () {
+      // Clear unpinned
+      var unpinned = this.shownCards.where({pinned:false});
+      this.shownCards.remove(unpinned);
     },
     addPlugin: function (info) {
-      if (info.menu) {
-        var menu = $("<div>")
-          .addClass("dataflow-menuitem dataflow-menuitem-"+info.id)
-          .append(info.menu);
-        this.$(".dataflow-menu").append( menu );
+      var plugin = this.plugins[info.id];
+      if (!plugin) {
+        this.plugins[info.id] = plugin = {};
+      }
+      plugin.info = info;
+      plugin.enabled = true;
 
-        this.actionBar.get('actions').add({
+      if (info.menu) {
+        var Card = Dataflow.prototype.module("card");
+        var card = new Card.Model({
+          dataflow: this,
+          card: {el:info.menu}, // HACK since plugins are not bb views
+          pinned: (info.pinned ? true : false)
+        });
+
+        plugin.card = card;
+
+        this.plugins.menu.addPlugin({
           id: info.id,
           icon: info.icon,
           label: info.name,
-          showLabel: false,
-          action: function(){ this.showMenu(info.id); }
+          showLabel: false
         });
       }
     },
+    showPlugin: function (name) {
+      if (this.plugins[name] && this.plugins[name].card) {
+        this.addCard(this.plugins[name].card);
+        if (typeof this.plugins[name].onShow === 'function') {
+          // Let the plugin know it has been shown
+          this.plugins[name].onShow();
+        }
+      }
+    },
+    enablePlugin: function (name) {
+      var plugin = this.plugins[name];
+      if (plugin) {
+        this.addPlugin(plugin.info);
+      }
+    },
+    disablePlugin: function (name) {
+      this.plugins.menu.disablePlugin(name);
+    },
     showContextBar: function () {
-      this.actionBar.view.$el.hide();
       this.contextBar.view.$el.show();
     },
     hideContextBar: function () {
       this.contextBar.view.$el.hide();
-      this.actionBar.view.$el.show();
     },
     contexts: {},
-    addContext: function (info) {
-      for (var i=0; i<info.contexts.length; i++){
-        var c = info.contexts[i];
-        if (!this.contexts[c]) {
-          this.contexts[c] = [];
-        }
-        this.contexts[c].push(info);
+    prepareContext: function (ctx) {
+      if (this.contexts[ctx]) {
+        return this.contexts[ctx];
       }
-    },
-    changeContext: function (selected) {
-      if (!this.contextBar) { return false; }
-      if (selected.length > 1) {
-        // More than one selected: Move to subgraph, Cut/Copy
-        this.contextBar.get('control').set({
-          label: selected.length + ' selected'
-        });
-        this.contextBar.get('actions').reset();
-        this.contextBar.get('actions').add(this.contexts.twoplus);
 
-        this.showContextBar();
-      } else if (selected.length === 1) {
-        // One selected: Remove node, Rename node, Change component, Cut/Copy
-        this.contextBar.get('control').set({
-          label: '1 selected'
-        });
-        this.contextBar.get('actions').reset();
-        this.contextBar.get('actions').add(this.contexts.one);
-        this.showContextBar();
+      var MenuCard = this.module('menucard');
+      this.contexts[ctx] = new MenuCard.Model({
+        id: 'context-' + ctx,
+        dataflow: this,
+        pinned: true
+      });
+      this.contexts[ctx].view = new MenuCard.View({
+        model: this.contexts[ctx]
+      });
+      return this.contexts[ctx];
+    },
+    addContext: function (info) {
+      _.each(info.contexts, function (ctx) {
+        var context = this.prepareContext(ctx);
+        context.menu.add(info);
+      }, this);
+    },
+    changeContext: function (selectedNodes, selectedEdges) {
+      var add = function (ctx, label) {
+        if (!this.contexts[ctx]) {
+          return;
+        }
+        this.contexts[ctx].set('label', label);
+        if (!this.shownCards.get('context-' + ctx)) {
+          this.shownCards.add(this.contexts[ctx]);
+        }
+      }.bind(this);
+      var remove = function (ctx) {
+        if (!this.shownCards.get('context-' + ctx)) {
+          return;
+        }
+        this.shownCards.remove('context-' + ctx);
+      }.bind(this);
+      if (selectedNodes.length > 1) {
+        add('nodes', selectedNodes.length + ' nodes');
+        remove('node');
+      } else if (selectedNodes.length === 1) {
+        add('node', selectedNodes[0].get('label'));
+        remove('nodes');
       } else {
-        // None selected: hide contextBar
-        this.hideContextBar();
+        remove('node');
+        remove('nodes');
+      }
+      if (selectedEdges.length > 1) {
+        add('edges', selectedEdges.length + ' edges');
+        remove('edge');
+      } else if (selectedEdges.length === 1) {
+        add('edge', selectedEdges[0].id);
+        remove('edges');
+      } else {
+        remove('edge');
+        remove('edges');
       }
     },
     loadGraph: function (source) {
@@ -620,21 +310,39 @@
   // Simple collection view
   Backbone.CollectionView = Backbone.Model.extend({
     // this.tagName and this.itemView should be set
+    prepend: false,
     initialize: function(options){
+      if (options.tagName) {
+        this.tagName = options.tagName;
+      }
+      if (options.className) {
+        this.className = options.className;
+      }
+      if (options.itemView) {
+        this.itemView = options.itemView;
+      }
       this.el = document.createElement(this.tagName);
+      this.el.className = this.className;
       this.$el = $(this.el);
       this.parent = options.parent;
-      var collection = this.get("collection");
+      var collection = this.collection = this.get("collection");
       collection.each(this.addItem, this);
       collection.on("add", this.addItem, this);
       collection.on("remove", this.removeItem, this);
     },
     addItem: function(item){
-      item.view = new this.itemView({
-        model:item,
-        parent: this.parent
-      });
-      this.$el.append(item.view.render().el);
+      if (!item.view) {
+        item.view = new this.itemView({
+          model:item,
+          parent: this.parent
+        });
+        item.view.render();
+      }
+      if (this.prepend) {
+        this.$el.prepend(item.view.el);
+      } else {
+        this.$el.append(item.view.el);
+      }
     },
     removeItem: function(item){
       item.view.remove();
@@ -694,7 +402,8 @@
       nodes: [],
       edges: [],
       panX: 0,
-      panY: 0
+      panY: 0,
+      zoom: 1
     },
     initialize: function() {
       this.dataflow = this.get("dataflow");
@@ -781,18 +490,9 @@
       this.dataflow.trigger("select:edge", this, edge);
     },
     selectionChanged: function () {
-      this.selected = [];
-      if (!this.view) {
-        return;
-      }
-
-      this.nodes.each( function (node) {
-        if (node.view && node.view.$el.hasClass("ui-selected")) {
-          this.selected.push(node);
-        }
-      }, this);
-
-      this.dataflow.changeContext(this.selected);
+      var selectedNodes = this.nodes.where({selected:true});
+      var selectedEdges = this.edges.where({selected:true});
+      this.dataflow.changeContext(selectedNodes, selectedEdges);
     },
     remove: function(){
       while(this.nodes.length > 0){
@@ -818,12 +518,16 @@
   var Output = Dataflow.prototype.module("output");
 
   Node.Model = Backbone.Model.extend({
-    defaults: {
-      label: "",
-      type: "test",
-      x: 200,
-      y: 100,
-      state: {}
+    defaults: function () {
+      return {
+        label: "",
+        description: "",
+        type: "test",
+        x: 200,
+        y: 100,
+        state: {},
+        selected: false
+      };
     },
     initialize: function() {
       this.parentGraph = this.get("parentGraph");
@@ -866,11 +570,13 @@
       }
 
       // Selection event
-      this.on("select", this.select, this);
+      this.on("change:selected", this.changeSelected, this);
 
     },
-    select: function() {
-      this.parentGraph.trigger("select:node", this);
+    changeSelected: function() {
+      if (this.get("selected")){
+        this.parentGraph.trigger("select:node", this);
+      }
     },
     setState: function (name, value) {
       var state = this.get("state");
@@ -969,9 +675,9 @@
   Input.Model = Backbone.Model.extend({
     defaults: {
       id: "input",
+      description: "",
       label: "",
-      type: "all",
-      description: ""
+      type: "all"
     },
     initialize: function() {
       this.parentNode = this.get("parentNode");
@@ -983,9 +689,13 @@
     connect: function(edge){
       this.connected.push(edge);
       this.connected = _.uniq(this.connected);
+      this.trigger('connected');
     },
     disconnect: function(edge){
       this.connected = _.without(this.connected, edge);
+      if (this.connected.length === 0) {
+        this.trigger('disconnected');
+      }
     },
     remove: function(){
       // Port removed from node's inputs collection
@@ -1028,15 +738,30 @@
 
   var Edge = Dataflow.prototype.module("edge");
 
+  var EdgeEvent = Backbone.Model.extend({
+    defaults: {
+      "type": "data",
+      "data": "",
+      "group": ""
+    }
+  });
+
+  var EdgeEventLog = Backbone.Collection.extend({
+    model: EdgeEvent
+  });
+
   Edge.Model = Backbone.Model.extend({
     defaults: {
       "z": 0,
-      "route": 0
+      "route": 0,
+      "selected": false,
+      "log": null
     },
     initialize: function() {
       var nodes, sourceNode, targetNode;
       var preview = this.get("preview");
       this.parentGraph = this.get("parentGraph");
+      this.attributes.log = new EdgeEventLog();
       if (preview) {
         // Preview edge
         nodes = this.get("parentGraph").nodes;
@@ -1068,7 +793,7 @@
         // Set up listener
         sourceNode.on("send:"+this.source.id, this.send, this);
 
-        // this.bringToTop();
+        this.bringToTop();
 
         // Selection event
         this.on("select", this.select, this);
@@ -1087,6 +812,9 @@
       return ( this.source.parentNode === node || this.target.parentNode === node );
     },
     toString: function(){
+      if (this.id) {
+        return this.id;
+      }
       return this.get("source").node+":"+this.get("source").port+"::"+this.get("target").node+":"+this.get("target").port;
     },
     toJSON: function(){
@@ -1096,31 +824,27 @@
         route: this.get("route")
       };
     },
-    // bringToTop: function(){
-    //   var topZ = 0;
-    //   this.parentGraph.edges.each(function(edge){
-    //     if (edge !== this) {
-    //       var thisZ = edge.get("z");
-    //       if (thisZ > topZ) {
-    //         topZ = thisZ;
-    //       }
-    //       if (edge.view){
-    //         edge.view.unhighlight();
-    //       }
-    //     }
-    //   }, this);
-    //   this.set("z", topZ+1);
-    //   if (this.collection) {
-    //     this.collection.sort();
-    //   }
-    // },
+    bringToTop: function(){
+      var topZ = 0;
+      this.parentGraph.edges.each(function(edge){
+        if (edge !== this) {
+          var thisZ = edge.get("z");
+          if (thisZ > topZ) {
+            topZ = thisZ;
+          }
+          if (edge.view){
+            edge.view.unhighlight();
+          }
+        }
+      }, this);
+      this.set("z", topZ+1);
+    },
     remove: function(){
       this.source.disconnect(this);
       this.target.disconnect(this);
       if (this.collection) {
         this.collection.remove(this);
       }
-
       // Remove listener
       this.source.parentNode.off("send:"+this.source.id, this.send, this);
     }
@@ -1144,29 +868,37 @@
   var Node = Dataflow.prototype.module("node");
   var Edge = Dataflow.prototype.module("edge");
 
-  var minZoom = 0.25;
-  var maxZoom = 2.5;
+  var minZoom = 0.20;
+  var maxZoom = 1.1;
 
   var cssZoomSupported = document.createElement("div").style.hasOwnProperty("zoom");
 
   var template = 
-    '<div class="dataflow-edges">'+
-      '<svg class="dataflow-svg-edges" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="800" height="800"></svg>'+
+    '<div class="dataflow-graph-panzoom">'+
+      '<div class="dataflow-graph zoom-normal">'+
+        '<div class="dataflow-edges">'+
+          '<svg class="dataflow-svg-edges" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" width="800" height="800"></svg>'+
+        '</div>'+
+        '<div class="dataflow-nodes" />'+
+      '</div>'+
     '</div>'+
-    '<div class="dataflow-nodes" />'+
     '<div class="dataflow-graph-controls">'+
       '<button class="dataflow-graph-gotoparent"><i class="icon-chevron-left"></i> back to parent</button>'+
     '</div>';
 
   Graph.View = Backbone.View.extend({
     template: _.template(template),
-    className: "dataflow-graph zoom-normal",
+    className: "dataflow-g",
     events: {
-      "click": "deselect",
+      "click .dataflow-graph": "deselect",
+      "dragstart .dataflow-graph-panzoom": "panStart",
+      "drag .dataflow-graph-panzoom": "pan",
+      "dragstop .dataflow-graph-panzoom": "panStop",
       "click .dataflow-graph-gotoparent": "gotoParent",
-      "dragstart": "dragStart",
-      "drag": "drag",
-      "dragstop": "dragStop"
+      "mousewheel": "mouseWheel"
+      // ".dataflow-graph transformstart": "pinchStart",
+      // ".dataflow-graph transform": "pinch",
+      // ".dataflow-graph transformend": "pinchEnd"
     },
     initialize: function() {
       // Graph container
@@ -1192,7 +924,7 @@
         this.$(".dataflow-graph-controls").hide();
       }
 
-      this.$el.draggable({
+      this.$(".dataflow-graph-panzoom").draggable({
         helper: function(){
           var h = $("<div>");
           this.model.dataflow.$el.append(h);
@@ -1200,45 +932,68 @@
         }.bind(this)
       });
 
+      // Cache the graph div el
+      this.$graphEl = this.$(".dataflow-graph");
+      this.graphEl = this.$(".dataflow-graph")[0];
+
       // Default 3D transform
-      this.$el.css({
+      this.$graphEl.css({
         transform: "translate3d(0, 0, 0) " +
                    "scale3d(1, 1, 1) ",
         transformOrigin: "left top"
       });
 
-      this.pageX = this.$el.position();
-
-      // Handle zooming and scrolling
-      this.state = this.model.dataflow.get('state');
-
       this.bindInteraction();
     },
-    dragStartOffset: null,
-    dragStart: function (event, ui) {
+    panStartOffset: null,
+    panStart: function (event, ui) {
       if (!ui) { return; }
-      this.dragStartOffset = ui.offset;
+      this.panStartOffset = ui.offset;
     },
-    drag: function (event, ui) {
+    pan: function (event, ui) {
       if (!ui) { return; }
-      var scale = this.state.get('zoom');
-      var deltaX = ui.offset.left - this.dragStartOffset.left;
-      var deltaY = ui.offset.top - this.dragStartOffset.top;
-      this.$el.css({
+      var scale = this.model.get('zoom');
+      var deltaX = ui.offset.left - this.panStartOffset.left;
+      var deltaY = ui.offset.top - this.panStartOffset.top;
+      this.$(".dataflow-graph").css({
         transform: "translate3d("+deltaX/scale+"px, "+deltaY/scale+"px, 0)"
       });
     },
-    dragStop: function (event, ui) {
-      this.$el.css({
+    panStop: function (event, ui) {
+      this.$(".dataflow-graph").css({
         transform: "translate3d(0, 0, 0)"
       });
-      var scale = this.state.get('zoom');
-      var deltaX = ui.offset.left - this.dragStartOffset.left;
-      var deltaY = ui.offset.top - this.dragStartOffset.top;
+      var scale = this.model.get('zoom');
+      var deltaX = ui.offset.left - this.panStartOffset.left;
+      var deltaY = ui.offset.top - this.panStartOffset.top;
       this.model.set({
         panX: this.model.get("panX") + deltaX/scale,
         panY: this.model.get("panY") + deltaY/scale
       });
+    },
+    tempPanX: 0,
+    tempPanY: 0,
+    setPanDebounce: _.debounce(function () {
+      // Moves the graph back to 0,0 and changes pan, which will rerender wires
+      this.$(".dataflow-graph").css({
+        transform: "translate3d(0, 0, 0)"
+      });
+      this.model.set({
+        panX: this.model.get("panX") + this.tempPanX,
+        panY: this.model.get("panY") + this.tempPanY
+      });
+      this.tempPanX = 0;
+      this.tempPanY = 0;
+    }, 250),
+    mouseWheel: function (event) {
+      event.preventDefault();
+      var oe = event.originalEvent;
+      this.tempPanX += oe.wheelDeltaX/6;
+      this.tempPanY += oe.wheelDeltaY/6;
+      this.$(".dataflow-graph").css({
+        transform: "translate3d("+this.tempPanX+"px, "+this.tempPanY+"px, 0)"
+      });
+      this.setPanDebounce();
     },
     gotoParent: function () {
       var parentNode = this.model.get("parentNode");
@@ -1247,115 +1002,100 @@
       }
     },
     bindInteraction: function () {
-      var state = this.model.dataflow.get('state');
-      this.bindZoom(state);
-      this.bindScroll(state);
+      this.bindZoom();
+      this.bindScroll();
     },
-    bindZoom: function (state) {
+    bindZoom: function () {
       if (!window.Hammer) {
         return;
       }
-      if (!state.has('zoom')) {
-        // Initial zoom level
-        // TODO: calculate level where whole graph fits
-        state.set('zoom', 1);
-      }
-      var currentZoom, startX, startY, originX, originY, scale, deltaX, deltaY;
+      var currentZoom, startX, startY, originX, originY, scale, deltaX, deltaY, distance_to_origin_x, distance_to_origin_y;
       var self = this;
-      Hammer(this.el).on('transformstart', function (event) {
-        currentZoom = state.get('zoom');
-        startX = event.gesture.center.pageX;
-        startY = event.gesture.center.pageY;
-        originX = startX/currentZoom;
-        originY = startY/currentZoom;
-        self.$el.css({
-          transformOrigin: originX+"px "+originY+"px"
-          // transformOrigin: startX+"px "+startY+"px"
+      Hammer( this.$(".dataflow-graph-panzoom")[0] )
+        .on('transformstart', function (event) {
+          currentZoom = self.model.get('zoom');
+          startX = event.gesture.center.pageX;
+          startY = event.gesture.center.pageY;
+          originX = startX/currentZoom;
+          originY = startY/currentZoom;
+          var graphOffset = self.$el.offset();
+          distance_to_origin_x = originX - graphOffset.left;
+          distance_to_origin_y = originY - graphOffset.top;
+          self.$graphEl.css({
+            transformOrigin: originX+"px "+originY+"px"
+            // transformOrigin: startX+"px "+startY+"px"
+          });
+        })
+        .on('transform', function (event) {
+          scale = Math.max(minZoom/currentZoom, Math.min(event.gesture.scale, maxZoom/currentZoom));
+          deltaX = (event.gesture.center.pageX - startX) / currentZoom;
+          deltaY = (event.gesture.center.pageY - startY) / currentZoom;
+          self.$graphEl.css({
+            transform: "translate3d("+deltaX+"px,"+deltaY+"px, 0) " +
+                       "scale3d("+scale+","+scale+", 1) "
+          });
+        })
+        .on('transformend', function (event) {
+          // Reset 3D transform
+          self.$graphEl.css({
+            transform: "translate3d(0, 0, 0) " +
+                       "scale3d(1, 1, 1) "
+          });
+          // Zoom
+          var zoom = currentZoom * scale;
+          zoom = Math.max(minZoom, Math.min(zoom, maxZoom));
+          self.model.set('zoom', zoom);
+          distance_to_origin_x *= zoom;
+          distance_to_origin_y *= zoom;
+          self.model.set({
+            panX: self.model.get("panX") + deltaX,
+            panY: self.model.get("panY") + deltaY
+          });
+          console.log(self.model.attributes);
         });
-      });
-      Hammer(this.el).on('transform', function (event) {
-        scale = Math.max(minZoom/currentZoom, Math.min(event.gesture.scale, maxZoom/currentZoom));
-        deltaX = (event.gesture.center.pageX - startX) / currentZoom;
-        deltaY = (event.gesture.center.pageY - startY) / currentZoom;
-        self.$el.css({
-          transform: "translate3d("+deltaX+"px,"+deltaY+"px, 0) " +
-                     "scale3d("+scale+","+scale+", 1) "
-        });
-      });
-      Hammer(this.el).on('transformend', function (event) {
-        // Reset 3D transform
-        self.$el.css({
-          transform: "translate3d(0, 0, 0) " +
-                     "scale3d(1, 1, 1) "
-        });
-        // Zoom
-        var zoom = currentZoom * scale;
-        zoom = Math.max(minZoom, Math.min(zoom, maxZoom));
-        state.set('zoom', zoom);
-        // var scaleD = scale - currentZoom;
-        var width = self.$el.width();
-        var height = self.$el.height();
-        // console.log("panX", self.model.get("panX") );
-        // console.log("deltaX", deltaX); 
-        // console.log("width", width); 
-        // console.log("currentZoom", currentZoom); 
-        // console.log("scale", scale);
-        // console.log("zoom", zoom);
-        // console.log("-===============-");
-        //
-        // TODO : fix origin difference bump
-        self.model.set({
-          panX: self.model.get("panX") + deltaX,
-          panY: self.model.get("panY") + deltaY
-        });
-      });
 
       var onZoom = function () {
-        var z = state.get('zoom');
+        var z = self.model.get('zoom');
         var lastClass = self.zoomClass;
         self.zoomClass = z < 0.5 ? "zoom-tiny" : (z < 0.8 ? "zoom-small" : (z < 1.3 ? "zoom-normal" : "zoom-big"));
-        self.$el
+        self.$graphEl
           .removeClass(lastClass)
           .addClass(self.zoomClass);
-        self.el.style.zoom = state.get('zoom');
+        self.graphEl.style.zoom = self.model.get('zoom');
       };
 
-      state.on('change:zoom', onZoom);
+      this.model.on('change:zoom', onZoom);
 
-      // Initial zoom state from localStorage
-      if (state.get('zoom') !== 1) {
+      // Initial zoom this.model from localStorage
+      if (this.model.get('zoom') !== 1) {
         onZoom();
       }
     },
     zoomClass: 1,
     zoomIn: function () {
-      var currentZoom = this.state.get('zoom');
+      var currentZoom = this.model.get('zoom');
       var zoom = currentZoom * 0.9;
       zoom = Math.max(minZoom, zoom); 
       if (zoom !== currentZoom) {
-        this.state.set('zoom', zoom);
+        this.model.set('zoom', zoom);
       }
     },
     zoomOut: function () {
-      var currentZoom = this.state.get('zoom');
+      var currentZoom = this.model.get('zoom');
       var zoom = currentZoom * 1.1;
       zoom = Math.min(maxZoom, zoom); 
       if (zoom !== currentZoom) {
-        this.state.set('zoom', zoom);
+        this.model.set('zoom', zoom);
       }
     },
     zoomCenter: function () {
-      var currentZoom = this.state.get('zoom');
+      var currentZoom = this.model.get('zoom');
       var zoom = 1;
       if (zoom !== currentZoom) {
-        this.state.set('zoom', 1);
+        this.model.set('zoom', 1);
       }
     },
-    bindScroll: function (state) {
-      // this.el.addEventListener('scroll', function (event) {
-      //   state.set('scrollY', this.scrollTop);
-      //   state.set('scrollX', this.scrollLeft);
-      // });
+    bindScroll: function () {
     },
     render: function() {
       // HACK to get them to show correct positions on load
@@ -1402,7 +1142,9 @@
       this.$('.dataflow-svg-edges')[0].appendChild(edge.view.el);
     },
     removeEdge: function(edge){
-      edge.view.remove();
+      if (edge.view) {
+        edge.view.remove();
+      }
       this.edges[edge.id] = null;
       delete this.edges[edge.id];
     },
@@ -1423,21 +1165,30 @@
       } catch (error) {}
     },
     deselect: function () {
-      this.$(".dataflow-node").removeClass("ui-selected");
+      this.model.nodes.invoke("set", {selected:false});
+      this.model.edges.invoke("set", {selected:false});
+      // this.model.nodes.each(function (node) {
+      //   node.set("selected", false);
+      // }, this);
       this.model.trigger("selectionChanged");
       this.unfade();
-      this.model.dataflow.hideMenu();
+      this.model.dataflow.hideCards();
     },
     fade: function () {
       this.model.nodes.each(function(node){
-        if (!node.view.$el.hasClass("ui-selected")){
-          if (node.view) {
+        if (node.view) {
+          if (!node.get('selected')) {
             node.view.fade();
           }
         }
       });
+      this.fadeEdges();
+    },
+    fadeEdges: function () {
       this.model.edges.each(function(edge){
-        if (edge.view) {
+        if (edge.get("selected") || edge.source.parentNode.get("selected") || edge.target.parentNode.get("selected")) {
+          edge.view.unfade();
+        } else {
           edge.view.fade();
         }
       });
@@ -1469,8 +1220,7 @@
   var template = 
     '<div class="outer" />'+
     '<div class="dataflow-node-header">'+
-      '<h1 class="dataflow-node-title"><span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
-      '<button title="properties" class="dataflow-node-inspect icon-cog"></button>'+
+      '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>"><%- label %></h1>'+
     '</div>'+
     '<div class="dataflow-node-ports">'+
       '<div class="dataflow-node-ins"></div>'+
@@ -1479,15 +1229,6 @@
     '</div>'+
     '<div class="dataflow-node-inner"></div>';
 
-  var inspectTemplate = 
-    '<h1 class="dataflow-node-inspector-title"><%- label %></h1>'+
-    // '<div class="dataflow-node-inspector-controls">'+
-    //   '<button class="dataflow-node-delete">delete</button>'+
-    //   '<button class="dataflow-node-save">save</button>'+
-    //   '<button class="dataflow-node-cancel">cancel</button>'+
-    // '</div>'+
-    '<div class="dataflow-node-inspector-inputs"></div>';
-
   var innerTemplate = "";
 
   var zoom;
@@ -1495,18 +1236,13 @@
   Node.View = Backbone.View.extend({
     template: _.template(template),
     innerTemplate: _.template(innerTemplate),
-    inspectTemplate: _.template(inspectTemplate),
     className: "dataflow-node",
     events: function(){
       return {
-        "click .dataflow-node-inspect": "showInspector",
         "click .dataflow-node-header":  "select",
         "dragstart": "dragStart",
         "drag":      "drag",
         "dragstop":  "dragStop"
-        // "click .dataflow-node-delete": "removeModel",
-        // "click .dataflow-node-cancel": "hideControls",
-        // "click .dataflow-node-save":   "saveLabel"
       };
     },
     initialize: function(options) {
@@ -1549,12 +1285,15 @@
       // Listener to reset inputs list
       // this.inputs.on("change", function(input){
       //   this.$inputsList = null;
-      //   console.log("change");
       // }, this);
 
       // Listen for graph panning
-      // this.model.parentGraph.on("change:panX change:panY", this.bumpPosition, this);
       this.listenTo(this.model.parentGraph, "change:panX change:panY", this.bumpPosition);
+
+      // Selected listener
+      this.listenTo(this.model, "change:selected", this.selectedChanged);
+
+      this.listenTo(this.model, "change:label", this.changeLabel);
 
       this.$inner = this.$(".dataflow-node-inner");
     },
@@ -1576,11 +1315,11 @@
     },
     _alsoDrag: [],
     _dragDelta: {},
-    $dragHelpers: null,
+    $dragHelpers: $('<div class="dataflow-nodes-helpers">'),
     dragStart: function(event, ui){
       if (!ui){ return; }
       // Select this
-      if (!this.$el.hasClass("ui-selected")){
+      if (!this.model.get("selected")){
         this.select(event, true);
       }
 
@@ -1588,39 +1327,36 @@
       event.stopPropagation();
 
       // Current zoom
-      zoom = this.model.parentGraph.dataflow.get('state').get('zoom');
+      zoom = this.model.parentGraph.get('zoom');
+
+      this.$dragHelpers.css({
+        transform: "translate3d(0,0,0)"
+      });
+      this.$el.parent().append( this.$dragHelpers );
 
       // Make helper and save start position of all other selected
       var self = this;
-      this._alsoDrag = [];
+      this._alsoDrag = this.model.collection.where({selected:true});
 
-      this.$dragHelpers = $('<div class="dataflow-nodes-helpers">');
-      this.$el.parent().append( this.$dragHelpers );
+      _.each(this._alsoDrag, function(node){
+        var $el = node.view.$el;
+        // Add helper
+        var helper = $('<div class="dataflow-node helper">').css({
+          width: $el.width(),
+          height: $el.height(),
+          left: parseInt($el.css('left'), 10),
+          top: parseInt($el.css('top'), 10)
+        });
+        this.$dragHelpers.append(helper);
+      }, this);
 
-      var helper = $('<div class="dataflow-node helper">').css({
-        width: this.$el.width(),
-        height: this.$el.height(),
-        left: parseInt(this.$el.css('left'), 10),
-        top: parseInt(this.$el.css('top'), 10)
-      });
-      this.$dragHelpers.append(helper);
-
-      this.model.parentGraph.view.$(".ui-selected").each(function() {
-        if (self.el !== this) {
-          var el = $(this);
-          // Add helper
-          var helper = $('<div class="dataflow-node helper">').css({
-            width: el.width(),
-            height: el.height(),
-            left: parseInt(el.css('left'), 10),
-            top: parseInt(el.css('top'), 10)
-          });
-          self.$dragHelpers.append(helper);
-          el.data("ui-draggable-alsodrag-helper", helper);
-          // Add to array
-          self._alsoDrag.push(el);
-        }
-      });
+    },
+    changeLabel: function () {
+      var label = this.model.get("label");
+      var type = this.model.get("type");
+      this.$(".dataflow-node-title")
+        .text( label )
+        .attr("title", label + ": " + type);
     },
     drag: function(event, ui){
       if (!ui){ return; }
@@ -1642,20 +1378,16 @@
       var panY = this.model.parentGraph.get("panY");
       var deltaX = (ui.position.left - ui.originalPosition.left) / zoom;
       var deltaY = (ui.position.top - ui.originalPosition.top) / zoom;
-      this.moveToPosition(this.model.get("x") + deltaX, this.model.get("y") + deltaY);
+      // this.moveToPosition(this.model.get("x") + deltaX, this.model.get("y") + deltaY);
       // Also drag
       if (this._alsoDrag.length) {
-        _.each(this._alsoDrag, function(el){
-          var initial = el.data("ui-draggable-alsodrag-initial");
-          var helper = el.data("ui-draggable-alsodrag-helper");
-          var node = el.data("dataflow-node-view");
-          // Move other node
-          node.moveToPosition(node.model.get("x") + deltaX, node.model.get("y") + deltaY);
-          el.data("ui-draggable-alsodrag-helper", null);
-        });
+        _.each(this._alsoDrag, function(node){
+          node.view.moveToPosition(node.get("x") + deltaX, node.get("y") + deltaY);
+        }, this);
         this._alsoDrag = [];
       }
       // Remove helpers
+      this.$dragHelpers.empty();
       this.$dragHelpers.remove();
     },
     bumpPosition: function () {
@@ -1675,28 +1407,6 @@
       });
       this.bumpPosition();
     },
-    showInspector: function(){
-      this.model.parentGraph.dataflow.showMenu("inspector");
-      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
-      $inspector.children().detach();
-      $inspector.append( this.getInputList() );
-      
-      this.highlightEdges();
-    },
-    highlightEdges: function(){
-      
-    },
-    hideControls: function(){
-    },
-    saveLabel: function(){
-      // Save new label
-      var newLabel = this.$(".title .label-edit").val();
-      if (this.model.get("label") !== newLabel) {
-        this.model.set("label", newLabel);
-        this.$(".title .label").text(newLabel);
-      }
-      this.hideControls();
-    },
     removeModel: function(){
       this.model.remove();
     },
@@ -1715,52 +1425,88 @@
       if (event) {
         event.stopPropagation();
       }
-      // De/select
-      if (deselectOthers) {
-        this.model.parentGraph.view.$(".ui-selected").removeClass("ui-selected");
+      var toggle = false;
+      var selected = this.model.get("selected");
+      if (event && (event.ctrlKey || event.metaKey)) {
+        toggle = true;
+        selected = !selected;
+        this.model.set("selected", selected);
+        if (selected) {
+          this.showInspector(true);
+        } else {
+          this.fade();
+          this.hideInspector();
+        }
+      } else {
+        // Deselect all
+        this.model.parentGraph.edges.invoke("set", {selected:false});
+        this.model.parentGraph.nodes.invoke("set", {selected:false});
+        this.model.parentGraph.view.fade();
+        selected = true;
+        this.model.set("selected", true);
+        this.showInspector();
       }
-      this.$el.addClass("ui-selected");
       this.bringToTop();
-      // Fade / highlight
-      this.model.parentGraph.view.fade();
-      this.unfade();
-      // Trigger
-      this.model.trigger("select");
+      this.model.parentGraph.view.fadeEdges();
       this.model.parentGraph.trigger("selectionChanged");
+    },
+    inspector: null,
+    getInspector: function () {
+      if (!this.inspector) {
+        var inspect = new Node.InspectView({model:this.model});
+        var Card = Dataflow.prototype.module("card");
+        this.inspector = new Card.Model({
+          dataflow: this.model.parentGraph.dataflow,
+          card: inspect
+        });
+      }
+      return this.inspector;
+    },
+    showInspector: function(leaveUnpinned){
+      this.model.parentGraph.dataflow.addCard( this.getInspector(), leaveUnpinned );
+    },
+    hideInspector: function () {
+      this.model.parentGraph.dataflow.removeCard( this.getInspector() );
     },
     fade: function(){
       this.$el.addClass("fade");
+      this.$el.removeClass("ui-selected");
     },
     unfade: function(){
       this.$el.removeClass("fade");
-      // Unfade related edges
-      var self = this;
-      this.model.parentGraph.edges.each(function(edge){
-        if (edge.source.parentNode.id === self.model.id || edge.target.parentNode.id === self.model.id) {
-          if (edge.view) {
-            edge.view.unfade();
-          }
-        }
-      });
     },
-    $inputList: null,
-    getInputList: function() {
-      if (!this.$inputList) {
-        this.$inputList = $("<div>");
-        var model = this.model.toJSON();
-        this.$inputList.html( this.inspectTemplate(model) );
-        if (model.id !== model.label) {
-          this.$inputList.children(".dataflow-node-inspector-title").prepend(model.id + ": ");
-        }
-        var $inputs = this.$inputList.children(".dataflow-node-inspector-inputs");
-        this.model.inputs.each(function(input){
-          if (input.view && input.view.$input) {
-            $inputs.append( input.view.$input );
-          }
-        }, this);
+    selectedChanged: function () {
+      if (this.model.get("selected")) {
+        this.highlight();
+      } else {
+        this.unhighlight();
       }
-      return this.$inputList;
-    }
+    },
+    highlight: function () {
+      this.$el.removeClass("fade");
+      this.$el.addClass("ui-selected");
+    },
+    unhighlight: function () {
+      this.$el.removeClass("ui-selected");
+    }//,
+    // $inputList: null,
+    // getInputList: function() {
+    //   if (!this.$inputList) {
+    //     this.$inputList = $("<div>");
+    //     var model = this.model.toJSON();
+    //     this.$inputList.html( this.inspectTemplate(model) );
+    //     if (model.id !== model.label) {
+    //       this.$inputList.children(".dataflow-node-inspector-title").prepend(model.id + ": ");
+    //     }
+    //     var $inputs = this.$inputList.children(".dataflow-node-inspector-inputs");
+    //     this.model.inputs.each(function(input){
+    //       if (input.view && input.view.$input) {
+    //         $inputs.append( input.view.$input );
+    //       }
+    //     }, this);
+    //   }
+    //   return this.$inputList;
+    // }
   });
 
 }(Dataflow) );
@@ -1778,6 +1524,8 @@
     '<label class="dataflow-port-label in" title="<%= description %>">'+
       '<%= label %>'+
     '</label>';  
+
+  var zoom = 1;
  
   Input.View = Backbone.View.extend({
     template: _.template(template),
@@ -1798,18 +1546,34 @@
       this.$el.html(this.template(this.model.toJSON()));
       this.$el.addClass(this.model.get("type"));
 
+      this.parent = options.parent;
+
+      // Reset hole position
+      var node = this.parent.model;
+      var graph = node.parentGraph;
+      this.listenTo(node, "change:x change:y", function(){
+        this._holePosition = null;
+      }.bind(this));
+      this.listenTo(graph, "change:panX change:panY", function(){
+        this._holePosition = null;
+      }.bind(this));
+
+      var nodeState = node.get('state');
+      if (nodeState && nodeState[this.model.id]) {
+        this.$el.addClass('hasvalue');
+      }
+
       if (!this.model.parentNode.parentGraph.dataflow.editable) {
         // No drag and drop
         return;
       }
 
       var self = this;
-      this.parent = options.parent;
       this.$(".dataflow-port-plug").draggable({
         cursor: "pointer",
         helper: function(){
           var helper = $('<span class="dataflow-port-plug in helper" />');
-          $('.dataflow-graph').append(helper);
+          self.parent.graph.$el.append(helper);
           return helper;
         },
         disabled: true,
@@ -1822,7 +1586,7 @@
         helper: function(){
           var helper = $('<span class="dataflow-port-plug out helper" />')
             .data({port: self.model});
-          $('.dataflow-graph').append(helper);
+          self.parent.graph.$el.append(helper);
           return helper;
         }
       });
@@ -1872,15 +1636,28 @@
       this.model.parentNode.on('change:state', function () {
         var state = this.model.parentNode.get('state');
         if (!state || state[this.model.id] === undefined) {
+          this.$el.removeClass('hasvalue');
           return;
         }
         this.setInputValue(input, type, state[this.model.id]);
+        this.$el.addClass('hasvalue');
       }.bind(this));
 
-      var label = $("<label>")
+      var label = $('<label class="input-type-' + type + '">')
         .append( input )
         .prepend( '<span>' + this.model.get("label") + "</span> " );
       this.$input = label;
+
+      // Update connection state on the input field
+      if (this.model.connected.length) {
+        label.addClass('connected');
+      }
+      this.model.on('connected', function () {
+        this.$input.addClass('connected');
+      }, this);
+      this.model.on('disconnected', function () {
+        this.$input.removeClass('connected');
+      }, this);
     },
     renderInput: function (type, options) {
       var input;
@@ -1894,7 +1671,7 @@
         input.change(this.inputSelect.bind(this));
         return input;
       }
-
+      
       switch (type) {
         case 'int':
         case 'float':
@@ -1919,7 +1696,7 @@
           }
           return input;
         case 'boolean':
-          input = $('<input type="checkbox" class="input input-boolean">');
+          input = $('<input type="checkbox" class="input input-boolean"><div class="input-boolean-checkbox"/>');
           input.change(this.inputBoolean.bind(this));
           return input;
         case 'object':
@@ -2009,6 +1786,8 @@
       });
       var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
       graphSVGElement.appendChild(this.previewEdgeNewView.el);
+
+      zoom = this.model.parentNode.parentGraph.get('zoom');
     },
     newEdgeDrag: function(event, ui){
       if (!this.previewEdgeNewView || !ui) {
@@ -2017,9 +1796,8 @@
       // Don't drag node
       event.stopPropagation();
 
-      var state = this.model.parentNode.parentGraph.dataflow.get('state');
-      ui.position.top = event.clientY / state.get('zoom');
-      ui.position.left = event.clientX / state.get('zoom');
+      ui.position.top = event.clientY / zoom;
+      ui.position.left = event.clientX / zoom;
       var df = this.model.parentNode.parentGraph.view.el;
       ui.position.left += df.scrollLeft;
       ui.position.top += df.scrollTop;
@@ -2040,11 +1818,14 @@
     },
     getTopEdge: function() {
       var topEdge;
+      var topZ = -1;
       if (this.isConnected){
-        // Will get the last (top) matching edge
+        // Will get the top matching edge
         this.model.parentNode.parentGraph.edges.each(function(edge){
-          if(edge.target === this.model){
+          var thisZ = edge.get("z");
+          if(edge.target === this.model && thisZ > topZ ){
             topEdge = edge;
+            topZ = thisZ;
           }
           if (edge.view) {
             edge.view.unhighlight();
@@ -2085,6 +1866,8 @@
           });
           var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
           graphSVGElement.appendChild(this.previewEdgeChangeView.el);
+          
+          zoom = this.model.parentNode.parentGraph.get('zoom');
         }
       }
     },
@@ -2140,17 +1923,22 @@
       // Tells changeEdgeStop to remove to old edge
       ui.helper.data("removeChangeEdge", (oldLength < this.model.parentNode.parentGraph.edges.length));
     },
+    _holePosition: null,
     holePosition: function(){
-      var holePos = this.$(".dataflow-port-hole").offset();
-      if (!this.parent) {
-        this.parent = this.options.parent;
+      // this._holePosition gets reset when graph panned or node moved
+      if (!this._holePosition) {
+        if (!this.parent){
+          this.parent = this.options.parent;
+        }
+        var node = this.parent.model;
+        var graph = node.parentGraph;
+        var $graph = this.parent.graph.$el;
+        var index = this.$el.index();
+        var left = graph.get("panX") + node.get("x") + 18;
+        var top = graph.get("panY") + node.get("y") + 48 + index*20;
+        this._holePosition = { left:left, top:top };
       }
-      var $graph = this.parent.graph.$el;
-      var graphPos = $graph.offset();
-      return {
-        left: $graph.scrollLeft() + holePos.left - graphPos.left + 5,
-        top: $graph.scrollTop() + holePos.top - graphPos.top + 8
-      };
+      return this._holePosition;
     },
     isConnected: false,
     plugSetActive: function(){
@@ -2161,10 +1949,20 @@
       this.isConnected = true;
     },
     plugCheckActive: function(){
-      var isConnected = this.model.parentNode.parentGraph.edges.some(function(edge){
-        return (edge.target === this.model);
+      var topEdge;
+      var topEdgeZ = -1;
+      this.model.parentNode.parentGraph.edges.each(function(edge){
+        if (edge.target === this.model) {
+          var z = edge.get("z");
+          if (z > topEdgeZ) {
+            topEdge = edge;
+            topEdgeZ = z;
+          }
+        }
       }, this);
-      if (!isConnected) {
+      if (topEdge) {
+        this.bringToTop(topEdge);
+      } else {
         try {
           this.$(".dataflow-port-plug").draggable("disable");
         } catch (e) { }
@@ -2202,6 +2000,8 @@
     '<span class="dataflow-port-hole out" title="drag to make new wire"></span>'+
     '<span class="dataflow-port-plug out" title="drag to edit wire"></span>';
 
+  var zoom = 1;
+
   Output.View = Backbone.View.extend({
     template: _.template(template),
     tagName: "li",
@@ -2220,18 +2020,29 @@
       this.$el.html(this.template(this.model.toJSON()));
       this.$el.addClass(this.model.get("type"));
 
+      this.parent = options.parent;
+
+      // Reset hole position
+      var node = this.parent.model;
+      var graph = node.parentGraph;
+      this.listenTo(node, "change:x change:y change:w", function(){
+        this._holePosition = null;
+      }.bind(this));
+      this.listenTo(graph, "change:panX change:panY", function(){
+        this._holePosition = null;
+      }.bind(this));
+
       if (!this.model.parentNode.parentGraph.dataflow.editable) {
         // No drag and drop
         return;
       }
 
       var self = this;
-      this.parent = options.parent;
       this.$(".dataflow-port-plug").draggable({
         cursor: "pointer",
         helper: function(){
           var helper = $('<span class="dataflow-port-plug out helper" />');
-          $('.dataflow-graph').append(helper);
+          self.parent.graph.$el.append(helper);
           return helper;
         },
         disabled: true,
@@ -2244,7 +2055,7 @@
         helper: function(){
           var helper = $('<span class="dataflow-port-plug in helper" />')
             .data({port: self.model});
-          $('.dataflow-graph').append(helper);
+          self.parent.graph.$el.append(helper);
           return helper;
         }
       });
@@ -2278,6 +2089,9 @@
       });
       var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
       graphSVGElement.appendChild(this.previewEdgeView.el);
+
+      zoom = this.model.parentNode.parentGraph.get('zoom');
+
     },
     newEdgeDrag: function(event, ui){
       // Don't drag node
@@ -2285,9 +2099,8 @@
       if (!this.previewEdgeView || !ui) {
         return;
       }
-      var state = this.model.parentNode.parentGraph.dataflow.get('state');
-      ui.position.top = event.clientY / state.get('zoom');
-      ui.position.left = event.clientX / state.get('zoom');
+      ui.position.top = event.clientY / zoom;
+      ui.position.left = event.clientX / zoom;
       var df = this.model.parentNode.parentGraph.view.el;
       ui.position.left += df.scrollLeft;
       ui.position.top += df.scrollTop;
@@ -2307,11 +2120,14 @@
     },
     getTopEdge: function() {
       var topEdge;
+      var topZ = -1;
       if (this.isConnected){
-        // Will get the last (top) matching edge
+        // Will get the top matching edge
         this.model.parentNode.parentGraph.edges.each(function(edge){
-          if(edge.source === this.model){
+          var thisZ = edge.get("z");
+          if(edge.source === this.model && thisZ > topZ ){
             topEdge = edge;
+            topZ = thisZ;
           }
           if (edge.view) {
             edge.view.unhighlight();
@@ -2352,6 +2168,8 @@
           });
           var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
           graphSVGElement.appendChild(this.previewEdgeChangeView.el);
+
+          zoom = this.model.parentNode.parentGraph.get('zoom');
         }
       }
     },
@@ -2407,18 +2225,23 @@
       // Tells changeEdgeStop to remove to old edge
       ui.helper.data("removeChangeEdge", (oldLength < this.model.parentNode.parentGraph.edges.length));
     },
-    // _holePosition: null,
+    _holePosition: null,
     holePosition: function () {
-      var holePos = this.$(".dataflow-port-hole").offset();
-      if (!this.parent) {
-        this.parent = this.options.parent;
+      // this._holePosition gets reset when graph panned or node moved
+      if (!this._holePosition) {
+        if (!this.parent){
+          this.parent = this.options.parent;
+        }
+        var node = this.parent.model;
+        var graph = node.parentGraph;
+        var $graph = this.parent.graph.$el;
+        var index = this.$el.index();
+        var width = node.get("w") !== undefined ? node.get("w") : 175;
+        var left = graph.get("panX") + node.get("x") + width - 18;
+        var top = graph.get("panY") + node.get("y") + 48 + index*20;
+        this._holePosition = { left:left, top:top };
       }
-      var $graph = this.parent.graph.$el;
-      var graphPos = $graph.offset();
-      return {
-        left: $graph.scrollLeft() + holePos.left - graphPos.left + 5,
-        top: $graph.scrollTop() + holePos.top - graphPos.top + 8
-      };
+      return this._holePosition;
     },
     isConnected: false,
     plugSetActive: function(){
@@ -2429,10 +2252,20 @@
       this.isConnected = true;
     },
     plugCheckActive: function(){
-      var isConnected = this.model.parentNode.parentGraph.edges.some(function(edge){
-        return (edge.source === this.model);
+      var topEdge;
+      var topEdgeZ = -1;
+      this.model.parentNode.parentGraph.edges.each(function(edge){
+        if (edge.source === this.model) {
+          var z = edge.get("z");
+          if (z > topEdgeZ) {
+            topEdge = edge;
+            topEdgeZ = z;
+          }
+        }
       }, this);
-      if (!isConnected) {
+      if (topEdge) {
+        this.bringToTop(topEdge);
+      } else {
         try {
           this.$(".dataflow-port-plug").draggable("disable");
         } catch (e) { }
@@ -2475,6 +2308,25 @@
     }
     return svg;
   };
+<<<<<<< HEAD
+=======
+
+  var addClass = function (el, name) {
+    if (el.classList) {
+      el.classList.add(name);
+    } else {
+      el.className = "dataflow-edge " + name;
+    }
+  };
+
+  var removeClass = function (el, name) {
+    if (el.classList) {
+      el.classList.remove(name);
+    } else {
+      el.className = "dataflow-edge"; 
+    }
+  };
+>>>>>>> master
   
   Edge.View = Backbone.View.extend({
     tagName: "div",
@@ -2537,6 +2389,9 @@
         self.click(event);
       });
 
+      // Listen for select
+      this.listenTo(this.model, "change:selected", this.selectedChange);
+
     },
     render: function(previewPosition){
       var source = this.model.source;
@@ -2547,6 +2402,7 @@
       }
       else {
         // Preview 
+        // TODO: match zoom
         dataflowParent = this.model.parentGraph.dataflow.$el.parent().position();
         graph = this.model.parentGraph.view.$el;
         this.positions.from = {
@@ -2566,10 +2422,11 @@
         };
       }
       // No half-pixels
-      this.positions.from.left = Math.floor(this.positions.from.left);
-      this.positions.from.top = Math.floor(this.positions.from.top);
-      this.positions.to.left = Math.floor(this.positions.to.left);
-      this.positions.to.top = Math.floor(this.positions.to.top);
+      // this.positions.from.left = Math.floor(this.positions.from.left);
+      // this.positions.from.top = Math.floor(this.positions.from.top);
+      // this.positions.to.left = Math.floor(this.positions.to.left);
+      // this.positions.to.top = Math.floor(this.positions.to.top);
+ 
       // Make and apply the path
       var pathD = this.edgePath(this.positions);
       this.elEdge.setAttribute("d", pathD);
@@ -2580,19 +2437,27 @@
       }
     },
     fade: function(){
-      if (this.model.source.parentNode.view.$el.hasClass("ui-selected") || this.model.target.parentNode.view.$el.hasClass("ui-selected")) {
+      if (this.model.source.parentNode.get("selected") || this.model.target.parentNode.get("selected")) {
         return;
       }
-      this.el.setAttribute("class", "dataflow-edge fade");
+      addClass(this.el, "fade");
     },
     unfade: function(){
-      this.el.setAttribute("class", "dataflow-edge");
+      removeClass(this.el, "fade");
+    },
+    selectedChange: function () {
+      if (this.model.get("selected")){
+        this.highlight();
+      } else {
+        this.unhighlight();
+      }
+      this.model.parentGraph.trigger("selectionChanged");
     },
     highlight: function(){
-      this.el.setAttribute("class", "dataflow-edge highlight");
+      addClass(this.el, "highlight");
     },
     unhighlight: function(){
-      this.el.setAttribute("class", "dataflow-edge");
+      removeClass(this.el, "highlight");
     },
     edgePath: function(positions){
       var extend = 20;
@@ -2679,12 +2544,30 @@
       if (event) {
         event.stopPropagation();
       }
-      // Highlight
-      this.highlight();
-      this.bringToTop();
-      this.model.trigger("select");
+      var selected, leaveUnpinned;
+      if (event && (event.ctrlKey || event.metaKey)) {
+        // Toggle
+        selected = this.model.get("selected");
+        selected = !selected;
+        leaveUnpinned = true;
+      } else {
+        // Deselect all and select this
+        selected = true;
+        this.model.parentGraph.nodes.invoke("set", {selected:false});
+        this.model.collection.invoke("set", {selected:false});
+      }
+      this.model.set({selected:selected});
+      if (selected) {
+        this.bringToTop();
+        this.model.trigger("select");
+        this.unfade();
+        this.showInspector(leaveUnpinned);
+      } else {
+        this.hideInspector();
+      }
       // Fade all and highlight related
       this.model.parentGraph.view.fade();
+<<<<<<< HEAD
       this.unfade();
       this.showInspector();
     },
@@ -2693,21 +2576,21 @@
       var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
       $inspector.children().detach();
       $inspector.append( this.getInspect() );
+=======
+>>>>>>> master
     },
     bringToTop: function(){
-      // this.model.bringToTop();
+      this.model.bringToTop();
       var parent = this.el.parentNode;
       if (parent) {
         parent.appendChild(this.el);
       }
 
-      // this.model.source.parentNode.view.unfade();
-      // this.model.target.parentNode.view.unfade();
-
       // Port hole color
       this.model.source.view.bringToTop(this.model);
       this.model.target.view.bringToTop(this.model);
     },
+<<<<<<< HEAD
     // inspect: null,
     getInspect: function() {
       // if (!this.inspect) {
@@ -2717,10 +2600,413 @@
       var inspect = document.createElement("dataflow-card-edge");
       inspect.edge = this.model;
       return inspect;
+=======
+    inspector: null,
+    getInspector: function () {
+      if (!this.inspector) {
+        var inspect = new Edge.InspectView({model:this.model});
+        var Card = Dataflow.prototype.module("card");
+        this.inspector = new Card.Model({
+          dataflow: this.model.parentGraph.dataflow,
+          card: inspect
+        });
+      }
+      return this.inspector;
+    },
+    showInspector: function(leaveUnpinned){
+      this.model.parentGraph.dataflow.addCard( this.getInspector(), leaveUnpinned );
+    },
+    hideInspector: function () {
+      this.model.parentGraph.dataflow.removeCard( this.getInspector() );
+>>>>>>> master
+    }
+
+  });
+
+}(Dataflow) );
+
+<<<<<<< HEAD
+( function(Dataflow) {
+=======
+(function(Dataflow){
+
+  var Card = Dataflow.prototype.module("card");
+
+  Card.Model = Backbone.Model.extend({
+    defaults: {
+      pinned: false
+    },
+    initialize: function () {
+      this.dataflow = this.get("dataflow");
+    },
+    hide: function () {
+      this.dataflow.shownCards.remove( this );
+    }
+  });
+
+  Card.Collection = Backbone.Collection.extend({
+    model: Card.Model
+  });
+
+}(Dataflow));
+
+(function(Dataflow){
+>>>>>>> master
+
+  var Card = Dataflow.prototype.module("card");
+
+  var template = 
+    '<div class="dataflow-card-control">'+
+      '<button title="pin" class="dataflow-card-pin icon-pushpin"></button>'+
+      '<button title="close" class="dataflow-card-close icon-remove"></button>'+
+    '</div>';
+
+  Card.View = Backbone.View.extend({
+    tagName: "div",
+    className: "dataflow-card",
+    template: _.template(template),
+    events: {
+      "click .dataflow-card-pin": "togglePin",
+      "click .dataflow-card-close": "hide"
+    },
+    initialize: function () {
+      this.$el.html(this.template());
+      this.card = this.model.get("card");
+      this.$el.append(this.card.el);
+      this.listenTo(this.model, "change:pinned", this.pinnedChanged);
+      this.pinnedChanged();
+    },
+    animate: function (timestamp) {
+      if (typeof this.card.animate === "function") {
+        this.card.animate(timestamp);
+      }
+    },
+    togglePin: function () {
+      var pinned = !this.model.get("pinned");
+      this.model.set("pinned", pinned);
+      if (!pinned) {
+        this.hide();
+      }
+    },
+    pinnedChanged: function () {
+      if ( this.model.get("pinned") ) {
+        this.$(".dataflow-card-pin").addClass("active");
+      } else {
+        this.$(".dataflow-card-pin").removeClass("active");
+      }
+    },
+    hide: function () {
+      this.model.hide();
+    },
+    remove: function () {
+      this.$el.detach();
+    }
+  });
+
+  // requestAnimationFrame shim
+  if (!window.requestAnimationFrame) {
+    window.requestAnimationFrame = (function(){
+      return  window.requestAnimationFrame       ||
+              window.webkitRequestAnimationFrame ||
+              window.mozRequestAnimationFrame    ||
+              window.oRequestAnimationFrame      ||
+              window.msRequestAnimationFrame     ||
+              function( callback ){
+                window.setTimeout(callback, 1000 / 20);
+              };
+    })();
+  }
+
+  Card.CollectionView = Backbone.CollectionView.extend({
+    tagName: "div",
+    className: "dataflow-cards",
+    itemView: Card.View,
+    prepend: true,
+    initialize: function () {
+      // Super
+      Backbone.CollectionView.prototype.initialize.apply(this, arguments);
+      // Set up animation loop
+      var loop = function (timestamp) {
+        window.requestAnimationFrame(loop);
+        // Call all visible
+        this.collection.each(function(card){
+          if (card.view) {
+            card.view.animate(timestamp);
+          }
+        });
+      }.bind(this);
+      loop();
+    },
+    bringToTop: function (card) {
+      this.$el.prepend( card.view.el );
+    }
+  });
+
+}(Dataflow));
+
+(function (Dataflow) {
+  var MenuItem = Backbone.Model.extend({
+    defaults: {
+      label: '',
+      icon: '',
+      action: null
+    }
+  });
+
+  var Menu = Backbone.Collection.extend({
+    model: MenuItem
+  });
+
+  var Card = Dataflow.prototype.module('card');
+  var MenuCard = Dataflow.prototype.module('menucard');
+  MenuCard.Model = Card.Model.extend({
+    initialize: function () {
+      this.menu = new Menu();
+      Card.Model.prototype.initialize.call(this);
+    }
+  });
+}(Dataflow));
+
+(function (Dataflow) {
+  var Card = Dataflow.prototype.module('card');
+  var MenuCard = Dataflow.prototype.module('menucard');
+
+  var MenuItemView = Backbone.View.extend({
+    tagName: 'li',
+    template: '<button><i class="icon-<%- icon %>"></i><span class="name"><%- label %></span></button>',
+    events: {
+      'click': 'clicked'
+    },
+    render: function () {
+      this.$el.html(_.template(this.template, this.model.toJSON()));
+    },
+    clicked: function () {
+      if (!this.model.get('action')) {
+        return;
+      }
+      this.model.get('action')();
+    }
+  });
+
+  MenuCard.View = Card.View.extend({
+    initialize: function () {
+      this.model.set('card', new Backbone.CollectionView({
+        tagName: 'ul',
+        className: 'dataflow-menu',
+        collection: this.model.menu,
+        itemView: MenuItemView
+      }));
+      Card.View.prototype.initialize.call(this);
+    }
+  });
+}(Dataflow));
+
+( function(Dataflow) {
+
+  var Node = Dataflow.prototype.module("node");
+
+  var template = 
+    '<div class="dataflow-plugin-inspector-title">'+
+      '<h1 class="dataflow-node-inspector-label" title="click to edit"><%- label %></h1>'+
+      '<h2 class="dataflow-node-inspector-type"><%- type %></h2>'+
+    '</div>'+
+    // '<div class="dataflow-node-inspector-controls">'+
+    //   '<button class="dataflow-node-delete">delete</button>'+
+    // '</div>'+
+    '<div class="dataflow-node-inspector-inputs"></div>';
+
+  var makeEditable = function ($el, model, attribute) {
+    $el[0].contentEditable = true;
+    var initial = $el.text();
+    var apply = function(){
+      model.set(attribute, $el.text());
+    };
+    var revert = function(){
+      $el.text(initial);
+    };
+    $el
+      .focus(function(event){
+        initial = $el.text();
+      })
+      .blur(function(event){
+        apply();
+      })
+      .keydown(function(event){
+        if (event.which === 27) {
+          // ESC
+          revert();
+          $el.blur();
+        } else if (event.which === 13) {
+          // Enter
+          $el.blur();
+        }
+      });
+  };
+
+  Node.InspectView = Backbone.View.extend({
+    template: _.template(template),
+    className: "dataflow-node-inspector",
+    events: {
+    },
+    initialize: function(options) {
+      this.$el.html(this.template(this.model.toJSON()));
+      // Make input list
+      var $inputs = this.$el.children(".dataflow-node-inspector-inputs");
+      this.model.inputs.each(function(input){
+        if (input.view && input.view.$input) {
+          $inputs.append( input.view.$input );
+        }
+      }, this);
+
+      makeEditable(this.$(".dataflow-node-inspector-label"), this.model, "label");
+    },
+    render: function() {
+      return this;
+    },
+    removeModel: function(){
+      this.model.remove();
     }
   });
 
 }(Dataflow) );
+
+( function(Dataflow) {
+
+  var Edge = Dataflow.prototype.module("edge");
+
+  var template = 
+    '<div class="dataflow-plugin-inspector-title">'+
+      '<h1>Edge</h1>'+
+      '<h2 class="dataflow-edge-inspector-id"><%= id %></h2>'+
+    '</div>'+
+    '<div class="dataflow-edge-inspector-route-choose"></div>'+
+    '<ul class="dataflow-edge-inspector-events"></ul>';
+
+  var logTemplate = '<li class="<%- type %>"><%- group %><%- data %></li>';
+  
+  Edge.InspectView = Backbone.View.extend({
+    tagName: "div",
+    className: "dataflow-edge-inspector",
+    positions: null,
+    template: _.template(template),
+    showLogs: 20,
+    initialize: function() {
+      var templateData = this.model.toJSON();
+      if (this.model.id) {
+        templateData.id = this.model.id.replace('->', '&#8594;');
+      }
+      this.$el.html( this.template(templateData) );
+
+      var $choose = this.$el.children(".dataflow-edge-inspector-route-choose");
+      this.$log = this.$el.children('.dataflow-edge-inspector-events');
+
+      var changeRoute = function(event){
+        var route = $(event.target).data("route");
+        this.model.set("route", route);
+      }.bind(this);
+      
+      // Make buttons
+      for (var i=0; i<12; i++) {
+        var button = $("<button>")
+          .data("route", i)
+          .addClass("route"+i)
+          .click(changeRoute);
+        if (i === this.model.get("route")){
+          button.addClass("active");
+        }
+        $choose.append(button);
+      }
+
+      this.listenTo(this.model, "change:route", this.render);
+      this.listenTo(this.model, "remove", this.remove);
+      this.listenTo(this.model.get('log'), 'add', function () { 
+        this.logDirty = true; 
+      }.bind(this));
+      this.renderLog();
+    },
+    render: function(){
+      var route = this.model.get("route");
+      var $choose = this.$el.children(".dataflow-edge-inspector-route-choose");
+      $choose.children(".active").removeClass("active");
+      $choose.children(".route"+route).addClass("active");
+      return this;
+    },
+    logDirty: false,
+    animate: function (timestamp) {
+      // Called from dataflow.shownCards collection (card-view.js)
+      if (this.logDirty) {
+        this.logDirty = false;
+        this.renderLog();
+      }
+    },
+    renderLog: function () {
+      var frag = document.createDocumentFragment();
+      var logs = this.model.get('log');
+      var logsToShow;
+      if (logs.length > this.showLogs) {
+        logsToShow = logs.rest(logs.length - this.showLogs);
+      } else {
+        logsToShow = logs.toArray();
+      }
+      //JANK warning, already taking 14ms with 20 log items
+      _.each(logsToShow, function (item) {
+        this.renderLogItem(item, frag);
+      }, this);
+      this.$log.html(frag);
+      this.$log[0].scrollTop = this.$log[0].scrollHeight;
+    },
+    renderLogItem: function (item, fragment) {
+      var html = $(_.template(logTemplate, item.toJSON()));
+      if (fragment && fragment.appendChild) {
+        fragment.appendChild(html[0]);
+      } else {
+        this.$log.append(html);
+        this.$log[0].scrollTop = this.$log[0].scrollHeight;
+      }
+    }
+  });
+
+}(Dataflow) );
+
+(function (Dataflow) {
+  var Menu = Dataflow.prototype.plugin('menu');
+  var MenuCard = Dataflow.prototype.module('menucard');
+
+  Menu.initialize = function (dataflow) {
+    Menu.card = new MenuCard.Model({
+      dataflow: dataflow,
+      pinned: true
+    });
+    Menu.card.view = new MenuCard.View({
+      model: Menu.card
+    });
+
+    Menu.addPlugin = function (info) {
+      Menu.card.menu.add({
+        id: info.id,
+        icon: info.icon,
+        label: info.name,
+        showLabel: false,
+        action: function () {
+          Menu.card.hide();
+          dataflow.showPlugin(info.id);
+        }
+      });
+    };
+
+    Menu.disablePlugin = function (name) {
+      if (!this.card.menu.get(name)) {
+        return;
+      }
+      this.card.menu.remove(name);
+
+      if (dataflow.plugins[name] && dataflow.plugins[name].card) {
+        // Hide any open cards from the plugin
+        dataflow.plugins[name].card.hide();
+      }
+    };
+  };
+}(Dataflow));
 
 ( function(Dataflow) {
 
@@ -2743,16 +3029,13 @@
     //   menu: buttons, 
     //   icon: "edit"
     // });
-
-
+    
     //
     // A
     //
 
     function selectAll(){
-      dataflow.currentGraph.view.$(".dataflow-node")
-        .addClass("ui-selected")
-        .removeClass("fade");
+      dataflow.currentGraph.nodes.invoke("set", {selected:true});
     }
     buttons.children(".selectall").click(selectAll);
     Edit.selectAll = selectAll;
@@ -2760,6 +3043,13 @@
     //
     // X
     //
+    
+    Edit.removeSelected = function () {
+      var toRemove = dataflow.currentGraph.nodes.where({selected:true});      
+      _.each(toRemove, function(node){
+        node.remove();
+      });
+    };
 
     function cut(){
       // Copy selected
@@ -2770,15 +3060,20 @@
         node.y -= 50;
       });
       // Remove selected
-      var toRemove = dataflow.currentGraph.nodes.filter(function(node){
-        return node.view.$el.hasClass("ui-selected");
-      });
-      _.each(toRemove, function(node){
-        node.remove();
-      });
+      Edit.removeSelected();
     }
     buttons.children(".cut").click(cut);
     Edit.cut = cut;
+    
+    
+
+    function removeEdge(){
+      var selected = dataflow.currentGraph.edges.where({selected:true});
+      selected.forEach(function(edge){
+        edge.remove();
+      });
+    }
+    Edit.removeEdge = removeEdge;
 
     //
     // C
@@ -2788,12 +3083,8 @@
     function copy(){
       copied = {};
       // nodes
-      copied.nodes = [];
-      dataflow.currentGraph.nodes.each(function(node){
-        if (node.view.$el.hasClass("ui-selected")) {
-          copied.nodes.push( JSON.parse(JSON.stringify(node)) );
-        }
-      });
+      copied.nodes = dataflow.currentGraph.nodes.where({selected:true});
+      copied.nodes = JSON.parse(JSON.stringify(copied.nodes));
       // edges
       copied.edges = [];
       dataflow.currentGraph.edges.each(function(edge){
@@ -2804,7 +3095,7 @@
         var connectedTarget = _.any(copied.nodes, function(node){
           return (edge.target.parentNode.id === node.id);
         });
-        if (connectedSource && connectedTarget){
+        if (connectedSource || connectedTarget){
           copied.edges.push( JSON.parse(JSON.stringify(edge)) );
         }
       });
@@ -2819,13 +3110,14 @@
     function paste(){
       if (copied && copied.nodes && copied.nodes.length > 0) {
         // Deselect all
-        dataflow.currentGraph.view.$(".dataflow-node").removeClass("ui-selected");
+        dataflow.currentGraph.nodes.invoke("set", {selected:false});
         // Add nodes
         _.each(copied.nodes, function(node){
           // Offset pasted
           node.x += 50;
           node.y += 50;
           node.parentGraph = dataflow.currentGraph;
+          node.selected = true;
           var oldId = node.id;
           // Make unique id
           while (dataflow.currentGraph.nodes.get(node.id)){
@@ -2844,8 +3136,9 @@
           }
           var newNode = new dataflow.nodes[node.type].Model(node);
           dataflow.currentGraph.nodes.add(newNode);
-          // Select it
-          newNode.view.select();
+          // Select new node
+          newNode.view.bringToTop();
+          newNode.view.highlight();
         });
         // Add edges
         _.each(copied.edges, function(edge){
@@ -2868,6 +3161,9 @@
 
 
 
+
+
+
     // Add context actions for actionbar
 
     dataflow.addContext({
@@ -2875,26 +3171,62 @@
       icon: "cut",
       label: "cut",
       action: cut,
-      contexts: ["one", "twoplus"]
+      contexts: ["node", "nodes"]
     });
     dataflow.addContext({
       id: "copy",
       icon: "copy",
       label: "copy",
       action: copy,
-      contexts: ["one", "twoplus"]
+      contexts: ["node", "nodes"]
     });
     dataflow.addContext({
       id: "paste",
       icon: "paste",
       label: "paste",
       action: paste,
-      contexts: ["one", "twoplus"]
+      contexts: ["node", "nodes"]
     });
 
+    dataflow.addContext({
+      id: "edgeRemove",
+      icon: "remove",
+      label: "remove edge",
+      action: removeEdge,
+      contexts: ["edge"]
+    });
+
+    dataflow.addContext({
+      id: "edgeRemove",
+      icon: "remove",
+      label: "remove edges",
+      action: removeEdge,
+      contexts: ["edges"]
+    });
+
+    Edit.onSearch = function (text, callback) {
+      if (!dataflow.currentGraph) {
+        return;
+      }
+      var results = [];
+      dataflow.currentGraph.nodes.each(function (node) {
+        if (node.get('label').toLowerCase().indexOf(text.toLowerCase()) === -1) {
+          return;
+        }
+        results.push({
+          source: 'edit',
+          icon: 'sign-blank',
+          label: node.get('label'),
+          description: node.type,
+          action: function () {
+            node.view.select();
+          }
+        });
+      });
+      callback(results);
+    };
 
   };
-
 
 }(Dataflow) );
 
@@ -2916,8 +3248,10 @@
   Library.initialize = function(dataflow){
 
     var $container = $('<div class="dataflow-plugin-overflow">');
-    var $library = $('<ul class="dataflow-plugin-library" style="list-style:none; padding:0; margin:15px 0;" />');
+    var $library = $('<ul class="dataflow-plugin-library" />');
     $container.append($library);
+
+    Library.excluded = ["base", "base-resizable"];
 
     var addNode = function(node, x, y) {
       return function(){
@@ -2925,7 +3259,7 @@
         dataflow.currentGraph.view.$(".dataflow-node").removeClass("ui-selected");
 
         // Current zoom
-        zoom = dataflow.get('state').get('zoom');
+        zoom = dataflow.currentGraph.get('zoom');
 
         // Find vacant id
         var id = 1;
@@ -2955,8 +3289,14 @@
 
     };
 
-    var addLibraryItem = function(node, name) {
-      var addButton = $('<a class="button">+</a>')
+    var itemTemplate = '<li><a class="button add"><i class="icon-plus"></i></a><span class="name"><%- name %></span><span class="description"><%-description %></span></li>';
+
+    var addLibraryItem = function(name, node) {
+      var $item = $(_.template(itemTemplate, {
+        name: name,
+        description: node.description
+      }));
+      var addButton = $('.button', $item)
         .attr("title", "click or drag")
         .draggable({
           helper: function(){
@@ -2969,21 +3309,22 @@
           }
         })
         .click(addNode(node));
-      var item = $("<li />")
-        .append(addButton)
-        .append(name);
-      $library.append(item);
+      $library.append($item);
     };
 
     var update = function(options){
       options = options ? options : {};
-      options.exclude = options.exclude ? options.exclude : ["base", "base-resizable"];
+      Library.excluded = options.exclude ? options.exclude : Library.excluded;
 
       $library.empty();
-      _.each(dataflow.nodes, function(node, index){
-        if (options.exclude.indexOf(index) === -1) {
-          addLibraryItem(node, index);
+      var sortedLibrary = _.sortBy(Object.keys(dataflow.nodes), function (name) {
+        return name;
+      });
+      _.each(sortedLibrary, function (name) {
+        if (Library.excluded.indexOf(name) !== -1) {
+          return;
         }
+        addLibraryItem(name, dataflow.nodes[name]);
       });
     };
     update();
@@ -2992,10 +3333,33 @@
       id: "library", 
       name: "", 
       menu: $container, 
-      icon: "plus"
+      icon: "plus",
+      pinned: false
     });
 
     Library.update = update;
+
+    Library.onSearch = function (text, callback) {
+      var results = [];
+      _.each(dataflow.nodes, function (node, name) {
+        if (Library.excluded.indexOf(name) !== -1) {
+          return;
+        }
+        if (name.toLowerCase().indexOf(text.toLowerCase()) === -1) {
+          return;
+        }
+        results.push({
+          source: 'library',
+          icon: 'plus',
+          action: function () {
+            addNode(node).call();
+          },
+          label: name,
+          description: node.description
+        });
+      });
+      callback(results);
+    };
 
   };
 
@@ -3005,8 +3369,10 @@
 
   var Source = Dataflow.prototype.plugin("source");
 
-  Source.initialize = function(dataflow){
+  // Whether the graph may be updated via the source form
+  Source.updateAllowed = true;
 
+  Source.initialize = function(dataflow){
     var $form = $( 
       '<form class="dataflow-plugin-view-source">'+
         '<div style="">'+
@@ -3017,27 +3383,32 @@
     );
     var $code = $form.find(".code");
 
+    $code.keydown(function(event){
+      // Don't select / copy / paste nodes in the graph
+      event.stopPropagation();
+    });
+
     dataflow.addPlugin({
       id: "source", 
       name: "", 
       menu: $form, 
-      icon: "cog"
+      icon: "code",
+      pinned: true
     });
 
-    var show = function(source) {
+    Source.show = function(source) {
       var scrollBackTop = $code.prop("scrollTop");
       $code.val( source );
       $code.scrollTop( scrollBackTop );
     };
 
-    Source.show = show;
-
     var showGraph = function(graph){
       if (dataflow.graph) {
-        show( JSON.stringify(dataflow.graph.toJSON(), null, "  ") );
+        Source.show( JSON.stringify(dataflow.graph.toJSON(), null, "  ") );
       }
     };
 
+    // Method for setting graph change listeners on or off
     Source.listeners = function(boo){
       if (boo) {
         // On change update code view
@@ -3047,24 +3418,49 @@
         dataflow.off("change", showGraph);
       }
     };
+    // By default we listen to graph changes
     Source.listeners(true);
+
+    // Whether to allow updating the graph from the form
+    Source.allowUpdate = function (allowed) {
+      var $button = $form.find('.apply');
+      if (allowed) {
+        Source.updateAllowed = true;
+        $button.show();
+        $code.removeAttr('readonly');
+        return;
+      }
+      Source.updateAllowed = false;
+      $button.hide();
+      $code.attr('readonly', 'readonly');
+    };
 
     // Apply source to test graph
     $form.submit(function(){
-      var graph;
-      try {
-        graph = JSON.parse( $code.val() );
-      } catch(error){
-        dataflow.log("Invalid JSON");
-        return false;
-      }
-      if (graph) {
-        var g = dataflow.loadGraph(graph);
-        g.trigger("change");
-      }
+      Source.updateGraph($code, dataflow);
       return false;
     });
     
+  };
+
+  // Method for updating the graph from the form. Override
+  // this for systems using another graph format (for example,
+  // NoFlo).
+  Source.updateGraph = function ($code, dataflow) {
+    if (!Source.updateAllowed) {
+      return;
+    }
+    var graph;
+    try {
+      graph = JSON.parse( $code.val() );
+    } catch(error) {
+      dataflow.log("Invalid JSON");
+      return false;
+    }
+    if (graph) {
+      var g = dataflow.loadGraph(graph);
+      g.trigger("change");
+    }
   };
 
 }(Dataflow) );
@@ -3085,7 +3481,8 @@
       id: "log", 
       name: "", 
       menu: $log, 
-      icon: "th-list"
+      icon: "th-list",
+      pinned: true
     });
 
     // Log message and scroll
@@ -3146,33 +3543,19 @@
 
   Inspector.initialize = function(dataflow){
 
-    var $inspector = $(
-      '<div class="dataflow-plugin-inspector"></div>'
-    );
-
-    // Doing this manually instead of dataflow.addPlugin()
-    var $menu = $("<div>")
-      .addClass("dataflow-menuitem dataflow-menuitem-inspector")
-      .append($inspector);
-    dataflow.$(".dataflow-menu").append($menu);
-
-    var lastSelected = null;
-
-    function updateInspector(){
-      if (lastSelected) {
-        if (lastSelected.view) {
-          $inspector.children().detach();
-          $inspector.append( lastSelected.view.getInputList() );
-          
-          lastSelected.view.highlightEdges();
-        }
-      }
-    }
-    // Inspector.updateInspector = updateInspector;
-
     function showInspector(){
-      dataflow.showMenu("inspector");
-      updateInspector();
+      var selectedNodes = dataflow.currentGraph.nodes.where({selected:true});
+      selectedNodes.forEach(function(node){
+        var inspector = node.view.getInspector();
+        inspector.set("pinned", true);
+        dataflow.addCard( inspector );
+      });
+      var selectedEdges = dataflow.currentGraph.edges.where({selected:true});
+      selectedEdges.forEach(function(edge){
+        var inspector = edge.view.getInspector();
+        inspector.set("pinned", true);
+        dataflow.addCard( inspector );
+      });
     }
 
     dataflow.addContext({
@@ -3182,42 +3565,6 @@
       action: showInspector,
       contexts: ["one", "twoplus"]
     });
-
-    function selectNode (graph, node) {
-      if (lastSelected !== node) {
-        lastSelected = node;
-        if ($menu.is(':visible')){
-          updateInspector();
-        }
-      }
-    }
-
-    function updateInspectorEdge (edge) {
-      $inspector.children().detach();
-      $inspector.append( edge.view.getInspect() );
-    }
-
-    function selectEdge (graph, edge) {
-      if (lastSelected !== edge) {
-        lastSelected = edge;
-        if ($menu.is(':visible')){
-          updateInspectorEdge(edge);
-        }
-      }
-    }
-
-    Inspector.listeners = function(boo){
-      if (boo) {
-        // Selection changes
-        dataflow.on("select:node", selectNode);
-        dataflow.on("select:edge", selectEdge);
-      } else {
-        // Custom
-        dataflow.off("select:node", selectNode);
-        dataflow.off("select:edge", selectEdge);
-      }
-    };
-    Inspector.listeners(true);
 
   };
 
@@ -3300,6 +3647,168 @@
 }(Dataflow) );
 
 ( function(Dataflow) {
+  var Notification = Dataflow.prototype.plugin('notification');
+  var webNotifications = window.webkitNotifications ? true : false;
+
+  // Request permission to show notifications
+  //
+  // Note that this function has to be called from some user
+  // interaction, like a click event.
+  //
+  // For example:
+  //
+  //     $button.click(function () {
+  //       dataflow.plugins.notification.requestPermission();
+  //       // Other things the button should do
+  //     });
+  Notification.requestPermission = function () {
+    if (!webNotifications) {
+      return;
+    }
+
+    if (Notification.hasPermission) {
+      // We already have the permission
+      return;
+    }
+
+    window.webkitNotifications.requestPermission();
+  };
+
+  // Check if user has granted the permission to show Web Notifications
+  Notification.hasPermission = function () {
+    if (!webNotifications) {
+      return false;
+    }
+
+    if (window.webkitNotifications.checkPermission() !== 0) {
+      return false;
+    }
+
+    return true;
+  };
+
+  // Show a notification. If user has granted the permission to show
+  // Web Notifications, then that is what will be used. Otherwise,
+  // the notification will fall back to console.log
+  Notification.notify = function (icon, title, message) {
+    if (!Notification.hasPermission()) {
+      if (!console || !console.log) {
+        // TODO: alert?
+        return;
+      }
+      console.log(title + ': ' + message);
+      return;
+    }
+    var notification = window.webkitNotifications.createNotification(icon, title, message);
+    notification.show();
+  };
+
+}(Dataflow) );
+
+(function (Dataflow) {
+  var Search = Dataflow.prototype.plugin("search");
+
+  var SearchResult = Backbone.Model.extend({
+    defaults: {
+      source: '',
+      icon: '',
+      action: null,
+      label: '',
+      description: ''
+    }
+  });
+
+  var SearchResults = Backbone.Collection.extend({
+    model: SearchResult,
+    initialize: function (models, options) {
+      if (!options) {
+        options = {};
+      }
+      this.search = options.search;
+    }
+  });
+
+  var ResultView = Backbone.View.extend({
+    tagName: 'li',
+    template: '<i class="icon-<%- icon %>"></i><span class="name"><%- label %></span><span class="description"><%- description %></span>',
+    events: {
+      'click': 'clicked'
+    },
+    render: function () {
+      this.$el.html(_.template(this.template, this.model.toJSON()));
+    },
+    clicked: function () {
+      if (!this.model.get('action')) {
+        return;
+      }
+      this.model.get('action')();
+    }
+  });
+
+  Search.initialize = function (dataflow) {
+    var $search = $('<div class="dataflow-plugin-search"><input type="search" placeholder="Search" results="5" /><button><i class="icon-reorder"></i></button></div>');
+    var $input = $search.find('input');
+    var $button = $search.find('button');
+    dataflow.$el.prepend($search);
+
+    $input.on('keyup', function (event) {
+      if (!$input.val()) {
+        return;
+      }
+      Search.search($input.val(), dataflow);
+    });
+
+    $button.on('click', function () {
+      dataflow.showPlugin('menu');
+    });
+  };
+
+  Search.search = function (text, dataflow) {
+    var Card = Dataflow.prototype.module('card');
+    var results = new SearchResults([], {
+      search: text
+    });
+    var ResultsView = new Backbone.CollectionView({
+      tagName: 'ul',
+      className: 'dataflow-plugin-search-results',
+      collection: results
+    });
+    ResultsView.itemView = ResultView;
+    var ResultsCard = new Card.Model({
+      dataflow: dataflow,
+      card: ResultsView,
+      pinned: false
+    });
+    results.on('add', function () {
+      dataflow.addCard(ResultsCard);
+    });
+
+    Search.results = results;
+
+    _.each(dataflow.plugins, function (plugin, name) {
+      if (!plugin.onSearch) {
+        return;
+      }
+      Search.searchPlugin(results, text, plugin);
+    });
+  };
+
+  Search.searchPlugin = function (results, text, plugin) {
+    plugin.onSearch(text, function (pluginResults) {
+      if (text !== Search.results.search) {
+        // Search has changed, ignore results
+        return;
+      }
+
+      pluginResults.forEach(function (result) {
+        results.add(result);
+      });
+    });
+  };
+
+}(Dataflow));
+
+( function(Dataflow) {
  
   // Dependencies
   var Node = Dataflow.prototype.module("node");
@@ -3307,13 +3816,9 @@
 
   Base.Model = Node.Model.extend({
     defaults: function(){
-      return {
-        label: "",
-        type: "base",
-        x: 200,
-        y: 100,
-        state: {}
-      };
+      var defaults = Node.Model.prototype.defaults.call(this);
+      defaults.type = "base";
+      return defaults;
     },
     initialize: function() {
       Node.Model.prototype.initialize.call(this);
@@ -3404,17 +3909,17 @@
   var Output = Dataflow.prototype.module("output");
 
   DataflowSubgraph.Model = BaseResizable.Model.extend({
-    defaults: {
-      label: "subgraph",
-      type: "dataflow-subgraph",
-      x: 200,
-      y: 100,
-      graph: {
+    defaults: function(){
+      var defaults = BaseResizable.Model.prototype.defaults.call(this);
+      defaults.label = "subgraph";
+      defaults.type = "dataflow-subgraph";
+      defaults.graph = {
         nodes:[
           {id: "1", label: "in", type:"dataflow-input",  x:180, y: 15},
           {id:"99", label:"out", type:"dataflow-output", x:975, y:500}
         ]
-      }
+      };
+      return defaults;
     },
     initialize: function() {
       BaseResizable.Model.prototype.initialize.call(this);

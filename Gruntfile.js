@@ -12,8 +12,6 @@
         },
         dist: {
           src: [
-            // Libs
-            'libs/actionbar/js/actionbar.js',
             // Main
             'src/dataflow.js',
             'src/state.js',
@@ -23,15 +21,21 @@
             "src/modules/input.js",
             "src/modules/output.js",
             "src/modules/edge.js",
-            // "src/modules/card.js",
             // Views
             "src/modules/graph-view.js",
             "src/modules/node-view.js",
             "src/modules/input-view.js",
             "src/modules/output-view.js",
             "src/modules/edge-view.js",
-            // "src/modules/card-view.js",
+            // Cards
+            "src/modules/card.js",
+            "src/modules/card-view.js",
+            "src/modules/menucard.js",
+            "src/modules/menucard-view.js",
+            "src/modules/node-inspect-view.js",
+            "src/modules/edge-inspect-view.js",
             // Plugins
+            "src/plugins/menu.js",
             "src/plugins/edit.js",
             "src/plugins/elements.js",
             "src/plugins/library.js",
@@ -39,6 +43,8 @@
             "src/plugins/log.js",
             "src/plugins/inspector.js",
             "src/plugins/keybinding.js",
+            "src/plugins/notification.js",
+            "src/plugins/search.js",
             // Nodes
             "src/nodes/base.js",
             "src/nodes/base-resizable.js",
@@ -51,7 +57,8 @@
         options: {
           banner: banner,
           report: 'min',
-          sourceMap: 'build/<%= pkg.name %>.min.js.map'
+          sourceMap: 'build/<%= pkg.name %>.min.js.map',
+          sourceMappingURL: '<%= pkg.name %>.min.js.map'
         },
         dist: {
           files: {
@@ -90,13 +97,15 @@
           },
           files: {
             'build/default/dataflow.min.css': [
+              'themes/default/font-proximanova.css',
+              'themes/default/font-awesome.css',
               'themes/default/dataflow.css',
               'themes/default/modules/node.css',
               'themes/default/modules/edge.css',
               'themes/default/modules/port.css',
-              'themes/default/modules/menu.css',
-              'themes/default/modules/actionbar.css',
-              'themes/default/modules/jqui.css'
+              'themes/default/modules/card.css',
+              'themes/default/modules/jqui.css',
+              'themes/default/modules/search.css'
             ]
           }
         }

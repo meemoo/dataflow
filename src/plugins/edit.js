@@ -19,16 +19,13 @@
     //   menu: buttons, 
     //   icon: "edit"
     // });
-
-
+    
     //
     // A
     //
 
     function selectAll(){
-      dataflow.currentGraph.view.$(".dataflow-node")
-        .addClass("ui-selected")
-        .removeClass("fade");
+      dataflow.currentGraph.nodes.invoke("set", {selected:true});
     }
     buttons.children(".selectall").click(selectAll);
     Edit.selectAll = selectAll;
@@ -36,6 +33,13 @@
     //
     // X
     //
+    
+    Edit.removeSelected = function () {
+      var toRemove = dataflow.currentGraph.nodes.where({selected:true});      
+      _.each(toRemove, function(node){
+        node.remove();
+      });
+    };
 
     function cut(){
       // Copy selected
@@ -46,15 +50,20 @@
         node.y -= 50;
       });
       // Remove selected
-      var toRemove = dataflow.currentGraph.nodes.filter(function(node){
-        return node.view.$el.hasClass("ui-selected");
-      });
-      _.each(toRemove, function(node){
-        node.remove();
-      });
+      Edit.removeSelected();
     }
     buttons.children(".cut").click(cut);
     Edit.cut = cut;
+    
+    
+
+    function removeEdge(){
+      var selected = dataflow.currentGraph.edges.where({selected:true});
+      selected.forEach(function(edge){
+        edge.remove();
+      });
+    }
+    Edit.removeEdge = removeEdge;
 
     //
     // C
@@ -64,12 +73,8 @@
     function copy(){
       copied = {};
       // nodes
-      copied.nodes = [];
-      dataflow.currentGraph.nodes.each(function(node){
-        if (node.view.$el.hasClass("ui-selected")) {
-          copied.nodes.push( JSON.parse(JSON.stringify(node)) );
-        }
-      });
+      copied.nodes = dataflow.currentGraph.nodes.where({selected:true});
+      copied.nodes = JSON.parse(JSON.stringify(copied.nodes));
       // edges
       copied.edges = [];
       dataflow.currentGraph.edges.each(function(edge){
@@ -80,7 +85,7 @@
         var connectedTarget = _.any(copied.nodes, function(node){
           return (edge.target.parentNode.id === node.id);
         });
-        if (connectedSource && connectedTarget){
+        if (connectedSource || connectedTarget){
           copied.edges.push( JSON.parse(JSON.stringify(edge)) );
         }
       });
@@ -95,13 +100,14 @@
     function paste(){
       if (copied && copied.nodes && copied.nodes.length > 0) {
         // Deselect all
-        dataflow.currentGraph.view.$(".dataflow-node").removeClass("ui-selected");
+        dataflow.currentGraph.nodes.invoke("set", {selected:false});
         // Add nodes
         _.each(copied.nodes, function(node){
           // Offset pasted
           node.x += 50;
           node.y += 50;
           node.parentGraph = dataflow.currentGraph;
+          node.selected = true;
           var oldId = node.id;
           // Make unique id
           while (dataflow.currentGraph.nodes.get(node.id)){
@@ -120,8 +126,9 @@
           }
           var newNode = new dataflow.nodes[node.type].Model(node);
           dataflow.currentGraph.nodes.add(newNode);
-          // Select it
-          newNode.view.select();
+          // Select new node
+          newNode.view.bringToTop();
+          newNode.view.highlight();
         });
         // Add edges
         _.each(copied.edges, function(edge){
@@ -144,6 +151,9 @@
 
 
 
+
+
+
     // Add context actions for actionbar
 
     dataflow.addContext({
@@ -151,25 +161,61 @@
       icon: "cut",
       label: "cut",
       action: cut,
-      contexts: ["one", "twoplus"]
+      contexts: ["node", "nodes"]
     });
     dataflow.addContext({
       id: "copy",
       icon: "copy",
       label: "copy",
       action: copy,
-      contexts: ["one", "twoplus"]
+      contexts: ["node", "nodes"]
     });
     dataflow.addContext({
       id: "paste",
       icon: "paste",
       label: "paste",
       action: paste,
-      contexts: ["one", "twoplus"]
+      contexts: ["node", "nodes"]
     });
 
+    dataflow.addContext({
+      id: "edgeRemove",
+      icon: "remove",
+      label: "remove edge",
+      action: removeEdge,
+      contexts: ["edge"]
+    });
+
+    dataflow.addContext({
+      id: "edgeRemove",
+      icon: "remove",
+      label: "remove edges",
+      action: removeEdge,
+      contexts: ["edges"]
+    });
+
+    Edit.onSearch = function (text, callback) {
+      if (!dataflow.currentGraph) {
+        return;
+      }
+      var results = [];
+      dataflow.currentGraph.nodes.each(function (node) {
+        if (node.get('label').toLowerCase().indexOf(text.toLowerCase()) === -1) {
+          return;
+        }
+        results.push({
+          source: 'edit',
+          icon: 'sign-blank',
+          label: node.get('label'),
+          description: node.type,
+          action: function () {
+            node.view.select();
+          }
+        });
+      });
+      callback(results);
+    };
 
   };
-
 
 }(Dataflow) );

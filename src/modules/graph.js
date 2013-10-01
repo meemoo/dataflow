@@ -11,7 +11,8 @@
       nodes: [],
       edges: [],
       panX: 0,
-      panY: 0
+      panY: 0,
+      zoom: 1
     },
     initialize: function() {
       this.dataflow = this.get("dataflow");
@@ -98,18 +99,9 @@
       this.dataflow.trigger("select:edge", this, edge);
     },
     selectionChanged: function () {
-      this.selected = [];
-      if (!this.view) {
-        return;
-      }
-
-      this.nodes.each( function (node) {
-        if (node.view && node.view.$el.hasClass("ui-selected")) {
-          this.selected.push(node);
-        }
-      }, this);
-
-      this.dataflow.changeContext(this.selected);
+      var selectedNodes = this.nodes.where({selected:true});
+      var selectedEdges = this.edges.where({selected:true});
+      this.dataflow.changeContext(selectedNodes, selectedEdges);
     },
     remove: function(){
       while(this.nodes.length > 0){

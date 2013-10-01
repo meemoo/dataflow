@@ -11,6 +11,8 @@
     '<label class="dataflow-port-label in" title="<%= description %>">'+
       '<%= label %>'+
     '</label>';  
+
+  var zoom = 1;
  
   Input.View = Backbone.View.extend({
     template: _.template(template),
@@ -31,18 +33,34 @@
       this.$el.html(this.template(this.model.toJSON()));
       this.$el.addClass(this.model.get("type"));
 
+      this.parent = options.parent;
+
+      // Reset hole position
+      var node = this.parent.model;
+      var graph = node.parentGraph;
+      this.listenTo(node, "change:x change:y", function(){
+        this._holePosition = null;
+      }.bind(this));
+      this.listenTo(graph, "change:panX change:panY", function(){
+        this._holePosition = null;
+      }.bind(this));
+
+      var nodeState = node.get('state');
+      if (nodeState && nodeState[this.model.id]) {
+        this.$el.addClass('hasvalue');
+      }
+
       if (!this.model.parentNode.parentGraph.dataflow.editable) {
         // No drag and drop
         return;
       }
 
       var self = this;
-      this.parent = options.parent;
       this.$(".dataflow-port-plug").draggable({
         cursor: "pointer",
         helper: function(){
           var helper = $('<span class="dataflow-port-plug in helper" />');
-          $('.dataflow-graph').append(helper);
+          self.parent.graph.$el.append(helper);
           return helper;
         },
         disabled: true,
@@ -55,7 +73,7 @@
         helper: function(){
           var helper = $('<span class="dataflow-port-plug out helper" />')
             .data({port: self.model});
-          $('.dataflow-graph').append(helper);
+          self.parent.graph.$el.append(helper);
           return helper;
         }
       });
@@ -105,15 +123,28 @@
       this.model.parentNode.on('change:state', function () {
         var state = this.model.parentNode.get('state');
         if (!state || state[this.model.id] === undefined) {
+          this.$el.removeClass('hasvalue');
           return;
         }
         this.setInputValue(input, type, state[this.model.id]);
+        this.$el.addClass('hasvalue');
       }.bind(this));
 
-      var label = $("<label>")
+      var label = $('<label class="input-type-' + type + '">')
         .append( input )
         .prepend( '<span>' + this.model.get("label") + "</span> " );
       this.$input = label;
+
+      // Update connection state on the input field
+      if (this.model.connected.length) {
+        label.addClass('connected');
+      }
+      this.model.on('connected', function () {
+        this.$input.addClass('connected');
+      }, this);
+      this.model.on('disconnected', function () {
+        this.$input.removeClass('connected');
+      }, this);
     },
     renderInput: function (type, options) {
       var input;
@@ -127,7 +158,7 @@
         input.change(this.inputSelect.bind(this));
         return input;
       }
-
+      
       switch (type) {
         case 'int':
         case 'float':
@@ -152,7 +183,7 @@
           }
           return input;
         case 'boolean':
-          input = $('<input type="checkbox" class="input input-boolean">');
+          input = $('<input type="checkbox" class="input input-boolean"><div class="input-boolean-checkbox"/>');
           input.change(this.inputBoolean.bind(this));
           return input;
         case 'object':
@@ -242,6 +273,8 @@
       });
       var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
       graphSVGElement.appendChild(this.previewEdgeNewView.el);
+
+      zoom = this.model.parentNode.parentGraph.get('zoom');
     },
     newEdgeDrag: function(event, ui){
       if (!this.previewEdgeNewView || !ui) {
@@ -250,9 +283,8 @@
       // Don't drag node
       event.stopPropagation();
 
-      var state = this.model.parentNode.parentGraph.dataflow.get('state');
-      ui.position.top = event.clientY / state.get('zoom');
-      ui.position.left = event.clientX / state.get('zoom');
+      ui.position.top = event.clientY / zoom;
+      ui.position.left = event.clientX / zoom;
       var df = this.model.parentNode.parentGraph.view.el;
       ui.position.left += df.scrollLeft;
       ui.position.top += df.scrollTop;
@@ -273,11 +305,14 @@
     },
     getTopEdge: function() {
       var topEdge;
+      var topZ = -1;
       if (this.isConnected){
-        // Will get the last (top) matching edge
+        // Will get the top matching edge
         this.model.parentNode.parentGraph.edges.each(function(edge){
-          if(edge.target === this.model){
+          var thisZ = edge.get("z");
+          if(edge.target === this.model && thisZ > topZ ){
             topEdge = edge;
+            topZ = thisZ;
           }
           if (edge.view) {
             edge.view.unhighlight();
@@ -318,6 +353,8 @@
           });
           var graphSVGElement = this.model.parentNode.parentGraph.view.$('.dataflow-svg-edges')[0];
           graphSVGElement.appendChild(this.previewEdgeChangeView.el);
+          
+          zoom = this.model.parentNode.parentGraph.get('zoom');
         }
       }
     },
@@ -373,17 +410,22 @@
       // Tells changeEdgeStop to remove to old edge
       ui.helper.data("removeChangeEdge", (oldLength < this.model.parentNode.parentGraph.edges.length));
     },
+    _holePosition: null,
     holePosition: function(){
-      var holePos = this.$(".dataflow-port-hole").offset();
-      if (!this.parent) {
-        this.parent = this.options.parent;
+      // this._holePosition gets reset when graph panned or node moved
+      if (!this._holePosition) {
+        if (!this.parent){
+          this.parent = this.options.parent;
+        }
+        var node = this.parent.model;
+        var graph = node.parentGraph;
+        var $graph = this.parent.graph.$el;
+        var index = this.$el.index();
+        var left = graph.get("panX") + node.get("x") + 18;
+        var top = graph.get("panY") + node.get("y") + 48 + index*20;
+        this._holePosition = { left:left, top:top };
       }
-      var $graph = this.parent.graph.$el;
-      var graphPos = $graph.offset();
-      return {
-        left: $graph.scrollLeft() + holePos.left - graphPos.left + 5,
-        top: $graph.scrollTop() + holePos.top - graphPos.top + 8
-      };
+      return this._holePosition;
     },
     isConnected: false,
     plugSetActive: function(){
@@ -394,10 +436,20 @@
       this.isConnected = true;
     },
     plugCheckActive: function(){
-      var isConnected = this.model.parentNode.parentGraph.edges.some(function(edge){
-        return (edge.target === this.model);
+      var topEdge;
+      var topEdgeZ = -1;
+      this.model.parentNode.parentGraph.edges.each(function(edge){
+        if (edge.target === this.model) {
+          var z = edge.get("z");
+          if (z > topEdgeZ) {
+            topEdge = edge;
+            topEdgeZ = z;
+          }
+        }
       }, this);
-      if (!isConnected) {
+      if (topEdge) {
+        this.bringToTop(topEdge);
+      } else {
         try {
           this.$(".dataflow-port-plug").draggable("disable");
         } catch (e) { }

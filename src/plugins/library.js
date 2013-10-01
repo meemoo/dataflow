@@ -5,8 +5,10 @@
   Library.initialize = function(dataflow){
 
     var $container = $('<div class="dataflow-plugin-overflow">');
-    var $library = $('<ul class="dataflow-plugin-library" style="list-style:none; padding:0; margin:15px 0;" />');
+    var $library = $('<ul class="dataflow-plugin-library" />');
     $container.append($library);
+
+    Library.excluded = ["base", "base-resizable"];
 
     var addNode = function(node, x, y) {
       return function(){
@@ -14,7 +16,7 @@
         dataflow.currentGraph.view.$(".dataflow-node").removeClass("ui-selected");
 
         // Current zoom
-        zoom = dataflow.get('state').get('zoom');
+        zoom = dataflow.currentGraph.get('zoom');
 
         // Find vacant id
         var id = 1;
@@ -44,8 +46,14 @@
 
     };
 
-    var addLibraryItem = function(node, name) {
-      var addButton = $('<a class="button">+</a>')
+    var itemTemplate = '<li><a class="button add"><i class="icon-plus"></i></a><span class="name"><%- name %></span><span class="description"><%-description %></span></li>';
+
+    var addLibraryItem = function(name, node) {
+      var $item = $(_.template(itemTemplate, {
+        name: name,
+        description: node.description
+      }));
+      var addButton = $('.button', $item)
         .attr("title", "click or drag")
         .draggable({
           helper: function(){
@@ -58,21 +66,22 @@
           }
         })
         .click(addNode(node));
-      var item = $("<li />")
-        .append(addButton)
-        .append(name);
-      $library.append(item);
+      $library.append($item);
     };
 
     var update = function(options){
       options = options ? options : {};
-      options.exclude = options.exclude ? options.exclude : ["base", "base-resizable"];
+      Library.excluded = options.exclude ? options.exclude : Library.excluded;
 
       $library.empty();
-      _.each(dataflow.nodes, function(node, index){
-        if (options.exclude.indexOf(index) === -1) {
-          addLibraryItem(node, index);
+      var sortedLibrary = _.sortBy(Object.keys(dataflow.nodes), function (name) {
+        return name;
+      });
+      _.each(sortedLibrary, function (name) {
+        if (Library.excluded.indexOf(name) !== -1) {
+          return;
         }
+        addLibraryItem(name, dataflow.nodes[name]);
       });
     };
     update();
@@ -81,10 +90,33 @@
       id: "library", 
       name: "", 
       menu: $container, 
-      icon: "plus"
+      icon: "plus",
+      pinned: false
     });
 
     Library.update = update;
+
+    Library.onSearch = function (text, callback) {
+      var results = [];
+      _.each(dataflow.nodes, function (node, name) {
+        if (Library.excluded.indexOf(name) !== -1) {
+          return;
+        }
+        if (name.toLowerCase().indexOf(text.toLowerCase()) === -1) {
+          return;
+        }
+        results.push({
+          source: 'library',
+          icon: 'plus',
+          action: function () {
+            addNode(node).call();
+          },
+          label: name,
+          description: node.description
+        });
+      });
+      callback(results);
+    };
 
   };
 

@@ -9,17 +9,17 @@
   var Output = Dataflow.prototype.module("output");
 
   DataflowSubgraph.Model = BaseResizable.Model.extend({
-    defaults: {
-      label: "subgraph",
-      type: "dataflow-subgraph",
-      x: 200,
-      y: 100,
-      graph: {
+    defaults: function(){
+      var defaults = BaseResizable.Model.prototype.defaults.call(this);
+      defaults.label = "subgraph";
+      defaults.type = "dataflow-subgraph";
+      defaults.graph = {
         nodes:[
           {id: "1", label: "in", type:"dataflow-input",  x:180, y: 15},
           {id:"99", label:"out", type:"dataflow-output", x:975, y:500}
         ]
-      }
+      };
+      return defaults;
     },
     initialize: function() {
       BaseResizable.Model.prototype.initialize.call(this);

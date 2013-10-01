@@ -9,8 +9,7 @@
   var template = 
     '<div class="outer" />'+
     '<div class="dataflow-node-header">'+
-      '<h1 class="dataflow-node-title"><span class="label"><%- label %></span> <input class="label-edit" value="<%- label %>" type="text" /></h1>'+
-      '<button title="properties" class="dataflow-node-inspect icon-cog"></button>'+
+      '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>"><%- label %></h1>'+
     '</div>'+
     '<div class="dataflow-node-ports">'+
       '<div class="dataflow-node-ins"></div>'+
@@ -19,15 +18,6 @@
     '</div>'+
     '<div class="dataflow-node-inner"></div>';
 
-  var inspectTemplate = 
-    '<h1 class="dataflow-node-inspector-title"><%- label %></h1>'+
-    // '<div class="dataflow-node-inspector-controls">'+
-    //   '<button class="dataflow-node-delete">delete</button>'+
-    //   '<button class="dataflow-node-save">save</button>'+
-    //   '<button class="dataflow-node-cancel">cancel</button>'+
-    // '</div>'+
-    '<div class="dataflow-node-inspector-inputs"></div>';
-
   var innerTemplate = "";
 
   var zoom;
@@ -35,18 +25,13 @@
   Node.View = Backbone.View.extend({
     template: _.template(template),
     innerTemplate: _.template(innerTemplate),
-    inspectTemplate: _.template(inspectTemplate),
     className: "dataflow-node",
     events: function(){
       return {
-        "click .dataflow-node-inspect": "showInspector",
         "click .dataflow-node-header":  "select",
         "dragstart": "dragStart",
         "drag":      "drag",
         "dragstop":  "dragStop"
-        // "click .dataflow-node-delete": "removeModel",
-        // "click .dataflow-node-cancel": "hideControls",
-        // "click .dataflow-node-save":   "saveLabel"
       };
     },
     initialize: function(options) {
@@ -89,12 +74,15 @@
       // Listener to reset inputs list
       // this.inputs.on("change", function(input){
       //   this.$inputsList = null;
-      //   console.log("change");
       // }, this);
 
       // Listen for graph panning
-      // this.model.parentGraph.on("change:panX change:panY", this.bumpPosition, this);
       this.listenTo(this.model.parentGraph, "change:panX change:panY", this.bumpPosition);
+
+      // Selected listener
+      this.listenTo(this.model, "change:selected", this.selectedChanged);
+
+      this.listenTo(this.model, "change:label", this.changeLabel);
 
       this.$inner = this.$(".dataflow-node-inner");
     },
@@ -116,11 +104,11 @@
     },
     _alsoDrag: [],
     _dragDelta: {},
-    $dragHelpers: null,
+    $dragHelpers: $('<div class="dataflow-nodes-helpers">'),
     dragStart: function(event, ui){
       if (!ui){ return; }
       // Select this
-      if (!this.$el.hasClass("ui-selected")){
+      if (!this.model.get("selected")){
         this.select(event, true);
       }
 
@@ -128,39 +116,36 @@
       event.stopPropagation();
 
       // Current zoom
-      zoom = this.model.parentGraph.dataflow.get('state').get('zoom');
+      zoom = this.model.parentGraph.get('zoom');
+
+      this.$dragHelpers.css({
+        transform: "translate3d(0,0,0)"
+      });
+      this.$el.parent().append( this.$dragHelpers );
 
       // Make helper and save start position of all other selected
       var self = this;
-      this._alsoDrag = [];
+      this._alsoDrag = this.model.collection.where({selected:true});
 
-      this.$dragHelpers = $('<div class="dataflow-nodes-helpers">');
-      this.$el.parent().append( this.$dragHelpers );
+      _.each(this._alsoDrag, function(node){
+        var $el = node.view.$el;
+        // Add helper
+        var helper = $('<div class="dataflow-node helper">').css({
+          width: $el.width(),
+          height: $el.height(),
+          left: parseInt($el.css('left'), 10),
+          top: parseInt($el.css('top'), 10)
+        });
+        this.$dragHelpers.append(helper);
+      }, this);
 
-      var helper = $('<div class="dataflow-node helper">').css({
-        width: this.$el.width(),
-        height: this.$el.height(),
-        left: parseInt(this.$el.css('left'), 10),
-        top: parseInt(this.$el.css('top'), 10)
-      });
-      this.$dragHelpers.append(helper);
-
-      this.model.parentGraph.view.$(".ui-selected").each(function() {
-        if (self.el !== this) {
-          var el = $(this);
-          // Add helper
-          var helper = $('<div class="dataflow-node helper">').css({
-            width: el.width(),
-            height: el.height(),
-            left: parseInt(el.css('left'), 10),
-            top: parseInt(el.css('top'), 10)
-          });
-          self.$dragHelpers.append(helper);
-          el.data("ui-draggable-alsodrag-helper", helper);
-          // Add to array
-          self._alsoDrag.push(el);
-        }
-      });
+    },
+    changeLabel: function () {
+      var label = this.model.get("label");
+      var type = this.model.get("type");
+      this.$(".dataflow-node-title")
+        .text( label )
+        .attr("title", label + ": " + type);
     },
     drag: function(event, ui){
       if (!ui){ return; }
@@ -182,20 +167,16 @@
       var panY = this.model.parentGraph.get("panY");
       var deltaX = (ui.position.left - ui.originalPosition.left) / zoom;
       var deltaY = (ui.position.top - ui.originalPosition.top) / zoom;
-      this.moveToPosition(this.model.get("x") + deltaX, this.model.get("y") + deltaY);
+      // this.moveToPosition(this.model.get("x") + deltaX, this.model.get("y") + deltaY);
       // Also drag
       if (this._alsoDrag.length) {
-        _.each(this._alsoDrag, function(el){
-          var initial = el.data("ui-draggable-alsodrag-initial");
-          var helper = el.data("ui-draggable-alsodrag-helper");
-          var node = el.data("dataflow-node-view");
-          // Move other node
-          node.moveToPosition(node.model.get("x") + deltaX, node.model.get("y") + deltaY);
-          el.data("ui-draggable-alsodrag-helper", null);
-        });
+        _.each(this._alsoDrag, function(node){
+          node.view.moveToPosition(node.get("x") + deltaX, node.get("y") + deltaY);
+        }, this);
         this._alsoDrag = [];
       }
       // Remove helpers
+      this.$dragHelpers.empty();
       this.$dragHelpers.remove();
     },
     bumpPosition: function () {
@@ -215,28 +196,6 @@
       });
       this.bumpPosition();
     },
-    showInspector: function(){
-      this.model.parentGraph.dataflow.showMenu("inspector");
-      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
-      $inspector.children().detach();
-      $inspector.append( this.getInputList() );
-      
-      this.highlightEdges();
-    },
-    highlightEdges: function(){
-      
-    },
-    hideControls: function(){
-    },
-    saveLabel: function(){
-      // Save new label
-      var newLabel = this.$(".title .label-edit").val();
-      if (this.model.get("label") !== newLabel) {
-        this.model.set("label", newLabel);
-        this.$(".title .label").text(newLabel);
-      }
-      this.hideControls();
-    },
     removeModel: function(){
       this.model.remove();
     },
@@ -255,52 +214,88 @@
       if (event) {
         event.stopPropagation();
       }
-      // De/select
-      if (deselectOthers) {
-        this.model.parentGraph.view.$(".ui-selected").removeClass("ui-selected");
+      var toggle = false;
+      var selected = this.model.get("selected");
+      if (event && (event.ctrlKey || event.metaKey)) {
+        toggle = true;
+        selected = !selected;
+        this.model.set("selected", selected);
+        if (selected) {
+          this.showInspector(true);
+        } else {
+          this.fade();
+          this.hideInspector();
+        }
+      } else {
+        // Deselect all
+        this.model.parentGraph.edges.invoke("set", {selected:false});
+        this.model.parentGraph.nodes.invoke("set", {selected:false});
+        this.model.parentGraph.view.fade();
+        selected = true;
+        this.model.set("selected", true);
+        this.showInspector();
       }
-      this.$el.addClass("ui-selected");
       this.bringToTop();
-      // Fade / highlight
-      this.model.parentGraph.view.fade();
-      this.unfade();
-      // Trigger
-      this.model.trigger("select");
+      this.model.parentGraph.view.fadeEdges();
       this.model.parentGraph.trigger("selectionChanged");
+    },
+    inspector: null,
+    getInspector: function () {
+      if (!this.inspector) {
+        var inspect = new Node.InspectView({model:this.model});
+        var Card = Dataflow.prototype.module("card");
+        this.inspector = new Card.Model({
+          dataflow: this.model.parentGraph.dataflow,
+          card: inspect
+        });
+      }
+      return this.inspector;
+    },
+    showInspector: function(leaveUnpinned){
+      this.model.parentGraph.dataflow.addCard( this.getInspector(), leaveUnpinned );
+    },
+    hideInspector: function () {
+      this.model.parentGraph.dataflow.removeCard( this.getInspector() );
     },
     fade: function(){
       this.$el.addClass("fade");
+      this.$el.removeClass("ui-selected");
     },
     unfade: function(){
       this.$el.removeClass("fade");
-      // Unfade related edges
-      var self = this;
-      this.model.parentGraph.edges.each(function(edge){
-        if (edge.source.parentNode.id === self.model.id || edge.target.parentNode.id === self.model.id) {
-          if (edge.view) {
-            edge.view.unfade();
-          }
-        }
-      });
     },
-    $inputList: null,
-    getInputList: function() {
-      if (!this.$inputList) {
-        this.$inputList = $("<div>");
-        var model = this.model.toJSON();
-        this.$inputList.html( this.inspectTemplate(model) );
-        if (model.id !== model.label) {
-          this.$inputList.children(".dataflow-node-inspector-title").prepend(model.id + ": ");
-        }
-        var $inputs = this.$inputList.children(".dataflow-node-inspector-inputs");
-        this.model.inputs.each(function(input){
-          if (input.view && input.view.$input) {
-            $inputs.append( input.view.$input );
-          }
-        }, this);
+    selectedChanged: function () {
+      if (this.model.get("selected")) {
+        this.highlight();
+      } else {
+        this.unhighlight();
       }
-      return this.$inputList;
-    }
+    },
+    highlight: function () {
+      this.$el.removeClass("fade");
+      this.$el.addClass("ui-selected");
+    },
+    unhighlight: function () {
+      this.$el.removeClass("ui-selected");
+    }//,
+    // $inputList: null,
+    // getInputList: function() {
+    //   if (!this.$inputList) {
+    //     this.$inputList = $("<div>");
+    //     var model = this.model.toJSON();
+    //     this.$inputList.html( this.inspectTemplate(model) );
+    //     if (model.id !== model.label) {
+    //       this.$inputList.children(".dataflow-node-inspector-title").prepend(model.id + ": ");
+    //     }
+    //     var $inputs = this.$inputList.children(".dataflow-node-inspector-inputs");
+    //     this.model.inputs.each(function(input){
+    //       if (input.view && input.view.$input) {
+    //         $inputs.append( input.view.$input );
+    //       }
+    //     }, this);
+    //   }
+    //   return this.$inputList;
+    // }
   });
 
 }(Dataflow) );

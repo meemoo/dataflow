@@ -1,0 +1,86 @@
+.dataflow-plugin-search {
+  z-index: 3;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  left: 20px;
+  background-color: hsla(225, 10%, 15%, .98);
+  border: 1px solid hsl(220, 10%, 11%);
+  box-shadow: inset 0 1px 1px hsla(0, 0%, 66%, 0.1), 0 1px 3px 0px hsla(0, 0%, 0%, 0.3), 0 3px 13px 0px hsla(0, 0%, 0%, 0.1);  
+  margin-bottom: 3px;
+  color: hsl(0, 100%, 100%);
+  text-shadow: 0 1px hsl(0, 0%, 0%);
+  width: 300px;
+  height: 36px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  padding: none;
+}
+
+.dataflow-plugin-search input {
+  color: hsl(220, 10%, 65%);
+  background-color: hsla(240, 7%, 11%, .8);
+  border: 1px solid hsla(0, 0%, 63%, .1);
+  box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, .2);
+  width: 260px;
+  padding: 0px;
+  margin: 0px;
+  line-height: 36px;
+  margin-right: 10px;
+  font-size: 16px;
+  border-radius: 3px;
+}
+
+.dataflow-plugin-search input:focus {
+  color: hsl(220, 10%, 85%);
+  background-color: hsl(0, 100%, 50%);
+  box-shadow: 0px 2px 4px hsla(0, 0%, 40%, .1);
+  background-color: hsla(240, 7%, 8%, 1);
+  border: 1px solid hsla(0, 0%, 94%, .1);
+}
+
+.dataflow-plugin-search button {
+  color: hsl(206, 54%, 51%);
+  padding: 1px;
+  border: none;
+  background-color: transparent;
+  font-size: 20px;
+}
+
+.dataflow-plugin-search-results {
+  max-height: 300px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  list-style: none;
+  padding: 2px 2px;
+  margin: 0px;
+  padding-top: 20px;
+}
+
+.dataflow-plugin-search-results li {
+  padding: 10px;
+  border-top: 1px solid hsla(0, 0%, 0%, .1);
+  border-bottom: 1px solid hsl(220, 10%, 16%);
+  clear: right;
+}
+
+.dataflow-plugin-search-results li:last-child {
+  margin-bottom: 0px;
+}
+
+.dataflow-plugin-search-results li i {
+  float: right;
+  margin-left: 4px;
+  padding: 2px 5px;
+  background-color: transparent;
+  border: none;
+  color: hsl(206, 54%, 51%);
+}
+.dataflow-plugin-search-results li .name {
+  font-weight: bold;
+  display: block;
+}
+.dataflow-plugin-search-results li .description {
+  color: hsl(220, 10%, 45%);
+}

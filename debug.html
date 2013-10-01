@@ -15,9 +15,6 @@
   <script src="libs/backbone.js"></script>
   <script src="libs/hammer.min.js"></script>
 
-  <!-- Built-in Libraries -->
-  <script src="libs/actionbar/js/actionbar.js"></script>
-
   <!-- Dataflow core -->
   <script src="src/dataflow.js"></script>
   <script src="src/state.js"></script>
@@ -28,14 +25,20 @@
   <script src="src/modules/input.js"></script>
   <script src="src/modules/output.js"></script>
   <script src="src/modules/edge.js"></script>
-  <!-- <script src="src/modules/card.js"></script> -->
 
   <script src="src/modules/graph-view.js"></script>
   <script src="src/modules/node-view.js"></script>
   <script src="src/modules/input-view.js"></script>
   <script src="src/modules/output-view.js"></script>
   <script src="src/modules/edge-view.js"></script>
-  <!-- <script src="src/modules/card-view.js"></script> -->
+
+  <!-- Cards -->
+  <script src="src/modules/card.js"></script>
+  <script src="src/modules/card-view.js"></script>
+  <script src="src/modules/menucard.js"></script>
+  <script src="src/modules/menucard-view.js"></script>
+  <script src="src/modules/node-inspect-view.js"></script>
+  <script src="src/modules/edge-inspect-view.js"></script>
 
   <!-- Nodes (some basics to extend) -->
   <script src="src/nodes/base.js"></script>
@@ -47,30 +50,37 @@
   <script src="src/nodes/dataflow-subgraph.js"></script>
 
   <!-- Plugins -->
+  <script src="src/plugins/menu.js"></script>
   <script src="src/plugins/edit.js"></script>
   <script src="src/plugins/library.js"></script>
   <script src="src/plugins/view-source.js"></script>
   <script src="src/plugins/log.js"></script>
   <script src="src/plugins/inspector.js"></script>
   <script src="src/plugins/keybinding.js"></script>
+  <script src="src/plugins/notification.js"></script>
+  <script src="src/plugins/search.js"></script>
 
   <!-- Custom Elements -->
   <link rel="import" href="src/elements/dataflow-card-edge.html">
 
   <!-- Style -->
+  <!-- Fonts -->
+  <link rel="stylesheet" href="themes/default/font-proximanova.css">
+  <link rel="stylesheet" href="themes/default/font-awesome.css">
+  <!-- Theme -->
   <link rel="stylesheet" href="themes/default/dataflow.css">
   <link rel="stylesheet" href="themes/default/modules/node.css">
   <link rel="stylesheet" href="themes/default/modules/edge.css">
   <link rel="stylesheet" href="themes/default/modules/port.css">
-  <link rel="stylesheet" href="themes/default/modules/menu.css">
-  <link rel="stylesheet" href="themes/default/modules/actionbar.css">
+  <link rel="stylesheet" href="themes/default/modules/card.css">
   <link rel="stylesheet" href="themes/default/modules/jqui.css">
+  <link rel="stylesheet" href="themes/default/modules/search.css">
 
 </head>
 
-<body>
+<body >
 
-  <div id="graph1" style="position:absolute; overflow:auto; top:10px; right:10px; bottom:10px; left:10px; border: 1px grey dotted;"></div>
+  <div id="graph1" style="position:absolute; overflow:auto; top:0px; right:0px; bottom:0px; left:0px; border: 1px solid black;"></div>
 
   <!-- Testing -->
   <script>
@@ -89,6 +99,15 @@
       );
       g.trigger("change");
 
+      // Populate some fake log events
+      setInterval(function () {
+        dataflow.graph.get('edges').at(1).get('log').add({
+          type: 'data',
+          data: Math.random()
+        });
+      }, 500);
+
+      window.d = $(".dataflow").data("dataflow");
   });
   </script>
 

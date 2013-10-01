@@ -15,6 +15,25 @@
     }
     return svg;
   };
+<<<<<<< HEAD
+=======
+
+  var addClass = function (el, name) {
+    if (el.classList) {
+      el.classList.add(name);
+    } else {
+      el.className = "dataflow-edge " + name;
+    }
+  };
+
+  var removeClass = function (el, name) {
+    if (el.classList) {
+      el.classList.remove(name);
+    } else {
+      el.className = "dataflow-edge"; 
+    }
+  };
+>>>>>>> master
   
   Edge.View = Backbone.View.extend({
     tagName: "div",
@@ -77,6 +96,9 @@
         self.click(event);
       });
 
+      // Listen for select
+      this.listenTo(this.model, "change:selected", this.selectedChange);
+
     },
     render: function(previewPosition){
       var source = this.model.source;
@@ -87,6 +109,7 @@
       }
       else {
         // Preview 
+        // TODO: match zoom
         dataflowParent = this.model.parentGraph.dataflow.$el.parent().position();
         graph = this.model.parentGraph.view.$el;
         this.positions.from = {
@@ -106,10 +129,11 @@
         };
       }
       // No half-pixels
-      this.positions.from.left = Math.floor(this.positions.from.left);
-      this.positions.from.top = Math.floor(this.positions.from.top);
-      this.positions.to.left = Math.floor(this.positions.to.left);
-      this.positions.to.top = Math.floor(this.positions.to.top);
+      // this.positions.from.left = Math.floor(this.positions.from.left);
+      // this.positions.from.top = Math.floor(this.positions.from.top);
+      // this.positions.to.left = Math.floor(this.positions.to.left);
+      // this.positions.to.top = Math.floor(this.positions.to.top);
+ 
       // Make and apply the path
       var pathD = this.edgePath(this.positions);
       this.elEdge.setAttribute("d", pathD);
@@ -120,19 +144,27 @@
       }
     },
     fade: function(){
-      if (this.model.source.parentNode.view.$el.hasClass("ui-selected") || this.model.target.parentNode.view.$el.hasClass("ui-selected")) {
+      if (this.model.source.parentNode.get("selected") || this.model.target.parentNode.get("selected")) {
         return;
       }
-      this.el.setAttribute("class", "dataflow-edge fade");
+      addClass(this.el, "fade");
     },
     unfade: function(){
-      this.el.setAttribute("class", "dataflow-edge");
+      removeClass(this.el, "fade");
+    },
+    selectedChange: function () {
+      if (this.model.get("selected")){
+        this.highlight();
+      } else {
+        this.unhighlight();
+      }
+      this.model.parentGraph.trigger("selectionChanged");
     },
     highlight: function(){
-      this.el.setAttribute("class", "dataflow-edge highlight");
+      addClass(this.el, "highlight");
     },
     unhighlight: function(){
-      this.el.setAttribute("class", "dataflow-edge");
+      removeClass(this.el, "highlight");
     },
     edgePath: function(positions){
       var extend = 20;
@@ -219,12 +251,30 @@
       if (event) {
         event.stopPropagation();
       }
-      // Highlight
-      this.highlight();
-      this.bringToTop();
-      this.model.trigger("select");
+      var selected, leaveUnpinned;
+      if (event && (event.ctrlKey || event.metaKey)) {
+        // Toggle
+        selected = this.model.get("selected");
+        selected = !selected;
+        leaveUnpinned = true;
+      } else {
+        // Deselect all and select this
+        selected = true;
+        this.model.parentGraph.nodes.invoke("set", {selected:false});
+        this.model.collection.invoke("set", {selected:false});
+      }
+      this.model.set({selected:selected});
+      if (selected) {
+        this.bringToTop();
+        this.model.trigger("select");
+        this.unfade();
+        this.showInspector(leaveUnpinned);
+      } else {
+        this.hideInspector();
+      }
       // Fade all and highlight related
       this.model.parentGraph.view.fade();
+<<<<<<< HEAD
       this.unfade();
       this.showInspector();
     },
@@ -233,21 +283,21 @@
       var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
       $inspector.children().detach();
       $inspector.append( this.getInspect() );
+=======
+>>>>>>> master
     },
     bringToTop: function(){
-      // this.model.bringToTop();
+      this.model.bringToTop();
       var parent = this.el.parentNode;
       if (parent) {
         parent.appendChild(this.el);
       }
 
-      // this.model.source.parentNode.view.unfade();
-      // this.model.target.parentNode.view.unfade();
-
       // Port hole color
       this.model.source.view.bringToTop(this.model);
       this.model.target.view.bringToTop(this.model);
     },
+<<<<<<< HEAD
     // inspect: null,
     getInspect: function() {
       // if (!this.inspect) {
@@ -257,7 +307,27 @@
       var inspect = document.createElement("dataflow-card-edge");
       inspect.edge = this.model;
       return inspect;
+=======
+    inspector: null,
+    getInspector: function () {
+      if (!this.inspector) {
+        var inspect = new Edge.InspectView({model:this.model});
+        var Card = Dataflow.prototype.module("card");
+        this.inspector = new Card.Model({
+          dataflow: this.model.parentGraph.dataflow,
+          card: inspect
+        });
+      }
+      return this.inspector;
+    },
+    showInspector: function(leaveUnpinned){
+      this.model.parentGraph.dataflow.addCard( this.getInspector(), leaveUnpinned );
+    },
+    hideInspector: function () {
+      this.model.parentGraph.dataflow.removeCard( this.getInspector() );
+>>>>>>> master
     }
+
   });
 
 }(Dataflow) );

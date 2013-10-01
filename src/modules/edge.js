@@ -2,15 +2,30 @@
 
   var Edge = Dataflow.prototype.module("edge");
 
+  var EdgeEvent = Backbone.Model.extend({
+    defaults: {
+      "type": "data",
+      "data": "",
+      "group": ""
+    }
+  });
+
+  var EdgeEventLog = Backbone.Collection.extend({
+    model: EdgeEvent
+  });
+
   Edge.Model = Backbone.Model.extend({
     defaults: {
       "z": 0,
-      "route": 0
+      "route": 0,
+      "selected": false,
+      "log": null
     },
     initialize: function() {
       var nodes, sourceNode, targetNode;
       var preview = this.get("preview");
       this.parentGraph = this.get("parentGraph");
+      this.attributes.log = new EdgeEventLog();
       if (preview) {
         // Preview edge
         nodes = this.get("parentGraph").nodes;
@@ -42,7 +57,7 @@
         // Set up listener
         sourceNode.on("send:"+this.source.id, this.send, this);
 
-        // this.bringToTop();
+        this.bringToTop();
 
         // Selection event
         this.on("select", this.select, this);
@@ -61,6 +76,9 @@
       return ( this.source.parentNode === node || this.target.parentNode === node );
     },
     toString: function(){
+      if (this.id) {
+        return this.id;
+      }
       return this.get("source").node+":"+this.get("source").port+"::"+this.get("target").node+":"+this.get("target").port;
     },
     toJSON: function(){
@@ -70,31 +88,27 @@
         route: this.get("route")
       };
     },
-    // bringToTop: function(){
-    //   var topZ = 0;
-    //   this.parentGraph.edges.each(function(edge){
-    //     if (edge !== this) {
-    //       var thisZ = edge.get("z");
-    //       if (thisZ > topZ) {
-    //         topZ = thisZ;
-    //       }
-    //       if (edge.view){
-    //         edge.view.unhighlight();
-    //       }
-    //     }
-    //   }, this);
-    //   this.set("z", topZ+1);
-    //   if (this.collection) {
-    //     this.collection.sort();
-    //   }
-    // },
+    bringToTop: function(){
+      var topZ = 0;
+      this.parentGraph.edges.each(function(edge){
+        if (edge !== this) {
+          var thisZ = edge.get("z");
+          if (thisZ > topZ) {
+            topZ = thisZ;
+          }
+          if (edge.view){
+            edge.view.unhighlight();
+          }
+        }
+      }, this);
+      this.set("z", topZ+1);
+    },
     remove: function(){
       this.source.disconnect(this);
       this.target.disconnect(this);
       if (this.collection) {
         this.collection.remove(this);
       }
-
       // Remove listener
       this.source.parentNode.off("send:"+this.source.id, this.send, this);
     }

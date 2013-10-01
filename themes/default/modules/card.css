@@ -1,0 +1,372 @@
+
+.dataflow-card ::-webkit-scrollbar {
+    width: 5px;
+}
+ 
+/* Track */
+.dataflow-card ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+ 
+/* Handle */
+.dataflow-card ::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    background: hsla(0,0%,0%,.2); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+.dataflow-card ::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+  background:none;
+}
+
+.dataflow-cards {
+  z-index: 4;
+  position: absolute;
+  top: 70px;
+  left: 20px;
+  width: 300px;
+  /* HACK */
+  max-height: 70%;
+  overflow: visible;
+}
+
+
+.dataflow-card {
+  position: relative;
+  
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background-color: hsla(225, 10%, 15%, .98);
+  border: 1px solid hsl(220, 10%, 11%);
+  box-shadow: inset 0 1px 1px hsla(0, 0%, 66%, 0.1), 0 1px 3px 0px hsla(0, 0%, 0%, 0.3), 0 3px 13px 0px hsla(0, 0%, 0%, 0.1);
+  margin-bottom: 12px;
+  color: hsl(0, 100%, 100%);
+  text-shadow: 0 1px hsl(0, 0%, 0%);
+}
+
+.dataflow-card-control {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.dataflow-card-control button, .dataflow-card-control button.active {
+  background: none;
+  border: none;
+}
+.dataflow-card-control button:before {
+  color: hsl(220, 10%, 45%);
+}
+.dataflow-card-control button.active:before {
+  color: hsl(206, 54%, 51%);
+}
+
+/* */
+.dataflow-plugin-log {
+  padding: 10px;
+}
+.dataflow-plugin-log ol { counter-reset: item; margin:0px;}
+.dataflow-plugin-log li { 
+  display: block;
+  margin: .39em 0px; 
+  font-size: 11px;
+}
+.dataflow-plugin-log li:before { 
+  content: counter(item) ". "; counter-increment: item; 
+  color: hsl(220, 10%, 45%); 
+  width: 2em;
+  display: block;
+  float: left;
+}
+
+/* */
+.dataflow-plugin-view-source textarea.code {
+  background-color: hsla(0, 0%, 0%, 0);
+  border: none;
+  padding: 10px;
+  color: hsl(220, 10%, 45%); 
+}
+.dataflow-plugin-view-source textarea.code:focus {
+  outline: none;
+}
+
+/* */
+.dataflow-plugin-library {
+  max-height: 300px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  list-style: none;
+  padding: 2px 2px;
+  margin: 0px;
+  padding-top: 20px;
+}
+
+.dataflow-plugin-library li {
+  padding: 10px;
+  border-top: 1px solid hsla(0, 0%, 0%, .1);
+  border-bottom: 1px solid hsl(220, 10%, 16%);
+  clear: right;
+}
+
+.dataflow-plugin-library li:last-child {
+  margin-bottom: 0px;
+}
+
+.dataflow-plugin-library li .button {
+  float: right;
+  margin-left: 4px;
+  padding: 2px 5px;
+  background-color: transparent;
+  border: none;
+  color: hsl(206, 54%, 51%);
+}
+.dataflow-plugin-library li .name {
+  font-weight: bold;
+  display: block;
+}
+.dataflow-plugin-library li .description {
+  color: hsl(220, 10%, 45%);
+}
+
+.dataflow-plugin-inspector-title {
+  padding: 3px 20px;
+  border-bottom: 1px solid hsla(220, 20%, 0%, .3);
+}
+.dataflow-plugin-inspector-title h1{
+  font-size:18px;
+}
+.dataflow-plugin-inspector-title h2{
+  font-size:16px;
+}
+
+.dataflow-node-inspector-inputs label {
+  position:relative;
+  box-sizing: border-box;
+  min-height: 43px;
+  padding: 0 20px;
+  /*border-top: 1px solid hsla(0, 0%, 0%, .1);*/
+  border-bottom: 1px solid hsl(220, 10%, 14%);
+  display: block;
+  background-color: hsla(0, 100%, 0%, 0.1);
+}
+
+.dataflow-node-inspector-inputs label span {
+  display: inline-block;
+  margin-top:11px; /* centering in 43px label */
+  width: 100px;
+  color: hsl(220, 10%, 45%);
+}
+
+.dataflow-node-inspector-inputs textarea {
+  width: 260px;
+  height: 55px;
+}
+.dataflow-node-inspector-inputs textarea, .dataflow-node-inspector-inputs input {
+  color: hsl(220, 10%, 65%);
+  background-color: hsla(240, 7%, 11%, .8);
+  border: 1px solid hsla(0, 0%, 63%, .1);
+  box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, .2);
+}
+.dataflow-node-inspector-inputs textarea:focus, .dataflow-node-inspector-inputs input:focus {
+  color: hsl(220, 10%, 85%);
+  background-color: hsl(0, 100%, 50%);
+  box-shadow: 0px 2px 4px hsla(0, 0%, 40%, .1);
+  background-color: hsla(240, 7%, 8%, 1);
+  border: 1px solid hsla(0, 0%, 94%, .1);
+}
+
+.input-container {
+  margin-right: 0.25em;
+}
+  .input-string, 
+  .input-int, 
+  .input-float, 
+  .input-select {
+    padding: 8px 6px;
+    margin: 5px 0;
+    border-radius: 3px;
+    top: 31px;
+    left: 100px;
+    width: 140px;
+    background-color: hsl(220, 20%, 97%);
+    border: 1px solid hsl(220, 10%, 83%);
+}
+
+.input-string:focus, 
+.input-int:focus, 
+.input-float:focus, 
+.input-select:focus {
+  outline:none;
+  background-color: hsl(220, 20%, 100%);
+  box-shadow: 0 0 2px 1px hsla(210, 100%, 100%, 1)
+  /*box-shadow: 0 0 2px 1px hsla(210, 100%, 100%, 1), 0 0 3px 2px hsla(210, 100%, 60%, 0.7);*/
+}
+.input-select {
+  width: 5em;
+}
+.input-bang {
+  /*vertical-align: top;*/
+}
+
+
+.dataflow-node-inspector-inputs input[type=checkbox] {  
+    display: none;  
+}  
+
+.dataflow-node-inspector-inputs .input-boolean-checkbox {  
+  position: absolute;
+  left: 123px;
+  top: 12px;
+  height: 20px;
+  width: 20px;
+  border-radius: 3px;
+  background-color: hsla(240, 7%, 11%, .8);
+  border: 1px solid hsla(0, 0%, 63%, .1);
+  box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, .2);
+}
+
+.dataflow-node-inspector-inputs input[type=checkbox]:checked + .input-boolean-checkbox:before {
+  content: "\2713";
+  text-shadow: 1px 1px 1px hsla(0, 0%, 0%, .2);
+  font-size: 15px;
+  text-align: center;
+  line-height: 15px;
+  position: relative;
+  top: 2px;
+  left: 5px;
+}
+
+.dataflow-edge-inspector-route-choose:after {
+  content: '';
+  display: block;
+  position: absolute;
+  background-color: hsla(0, 0%, 0%, .5);
+  border-radius: 3px;
+  border: 1px solid hsla(220,10%,90%,.1);
+     top:7px; 
+  bottom:7px; 
+    left:7px; 
+   right:7px;
+   
+  
+}
+
+.dataflow-edge-inspector-route-choose {
+  position:relative;
+  padding: 10px;
+  background-color: hsla(220,10%,0%,.2);  
+  box-shadow: inset 0 1px hsla(220, 10%, 50%, .1);
+}
+
+.dataflow-edge-inspector-route-choose button {
+  width: 23px;
+  height: 23px;
+  position:relative;
+  z-index: 1;
+  
+  -webkit-transform: scale(1.0);
+  -moz-transform: scale(1.0);
+  -o-transform: scale(1.0);
+  transform: scale(1.0);
+
+  -webkit-transition: all 0.1s ease-in-out;
+  -moz-transition: all 0.1s ease-in-out;
+  -o-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  
+  cursor: pointer;
+  border-radius: 0px;
+  border: none;
+  color: hsl(0, 0%, 0%);
+  margin: 0px;
+  padding: 7px;
+  box-shadow: inset 0 1px 1px hsla(220, 0%, 90%, .3), inset 1px 0px 0px hsla(220, 0%, 00%, 0.1), inset -1px 0px 0px hsla(220, 0%, 100%, 0.05);
+}
+
+.dataflow-edge-inspector-route-choose button:first-child {
+ border-radius: 3px 0 0 3px; 
+}
+
+.dataflow-edge-inspector-route-choose button:last-child {
+ border-radius: 0 3px 3px 0; 
+}
+
+.dataflow-edge-inspector-route-choose button.route0  { background-color: hsl(  0,  0%, 70%); }
+.dataflow-edge-inspector-route-choose button.route1  { background-color: hsl(  0, 68%, 70%); }
+.dataflow-edge-inspector-route-choose button.route2  { background-color: hsl( 30, 68%, 70%); }
+.dataflow-edge-inspector-route-choose button.route3  { background-color: hsl( 60, 68%, 70%); }
+.dataflow-edge-inspector-route-choose button.route4  { background-color: hsl( 90, 68%, 70%); }
+.dataflow-edge-inspector-route-choose button.route5  { background-color: hsl(120, 68%, 70%); }
+.dataflow-edge-inspector-route-choose button.route6  { background-color: hsl(150, 68%, 70%); }
+.dataflow-edge-inspector-route-choose button.route7  { background-color: hsl(180, 68%, 70%); }
+.dataflow-edge-inspector-route-choose button.route8  { background-color: hsl(210, 68%, 70%); }
+.dataflow-edge-inspector-route-choose button.route9  { background-color: hsl(240, 68%, 70%); }
+.dataflow-edge-inspector-route-choose button.route10 { background-color: hsl(270, 68%, 70%); }
+.dataflow-edge-inspector-route-choose button.route11 { background-color: hsl(300, 68%, 70%); }
+.dataflow-edge-inspector-route-choose button.route12 { background-color: hsl(330, 68%, 70%); }
+
+ .dataflow-edge-inspector-route-choose button.route0:hover  { background-color: hsl(  0,  0%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route1:hover  { background-color: hsl(  0, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route2:hover  { background-color: hsl( 30, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route3:hover  { background-color: hsl( 60, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route4:hover  { background-color: hsl( 90, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route5:hover  { background-color: hsl(120, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route6:hover  { background-color: hsl(150, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route7:hover  { background-color: hsl(180, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route8:hover  { background-color: hsl(210, 70%, 65%); }
+ .dataflow-edge-inspector-route-choose button.route9:hover  { background-color: hsl(240, 70%, 65%); }
+.dataflow-edge-inspector-route-choose button.route10:hover  { background-color: hsl(270, 70%, 65%); }
+.dataflow-edge-inspector-route-choose button.route11:hover  { background-color: hsl(300, 70%, 65%); }
+.dataflow-edge-inspector-route-choose button.route12:hover  { background-color: hsl(330, 70%, 65%); }
+
+.dataflow-edge-inspector-route-choose button.active {
+  -webkit-transform: scale(1.15);
+  -moz-transform: scale(1.15);
+  -o-transform: scale(1.15);
+  transform: scale(1.15);
+  z-index: 2;
+  border-radius: 3px;
+}
+
+.dataflow-edge-inspector-events {
+  list-style: none;
+  margin-top: 1em;
+  max-height: 70px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.dataflow-edge-inspector-events .data {
+  color: hsl(30, 68%, 70%);
+}
+.dataflow-edge-inspector-events .begingroup {
+  color: hsl(0, 0%, 70%);
+}
+.dataflow-edge-inspector-events .endgroup {
+  color: hsl(0, 0%, 70%);
+}
+
+.dataflow-menu {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+.dataflow-menu li {
+  display: inline;
+}
+
+.dataflow-menu li button {
+  padding: 10px 15px;
+  color: hsl(206, 54%, 51%);
+  border: none;
+  background-color: transparent;
+  font-size: 20px;
+}
+
+.dataflow-menu li button .name {
+  display: none;
+}
