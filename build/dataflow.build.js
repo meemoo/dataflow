@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (9:32:52 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (9:40:07 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 // Thanks bobnice http://stackoverflow.com/a/1583281/592125
 
@@ -3282,22 +3282,17 @@ CircularBuffer.IndexError= {};
           results.push({
             icon: 'remove',
             label: node.get('label'),
-            description: node.type
+            description: node.type,
+            item: node
           });
         });
         callback(results);
       },
-      execute: function (text) {
+      execute: function (item) {
         if (!dataflow.currentGraph) {
           return;
         }
-        var results = [];
-        dataflow.currentGraph.nodes.each(function (node) {
-          if (node.get('label').toLowerCase().indexOf(text.toLowerCase()) === -1) {
-            return;
-          }
-          node.remove();
-        });
+        item.remove();
       }
     });
 
@@ -3474,21 +3469,14 @@ CircularBuffer.IndexError= {};
           results.push({
             icon: 'plus',
             label: name,
-            description: node.description
+            description: node.description,
+            item: node
           });
         });
         callback(results);
       },
-      execute: function (text) {
-        _.each(dataflow.nodes, function (node, name) {
-          if (Library.excluded.indexOf(name) !== -1) {
-            return;
-          }
-          if (name.toLowerCase().indexOf(text.toLowerCase()) === -1) {
-            return;
-          }
-          addNode(node).call();
-        });
+      execute: function (item) {
+        addNode(item).call();
       }
     });
   };
@@ -3954,8 +3942,12 @@ CircularBuffer.IndexError= {};
           handled = true;
 
           args.push(function (results) {
+            if (results.length === 0) {
+              return;
+            }
             _.each(results, function (result) {
               result.action = function () {
+                args.unshift(result.item);
                 command.execute.apply(command, args);
               };
             });

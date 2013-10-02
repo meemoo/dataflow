@@ -215,22 +215,17 @@
           results.push({
             icon: 'remove',
             label: node.get('label'),
-            description: node.type
+            description: node.type,
+            item: node
           });
         });
         callback(results);
       },
-      execute: function (text) {
+      execute: function (item) {
         if (!dataflow.currentGraph) {
           return;
         }
-        var results = [];
-        dataflow.currentGraph.nodes.each(function (node) {
-          if (node.get('label').toLowerCase().indexOf(text.toLowerCase()) === -1) {
-            return;
-          }
-          node.remove();
-        });
+        item.remove();
       }
     });
 

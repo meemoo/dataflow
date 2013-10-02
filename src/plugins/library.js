@@ -134,21 +134,14 @@
           results.push({
             icon: 'plus',
             label: name,
-            description: node.description
+            description: node.description,
+            item: node
           });
         });
         callback(results);
       },
-      execute: function (text) {
-        _.each(dataflow.nodes, function (node, name) {
-          if (Library.excluded.indexOf(name) !== -1) {
-            return;
-          }
-          if (name.toLowerCase().indexOf(text.toLowerCase()) === -1) {
-            return;
-          }
-          addNode(node).call();
-        });
+      execute: function (item) {
+        addNode(item).call();
       }
     });
   };

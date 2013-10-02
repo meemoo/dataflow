@@ -110,8 +110,12 @@
           handled = true;
 
           args.push(function (results) {
+            if (results.length === 0) {
+              return;
+            }
             _.each(results, function (result) {
               result.action = function () {
+                args.unshift(result.item);
                 command.execute.apply(command, args);
               };
             });
