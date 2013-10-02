@@ -88,6 +88,7 @@
 
     dataflow.addPlugin({
       id: "library", 
+      label: "library",
       name: "", 
       menu: $container, 
       icon: "plus",

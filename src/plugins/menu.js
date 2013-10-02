@@ -15,7 +15,7 @@
       Menu.card.menu.add({
         id: info.id,
         icon: info.icon,
-        label: info.name,
+        label: info.label,
         showLabel: false,
         action: function () {
           Menu.card.hide();

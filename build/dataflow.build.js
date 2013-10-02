@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (4:12:33 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (4:18:28 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(){
   var App = Backbone.Model.extend({
@@ -152,7 +152,7 @@
         this.plugins.menu.addPlugin({
           id: info.id,
           icon: info.icon,
-          label: info.name,
+          label: info.label,
           showLabel: false
         });
       }
@@ -2739,7 +2739,7 @@
 
   var MenuItemView = Backbone.View.extend({
     tagName: 'li',
-    template: '<button><i class="icon-<%- icon %>"></i><span class="name"><%- label %></span></button>',
+    template: '<button title="<%- label %>"><i class="icon-<%- icon %>"></i><span class="name"><%- label %></span></button>',
     events: {
       'click': 'clicked'
     },
@@ -2951,7 +2951,7 @@
       Menu.card.menu.add({
         id: info.id,
         icon: info.icon,
-        label: info.name,
+        label: info.label,
         showLabel: false,
         action: function () {
           Menu.card.hide();
@@ -3303,6 +3303,7 @@
 
     dataflow.addPlugin({
       id: "library", 
+      label: "library",
       name: "", 
       menu: $container, 
       icon: "plus",
@@ -3357,6 +3358,7 @@
 
     dataflow.addPlugin({
       id: "source", 
+      label: "view source",
       name: "", 
       menu: $form, 
       icon: "code",
@@ -3446,6 +3448,7 @@
 
     dataflow.addPlugin({
       id: "log", 
+      label: "log",
       name: "", 
       menu: $log, 
       icon: "th-list",

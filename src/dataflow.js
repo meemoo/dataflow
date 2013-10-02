@@ -150,7 +150,7 @@
         this.plugins.menu.addPlugin({
           id: info.id,
           icon: info.icon,
-          label: info.name,
+          label: info.label,
           showLabel: false
         });
       }
