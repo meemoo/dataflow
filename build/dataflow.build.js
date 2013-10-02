@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (6:20:43 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (7:09:36 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 // Thanks bobnice http://stackoverflow.com/a/1583281/592125
 
@@ -1239,6 +1239,39 @@ CircularBuffer.IndexError= {};
           edge.view.unfade();
         }
       });
+    },
+    startHighlightCompatible: function (port, fromInput) {
+      this.model.nodes.each(function (node) {
+        node.outputs.each(function (output) {
+          if (output === port) {
+            return;
+          }
+          if (!fromInput) {
+            output.view.blur();
+            return;
+          }
+          if (output.canConnect() && (output.type === 'all' || output.type === port.type)) {
+            return;
+          }
+          output.view.blur();
+        });
+        node.inputs.each(function (input) {
+          if (input === port) {
+            return;
+          }
+          if (fromInput) {
+            input.view.blur();
+            return;
+          }
+          if (input.canConnect() && (input.type === 'all' || input.type === port.type)) {
+            return;
+          }
+          input.view.blur();
+        });
+      });
+    },
+    stopHighlightCompatible: function (port, fromInput) {
+      this.$el.find('.dataflow-port.blur').removeClass('blur');
     }
   });
 
@@ -1823,6 +1856,8 @@ CircularBuffer.IndexError= {};
       graphSVGElement.appendChild(this.previewEdgeNewView.el);
 
       zoom = this.model.parentNode.parentGraph.get('zoom');
+
+      this.model.parentNode.parentGraph.view.startHighlightCompatible(this.model, true);
     },
     newEdgeDrag: function(event, ui){
       if (!this.previewEdgeNewView || !ui) {
@@ -1850,6 +1885,7 @@ CircularBuffer.IndexError= {};
       this.previewEdgeNewView.remove();
       delete this.previewEdgeNew;
       delete this.previewEdgeNewView;
+      this.model.parentNode.parentGraph.view.stopHighlightCompatible(this.model, true);
     },
     getTopEdge: function() {
       var topEdge;
@@ -1926,6 +1962,12 @@ CircularBuffer.IndexError= {};
         delete this.previewEdgeChange;
         delete this.previewEdgeChangeView;
       }
+    },
+    blur: function () {
+      this.$el.addClass('blur');
+    },
+    unblur: function () {
+      this.$el.removeClass('blur');
     },
     connectEdge: function(event, ui) {
       // Dropped to this el
@@ -2132,6 +2174,7 @@ CircularBuffer.IndexError= {};
 
       zoom = this.model.parentNode.parentGraph.get('zoom');
 
+      this.model.parentNode.parentGraph.view.startHighlightCompatible(this.model);
     },
     newEdgeDrag: function(event, ui){
       // Don't drag node
@@ -2157,6 +2200,7 @@ CircularBuffer.IndexError= {};
       this.previewEdgeView.remove();
       delete this.previewEdge;
       delete this.previewEdgeView;
+      this.model.parentNode.parentGraph.view.stopHighlightCompatible(this.model);
     },
     getTopEdge: function() {
       var topEdge;
@@ -2233,6 +2277,12 @@ CircularBuffer.IndexError= {};
         delete this.previewEdgeChange;
         delete this.previewEdgeChangeView;
       }
+    },
+    blur: function () {
+      this.$el.addClass('blur');
+    },
+    unblur: function () {
+      this.$el.removeClass('blur');
     },
     connectEdge: function(event, ui) {
       // Dropped to this el

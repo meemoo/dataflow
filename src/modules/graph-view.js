@@ -342,6 +342,39 @@
           edge.view.unfade();
         }
       });
+    },
+    startHighlightCompatible: function (port, fromInput) {
+      this.model.nodes.each(function (node) {
+        node.outputs.each(function (output) {
+          if (output === port) {
+            return;
+          }
+          if (!fromInput) {
+            output.view.blur();
+            return;
+          }
+          if (output.canConnect() && (output.type === 'all' || output.type === port.type)) {
+            return;
+          }
+          output.view.blur();
+        });
+        node.inputs.each(function (input) {
+          if (input === port) {
+            return;
+          }
+          if (fromInput) {
+            input.view.blur();
+            return;
+          }
+          if (input.canConnect() && (input.type === 'all' || input.type === port.type)) {
+            return;
+          }
+          input.view.blur();
+        });
+      });
+    },
+    stopHighlightCompatible: function (port, fromInput) {
+      this.$el.find('.dataflow-port.blur').removeClass('blur');
     }
   });
 

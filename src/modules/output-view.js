@@ -102,6 +102,7 @@
 
       zoom = this.model.parentNode.parentGraph.get('zoom');
 
+      this.model.parentNode.parentGraph.view.startHighlightCompatible(this.model);
     },
     newEdgeDrag: function(event, ui){
       // Don't drag node
@@ -127,6 +128,7 @@
       this.previewEdgeView.remove();
       delete this.previewEdge;
       delete this.previewEdgeView;
+      this.model.parentNode.parentGraph.view.stopHighlightCompatible(this.model);
     },
     getTopEdge: function() {
       var topEdge;
@@ -203,6 +205,12 @@
         delete this.previewEdgeChange;
         delete this.previewEdgeChangeView;
       }
+    },
+    blur: function () {
+      this.$el.addClass('blur');
+    },
+    unblur: function () {
+      this.$el.removeClass('blur');
     },
     connectEdge: function(event, ui) {
       // Dropped to this el

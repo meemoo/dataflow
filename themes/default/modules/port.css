@@ -140,6 +140,9 @@
 .dataflow-node-ins .hasvalue .dataflow-port-hole  {
   background-color: hsl(  210,  68%, 70%);
 }
+.dataflow-node .dataflow-port.blur {
+  opacity: 0.2;
+}
 
 .dataflow-node.fade .dataflow-port-hole.active.route0, .dataflow-port-hole.active.route0  { background-color: hsl(  0,  0%, 65%); }
 .dataflow-node.fade .dataflow-port-hole.active.route1, .dataflow-port-hole.active.route1  { background-color: hsl(  0, 68%, 70%); }
