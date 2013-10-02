@@ -55,6 +55,16 @@
     });
 
     $input.on('keyup search webkitspeechchange', function (event) {
+      if (event.keyCode === 13 && Search.results && Search.results.length === 1) {
+        var card = dataflow.shownCards.get('searchresults');
+        if (!card) {
+          return;
+        }
+        $('li', card.el).click();
+        dataflow.removeCard('searchresults');
+        $input.val('');
+        return;
+      }
       if (!$input.val()) {
         dataflow.removeCard('searchresults');
         return;
@@ -122,6 +132,7 @@
               pinned: false
             });
             dataflow.addCard(ResultsCard);
+            Search.results = resultList;
           });
 
           command.preview.apply(command, args);
