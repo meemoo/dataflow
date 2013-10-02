@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (8:19:01 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (8:38:29 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 // Thanks bobnice http://stackoverflow.com/a/1583281/592125
 
@@ -3822,6 +3822,16 @@ CircularBuffer.IndexError= {};
     var $button = $search.find('button');
     dataflow.$el.prepend($search);
 
+    $input.on('keydown', function (event) {
+      // Ctrl-s again to get out of the search field
+      if ((event.ctrlKey || event.metaKey) && event.which === 83) {
+        event.preventDefault();
+        $input.val('');
+        $input.blur();
+        dataflow.removeCard('searchresults');
+      }
+    });
+
     $input.on('keyup search webkitspeechchange', function (event) {
       if (!$input.val()) {
         dataflow.removeCard('searchresults');
@@ -3835,11 +3845,13 @@ CircularBuffer.IndexError= {};
     });
 
     Search.focus = function () {
+      $input.val('');
       $input.focus();
     };
   };
 
   Search.search = function (text, dataflow) {
+    dataflow.removeCard('searchresults');
     var Card = Dataflow.prototype.module('card');
     var results = new SearchResults([], {
       search: text
