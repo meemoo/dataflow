@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (9:20:10 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (9:32:52 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 // Thanks bobnice http://stackoverflow.com/a/1583281/592125
 
@@ -3268,7 +3268,7 @@ CircularBuffer.IndexError= {};
     });
 
     dataflow.plugin('search').addCommand({
-      names: ['remove', 'r'],
+      names: ['remove', 'r', 'remove node'],
       args: ['node'],
       preview: function (text, callback) {
         if (!dataflow.currentGraph) {
@@ -3460,7 +3460,7 @@ CircularBuffer.IndexError= {};
     };
 
     dataflow.plugin('search').addCommand({
-      names: ['add', 'a'],
+      names: ['add', 'a', 'add component', 'add node'],
       args: ['component'],
       preview: function (text, callback) {
         var results = [];

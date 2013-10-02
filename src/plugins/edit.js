@@ -201,7 +201,7 @@
     });
 
     dataflow.plugin('search').addCommand({
-      names: ['remove', 'r'],
+      names: ['remove', 'r', 'remove node'],
       args: ['node'],
       preview: function (text, callback) {
         if (!dataflow.currentGraph) {

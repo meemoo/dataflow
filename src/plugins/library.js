@@ -120,7 +120,7 @@
     };
 
     dataflow.plugin('search').addCommand({
-      names: ['add', 'a'],
+      names: ['add', 'a', 'add component', 'add node'],
       args: ['component'],
       preview: function (text, callback) {
         var results = [];
