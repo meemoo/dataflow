@@ -1,5 +1,41 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (4:18:28 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (5:53:08 PM GMT+0300)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
+// Thanks bobnice http://stackoverflow.com/a/1583281/592125
+
+// Circular buffer storage. Externally-apparent 'length' increases indefinitely
+// while any items with indexes below length-n will be forgotten (undefined
+// will be returned if you try to get them, trying to set is an exception).
+// n represents the initial length of the array, not a maximum
+
+function CircularBuffer(n) {
+  this._array= new Array(n);
+  this.length= 0;
+}
+CircularBuffer.prototype.toString= function() {
+  return '[object CircularBuffer('+this._array.length+') length '+this.length+']';
+};
+CircularBuffer.prototype.get= function(i) {
+  if (i<0 || i<this.length-this._array.length)
+    return undefined;
+  return this._array[i%this._array.length];
+};
+CircularBuffer.prototype.set = function(i, v) {
+  if (i<0 || i<this.length-this._array.length)
+    throw CircularBuffer.IndexError;
+  while (i>this.length) {
+    this._array[this.length%this._array.length] = undefined;
+    this.length++;
+  }
+  this._array[i%this._array.length] = v;
+  if (i==this.length)
+    this.length++;
+};
+CircularBuffer.prototype.push = function(v) {
+  this._array[this.length%this._array.length] = v;
+  this.length++;
+};
+CircularBuffer.IndexError= {};
+
 (function(){
   var App = Backbone.Model.extend({
     "$": function(query) {
@@ -735,18 +771,6 @@
 
   var Edge = Dataflow.prototype.module("edge");
 
-  var EdgeEvent = Backbone.Model.extend({
-    defaults: {
-      "type": "data",
-      "data": "",
-      "group": ""
-    }
-  });
-
-  var EdgeEventLog = Backbone.Collection.extend({
-    model: EdgeEvent
-  });
-
   Edge.Model = Backbone.Model.extend({
     defaults: {
       "z": 0,
@@ -758,7 +782,7 @@
       var nodes, sourceNode, targetNode;
       var preview = this.get("preview");
       this.parentGraph = this.get("parentGraph");
-      this.attributes.log = new EdgeEventLog();
+      this.attributes.log = new CircularBuffer(50);
       if (preview) {
         // Preview edge
         nodes = this.get("parentGraph").nodes;
@@ -2848,14 +2872,11 @@
     '<div class="dataflow-edge-inspector-route-choose"></div>'+
     '<ul class="dataflow-edge-inspector-events"></ul>';
 
-  var logTemplate = '<li class="<%- type %>"><%- group %><%- data %></li>';
-  
   Edge.InspectView = Backbone.View.extend({
     tagName: "div",
     className: "dataflow-edge-inspector",
     positions: null,
     template: _.template(template),
-    showLogs: 20,
     initialize: function() {
       var templateData = this.model.toJSON();
       if (this.model.id) {
@@ -2885,10 +2906,8 @@
 
       this.listenTo(this.model, "change:route", this.render);
       this.listenTo(this.model, "remove", this.remove);
-      this.listenTo(this.model.get('log'), 'add', function () { 
-        this.logDirty = true; 
-      }.bind(this));
-      this.renderLog();
+      // Check if need to render logs
+      this.animate();
     },
     render: function(){
       var route = this.model.get("route");
@@ -2897,38 +2916,37 @@
       $choose.children(".route"+route).addClass("active");
       return this;
     },
-    logDirty: false,
+    showLogs: 20,
+    lastLog: 0,
     animate: function (timestamp) {
       // Called from dataflow.shownCards collection (card-view.js)
-      if (this.logDirty) {
-        this.logDirty = false;
-        this.renderLog();
-      }
-    },
-    renderLog: function () {
-      var frag = document.createDocumentFragment();
       var logs = this.model.get('log');
-      var logsToShow;
-      if (logs.length > this.showLogs) {
-        logsToShow = logs.rest(logs.length - this.showLogs);
-      } else {
-        logsToShow = logs.toArray();
+      if (logs.length > this.lastLog) {
+        this.renderLogs(logs);
+        this.lastLog = logs.length;
       }
-      //JANK warning, already taking 14ms with 20 log items
-      _.each(logsToShow, function (item) {
-        this.renderLogItem(item, frag);
-      }, this);
-      this.$log.html(frag);
-      this.$log[0].scrollTop = this.$log[0].scrollHeight;
     },
-    renderLogItem: function (item, fragment) {
-      var html = $(_.template(logTemplate, item.toJSON()));
-      if (fragment && fragment.appendChild) {
-        fragment.appendChild(html[0]);
-      } else {
-        this.$log.append(html);
-        this.$log[0].scrollTop = this.$log[0].scrollHeight;
+    renderLogs: function (logs) {
+      // Add new logs
+      var firstToShow = this.lastLog;
+      if (logs.length - this.lastLog > this.showLogs) {
+        firstToShow = logs.length - this.showLogs;
       }
+      for (var i=firstToShow; i<logs.length; i++){
+        var item = logs.get(i);
+        if (item) {
+          var li = $("<li>")
+            .addClass(item.type)
+            .text( (item.group ? item.group + " " : "")+item.data);
+          this.$log.append(li);
+        }
+      }
+      // Trim list
+      while (this.$log.children().length > this.showLogs) {
+        this.$log.children().first().remove();
+      }
+      // Scroll list
+      this.$log[0].scrollTop = this.$log[0].scrollHeight;
     }
   });
 
