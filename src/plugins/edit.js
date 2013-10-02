@@ -49,8 +49,12 @@
         node.x -= 50;
         node.y -= 50;
       });
+
       // Remove selected
       Edit.removeSelected();
+
+      // Update context
+      dataflow.currentGraph.trigger('selectionChanged');
     }
     buttons.children(".cut").click(cut);
     Edit.cut = cut;
@@ -62,6 +66,8 @@
       selected.forEach(function(edge){
         edge.remove();
       });
+      // Update context
+      dataflow.currentGraph.trigger('selectionChanged');
     }
     Edit.removeEdge = removeEdge;
 

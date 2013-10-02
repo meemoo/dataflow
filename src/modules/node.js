@@ -120,6 +120,7 @@
       });
       this.unload();
       this.collection.remove(this);
+      this.trigger('remove');
     },
     unload: function(){
       // Stop any processes that need to be stopped

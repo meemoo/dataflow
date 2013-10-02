@@ -111,6 +111,7 @@
       }
       // Remove listener
       this.source.parentNode.off("send:"+this.source.id, this.send, this);
+      this.trigger('remove');
     }
   });
 
