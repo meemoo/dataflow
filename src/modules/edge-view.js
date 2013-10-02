@@ -95,7 +95,7 @@
 
       // Listen for select
       this.listenTo(this.model, "change:selected", this.selectedChange);
-
+      this.listenTo(this.model, "remove", this.hideInspector);
     },
     render: function(previewPosition){
       var source = this.model.source;
@@ -152,8 +152,10 @@
     selectedChange: function () {
       if (this.model.get("selected")){
         this.highlight();
+        this.showInspector();
       } else {
         this.unhighlight();
+        this.hideInspector();
       }
       this.model.parentGraph.trigger("selectionChanged");
     },
@@ -248,12 +250,11 @@
       if (event) {
         event.stopPropagation();
       }
-      var selected, leaveUnpinned;
+      var selected;
       if (event && (event.ctrlKey || event.metaKey)) {
         // Toggle
         selected = this.model.get("selected");
         selected = !selected;
-        leaveUnpinned = true;
       } else {
         // Deselect all and select this
         selected = true;
@@ -265,9 +266,6 @@
         this.bringToTop();
         this.model.trigger("select");
         this.unfade();
-        this.showInspector(leaveUnpinned);
-      } else {
-        this.hideInspector();
       }
       // Fade all and highlight related
       this.model.parentGraph.view.fade();

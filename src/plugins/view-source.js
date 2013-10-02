@@ -18,6 +18,7 @@
 
     dataflow.addPlugin({
       id: "source", 
+      label: "view source",
       name: "", 
       menu: $form, 
       icon: "code",

@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (3:29:17 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (4:18:28 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(){
   var App = Backbone.Model.extend({
@@ -152,7 +152,7 @@
         this.plugins.menu.addPlugin({
           id: info.id,
           icon: info.icon,
-          label: info.name,
+          label: info.label,
           showLabel: false
         });
       }
@@ -623,6 +623,7 @@
       });
       this.unload();
       this.collection.remove(this);
+      this.trigger('remove');
     },
     unload: function(){
       // Stop any processes that need to be stopped
@@ -843,6 +844,7 @@
       }
       // Remove listener
       this.source.parentNode.off("send:"+this.source.id, this.send, this);
+      this.trigger('remove');
     }
   });
 
@@ -1291,6 +1293,8 @@
 
       this.listenTo(this.model, "change:label", this.changeLabel);
 
+      this.listenTo(this.model, "remove", this.hideInspector);
+
       this.$inner = this.$(".dataflow-node-inner");
     },
     render: function() {
@@ -1427,11 +1431,8 @@
         toggle = true;
         selected = !selected;
         this.model.set("selected", selected);
-        if (selected) {
-          this.showInspector(true);
-        } else {
+        if (!selected) {
           this.fade();
-          this.hideInspector();
         }
       } else {
         // Deselect all
@@ -1440,7 +1441,6 @@
         this.model.parentGraph.view.fade();
         selected = true;
         this.model.set("selected", true);
-        this.showInspector();
       }
       this.bringToTop();
       this.model.parentGraph.view.fadeEdges();
@@ -1474,8 +1474,10 @@
     selectedChanged: function () {
       if (this.model.get("selected")) {
         this.highlight();
+        this.showInspector();
       } else {
         this.unhighlight();
+        this.hideInspector();
       }
     },
     highlight: function () {
@@ -2384,7 +2386,7 @@
 
       // Listen for select
       this.listenTo(this.model, "change:selected", this.selectedChange);
-
+      this.listenTo(this.model, "remove", this.hideInspector);
     },
     render: function(previewPosition){
       var source = this.model.source;
@@ -2441,8 +2443,10 @@
     selectedChange: function () {
       if (this.model.get("selected")){
         this.highlight();
+        this.showInspector();
       } else {
         this.unhighlight();
+        this.hideInspector();
       }
       this.model.parentGraph.trigger("selectionChanged");
     },
@@ -2537,12 +2541,11 @@
       if (event) {
         event.stopPropagation();
       }
-      var selected, leaveUnpinned;
+      var selected;
       if (event && (event.ctrlKey || event.metaKey)) {
         // Toggle
         selected = this.model.get("selected");
         selected = !selected;
-        leaveUnpinned = true;
       } else {
         // Deselect all and select this
         selected = true;
@@ -2554,9 +2557,6 @@
         this.bringToTop();
         this.model.trigger("select");
         this.unfade();
-        this.showInspector(leaveUnpinned);
-      } else {
-        this.hideInspector();
       }
       // Fade all and highlight related
       this.model.parentGraph.view.fade();
@@ -2739,7 +2739,7 @@
 
   var MenuItemView = Backbone.View.extend({
     tagName: 'li',
-    template: '<button><i class="icon-<%- icon %>"></i><span class="name"><%- label %></span></button>',
+    template: '<button title="<%- label %>"><i class="icon-<%- icon %>"></i><span class="name"><%- label %></span></button>',
     events: {
       'click': 'clicked'
     },
@@ -2951,7 +2951,7 @@
       Menu.card.menu.add({
         id: info.id,
         icon: info.icon,
-        label: info.name,
+        label: info.label,
         showLabel: false,
         action: function () {
           Menu.card.hide();
@@ -3025,8 +3025,12 @@
         node.x -= 50;
         node.y -= 50;
       });
+
       // Remove selected
       Edit.removeSelected();
+
+      // Update context
+      dataflow.currentGraph.trigger('selectionChanged');
     }
     buttons.children(".cut").click(cut);
     Edit.cut = cut;
@@ -3038,6 +3042,8 @@
       selected.forEach(function(edge){
         edge.remove();
       });
+      // Update context
+      dataflow.currentGraph.trigger('selectionChanged');
     }
     Edit.removeEdge = removeEdge;
 
@@ -3297,6 +3303,7 @@
 
     dataflow.addPlugin({
       id: "library", 
+      label: "library",
       name: "", 
       menu: $container, 
       icon: "plus",
@@ -3351,6 +3358,7 @@
 
     dataflow.addPlugin({
       id: "source", 
+      label: "view source",
       name: "", 
       menu: $form, 
       icon: "code",
@@ -3440,6 +3448,7 @@
 
     dataflow.addPlugin({
       id: "log", 
+      label: "log",
       name: "", 
       menu: $log, 
       icon: "th-list",

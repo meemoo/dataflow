@@ -84,6 +84,8 @@
 
       this.listenTo(this.model, "change:label", this.changeLabel);
 
+      this.listenTo(this.model, "remove", this.hideInspector);
+
       this.$inner = this.$(".dataflow-node-inner");
     },
     render: function() {
@@ -220,11 +222,8 @@
         toggle = true;
         selected = !selected;
         this.model.set("selected", selected);
-        if (selected) {
-          this.showInspector(true);
-        } else {
+        if (!selected) {
           this.fade();
-          this.hideInspector();
         }
       } else {
         // Deselect all
@@ -233,7 +232,6 @@
         this.model.parentGraph.view.fade();
         selected = true;
         this.model.set("selected", true);
-        this.showInspector();
       }
       this.bringToTop();
       this.model.parentGraph.view.fadeEdges();
@@ -267,8 +265,10 @@
     selectedChanged: function () {
       if (this.model.get("selected")) {
         this.highlight();
+        this.showInspector();
       } else {
         this.unhighlight();
+        this.hideInspector();
       }
     },
     highlight: function () {
