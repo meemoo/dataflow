@@ -356,6 +356,10 @@
 .dataflow-edge-inspector-events .endgroup {
   color: hsl(0, 0%, 70%);
 }
+.dataflow-edge-inspector-events .disconnect {
+  border-top: 1px solid hsl(0, 70%, 65%);
+  margin: 0px 40px;
+}
 
 .dataflow-menu {
   list-style: none;
