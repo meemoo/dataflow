@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (3:22:33 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (3:29:17 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(){
   var App = Backbone.Model.extend({
@@ -3718,8 +3718,9 @@
     var $button = $search.find('button');
     dataflow.$el.prepend($search);
 
-    $input.on('keyup webkitspeechchange', function (event) {
+    $input.on('keyup search webkitspeechchange', function (event) {
       if (!$input.val()) {
+        dataflow.removeCard('searchresults');
         return;
       }
       Search.search($input.val(), dataflow);
@@ -3742,6 +3743,7 @@
     });
     ResultsView.itemView = ResultView;
     var ResultsCard = new Card.Model({
+      id: 'searchresults',
       dataflow: dataflow,
       card: ResultsView,
       pinned: false

@@ -44,8 +44,9 @@
     var $button = $search.find('button');
     dataflow.$el.prepend($search);
 
-    $input.on('keyup webkitspeechchange', function (event) {
+    $input.on('keyup search webkitspeechchange', function (event) {
       if (!$input.val()) {
+        dataflow.removeCard('searchresults');
         return;
       }
       Search.search($input.val(), dataflow);
@@ -68,6 +69,7 @@
     });
     ResultsView.itemView = ResultView;
     var ResultsCard = new Card.Model({
+      id: 'searchresults',
       dataflow: dataflow,
       card: ResultsView,
       pinned: false
