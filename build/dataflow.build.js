@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (1:48:40 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (3:22:33 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(){
   var App = Backbone.Model.extend({
@@ -3713,12 +3713,12 @@
   });
 
   Search.initialize = function (dataflow) {
-    var $search = $('<div class="dataflow-plugin-search"><input type="search" placeholder="Search" results="5" /><button><i class="icon-reorder"></i></button></div>');
+    var $search = $('<div class="dataflow-plugin-search"><input type="search" placeholder="Search" results="5" x-webkit-speech /><button><i class="icon-reorder"></i></button></div>');
     var $input = $search.find('input');
     var $button = $search.find('button');
     dataflow.$el.prepend($search);
 
-    $input.on('keyup', function (event) {
+    $input.on('keyup webkitspeechchange', function (event) {
       if (!$input.val()) {
         return;
       }
