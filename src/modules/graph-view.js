@@ -353,7 +353,7 @@
             output.view.blur();
             return;
           }
-          if (output.canConnect() && (output.type === 'all' || output.type === port.type)) {
+          if (output.canConnect() && (port.get('type') == 'all' || output.get('type') === 'all' || output.get('type') === port.get('type'))) {
             return;
           }
           output.view.blur();
@@ -366,7 +366,7 @@
             input.view.blur();
             return;
           }
-          if (input.canConnect() && (input.type === 'all' || input.type === port.type)) {
+          if (input.canConnect() && (port.get('type') == 'all' || input.get('type') === 'all' || input.get('type') === port.get('type'))) {
             return;
           }
           input.view.blur();

@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (7:36:38 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (8:19:01 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 // Thanks bobnice http://stackoverflow.com/a/1583281/592125
 
@@ -1250,7 +1250,7 @@ CircularBuffer.IndexError= {};
             output.view.blur();
             return;
           }
-          if (output.canConnect() && (output.type === 'all' || output.type === port.type)) {
+          if (output.canConnect() && (port.get('type') == 'all' || output.get('type') === 'all' || output.get('type') === port.get('type'))) {
             return;
           }
           output.view.blur();
@@ -1263,7 +1263,7 @@ CircularBuffer.IndexError= {};
             input.view.blur();
             return;
           }
-          if (input.canConnect() && (input.type === 'all' || input.type === port.type)) {
+          if (input.canConnect() && (port.get('type') == 'all' || input.get('type') === 'all' || input.get('type') === port.get('type'))) {
             return;
           }
           input.view.blur();
