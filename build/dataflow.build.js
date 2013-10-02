@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (5:27:30 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (6:20:43 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 // Thanks bobnice http://stackoverflow.com/a/1583281/592125
 
@@ -710,7 +710,8 @@ CircularBuffer.IndexError= {};
       id: "input",
       description: "",
       label: "",
-      type: "all"
+      type: "all",
+      multiple: true
     },
     initialize: function() {
       this.parentNode = this.get("parentNode");
@@ -719,7 +720,18 @@ CircularBuffer.IndexError= {};
       }
       this.connected = [];
     },
+    canConnect: function (edge) {
+      if (!this.get('multiple') && this.connected.length) {
+        // This port doesn't allow multiple connections and
+        // there is a connection already, decline
+        return false;
+      }
+      return true;
+    },
     connect: function(edge){
+      if (!this.canConnect(edge)) {
+        return;
+      }
       this.connected.push(edge);
       this.connected = _.uniq(this.connected);
       this.trigger('connected');
@@ -757,7 +769,8 @@ CircularBuffer.IndexError= {};
       id: "output",
       label: "",
       type: "all",
-      description: ""
+      description: "",
+      multiple: true
     }
   });
 
@@ -1924,6 +1937,11 @@ CircularBuffer.IndexError= {};
         return false;
       }
 
+      if (!this.model.canConnect()) {
+        // Port declined the connection, abort
+        return;
+      }
+
       var route = 0;
       if (ui.helper.data("route") !== undefined) {
         route = ui.helper.data("route");
@@ -2224,6 +2242,11 @@ CircularBuffer.IndexError= {};
       if (otherPort.parentNode.parentGraph.dataflow !== this.model.parentNode.parentGraph.dataflow) {
         // from another widget
         return false;
+      }
+
+      if (!this.model.canConnect()) {
+        // Port declined the connection, abort
+        return;
       }
 
       var route = 0;

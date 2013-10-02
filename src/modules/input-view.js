@@ -389,6 +389,11 @@
         return false;
       }
 
+      if (!this.model.canConnect()) {
+        // Port declined the connection, abort
+        return;
+      }
+
       var route = 0;
       if (ui.helper.data("route") !== undefined) {
         route = ui.helper.data("route");

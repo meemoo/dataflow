@@ -113,6 +113,8 @@
           data: 'random'
         });
       }, 500);
+      // Set one port to decline multiple connections
+      dataflow.graph.get('nodes').at(2).inputs.at(1).set('multiple', false);
 
       window.d = $(".dataflow").data("dataflow");
   });

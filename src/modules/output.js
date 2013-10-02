@@ -9,7 +9,8 @@
       id: "output",
       label: "",
       type: "all",
-      description: ""
+      description: "",
+      multiple: true
     }
   });
 

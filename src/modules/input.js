@@ -7,7 +7,8 @@
       id: "input",
       description: "",
       label: "",
-      type: "all"
+      type: "all",
+      multiple: true
     },
     initialize: function() {
       this.parentNode = this.get("parentNode");
@@ -16,7 +17,18 @@
       }
       this.connected = [];
     },
+    canConnect: function (edge) {
+      if (!this.get('multiple') && this.connected.length) {
+        // This port doesn't allow multiple connections and
+        // there is a connection already, decline
+        return false;
+      }
+      return true;
+    },
     connect: function(edge){
+      if (!this.canConnect(edge)) {
+        return;
+      }
       this.connected.push(edge);
       this.connected = _.uniq(this.connected);
       this.trigger('connected');
