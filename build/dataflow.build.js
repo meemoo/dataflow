@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (5:51:40 PM GMT+0300)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (5:53:08 PM GMT+0300)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 // Thanks bobnice http://stackoverflow.com/a/1583281/592125
 
@@ -2945,7 +2945,6 @@ CircularBuffer.IndexError= {};
       while (this.$log.children().length > this.showLogs) {
         this.$log.children().first().remove();
       }
-      console.log( this.$log.children().length );
       // Scroll list
       this.$log[0].scrollTop = this.$log[0].scrollHeight;
     }

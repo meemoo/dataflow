@@ -83,7 +83,6 @@
       while (this.$log.children().length > this.showLogs) {
         this.$log.children().first().remove();
       }
-      console.log( this.$log.children().length );
       // Scroll list
       this.$log[0].scrollTop = this.$log[0].scrollHeight;
     }
