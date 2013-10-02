@@ -342,7 +342,15 @@
 .dataflow-edge-inspector-events .data {
   color: hsl(30, 68%, 70%);
 }
+.dataflow-edge-inspector-events .begingroup:before {
+  content: "< ";
+  color: hsl(0, 0%, 70%);
+}
 .dataflow-edge-inspector-events .begingroup {
+  color: hsl(0, 0%, 70%);
+}
+.dataflow-edge-inspector-events .endgroup:before {
+  content: "> ";
   color: hsl(0, 0%, 70%);
 }
 .dataflow-edge-inspector-events .endgroup {

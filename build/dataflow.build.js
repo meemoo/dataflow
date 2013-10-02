@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-09-30 (7:21:56 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (1:46:53 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(){
   var App = Backbone.Model.extend({
@@ -3632,7 +3632,7 @@
       return;
     }
 
-    if (Notification.hasPermission) {
+    if (Notification.hasPermission()) {
       // We already have the permission
       return;
     }

@@ -98,8 +98,16 @@
       // Populate some fake log events
       setInterval(function () {
         dataflow.graph.get('edges').at(1).get('log').add({
+          type: 'begingroup',
+          data: 'random'
+        });
+        dataflow.graph.get('edges').at(1).get('log').add({
           type: 'data',
           data: Math.random()
+        });
+        dataflow.graph.get('edges').at(1).get('log').add({
+          type: 'endgroup',
+          data: 'random'
         });
       }, 500);
 
