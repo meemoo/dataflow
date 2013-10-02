@@ -72,8 +72,76 @@
     };
   };
 
+  Search.addCommand = function (command) {
+    Search.commands.push(command);
+  };
+
+  Search.handleCommands = function (text, dataflow) {
+    var handled = false;
+    _.each(Search.commands, function (command) {
+      if (handled) {
+        return;
+      }
+      _.each(command.names, function (name) {
+        if (handled) {
+          return;
+        }
+        if (text.indexOf(name) === 0) {
+          // Prepare arguments
+          var argumentString = text.substr(name.length).trim();
+          var args = argumentString.split(' ');
+
+          // Validate arguments
+          if (args.length !== command.args.length) {
+            return;
+          }
+
+          // We found the command
+          handled = true;
+
+          args.push(function (results) {
+            _.each(results, function (result) {
+              result.action = function () {
+                command.execute.apply(command, args);
+              };
+            });
+            var Card = Dataflow.prototype.module('card');
+            var resultList = new SearchResults(results, {
+              search: argumentString
+            });
+            var ResultsView = new Backbone.CollectionView({
+              tagName: 'ul',
+              className: 'dataflow-plugin-search-results',
+              collection: resultList,
+              itemView: ResultView
+            });
+            var ResultsCard = new Card.Model({
+              id: 'searchresults',
+              dataflow: dataflow,
+              card: ResultsView,
+              pinned: false
+            });
+            dataflow.addCard(ResultsCard);
+          });
+
+          command.preview.apply(command, args);
+        }
+      });
+    });
+    return handled;
+  };
+
+  Search.commands = [];
+
   Search.search = function (text, dataflow) {
     dataflow.removeCard('searchresults');
+
+    // Check commands for match
+    if (Search.handleCommands(text, dataflow)) {
+      // Handled by the command, ignore
+      return;
+    }
+
     var Card = Dataflow.prototype.module('card');
     var results = new SearchResults([], {
       search: text

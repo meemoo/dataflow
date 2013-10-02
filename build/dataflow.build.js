@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (8:38:29 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (9:10:40 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 // Thanks bobnice http://stackoverflow.com/a/1583281/592125
 
@@ -3267,6 +3267,40 @@ CircularBuffer.IndexError= {};
       contexts: ["edges"]
     });
 
+    dataflow.plugin('search').addCommand({
+      names: ['remove', 'r'],
+      args: ['node'],
+      preview: function (text, callback) {
+        if (!dataflow.currentGraph) {
+          return;
+        }
+        var results = [];
+        dataflow.currentGraph.nodes.each(function (node) {
+          if (node.get('label').toLowerCase().indexOf(text.toLowerCase()) === -1) {
+            return;
+          }
+          results.push({
+            icon: 'remove',
+            label: node.get('label'),
+            description: node.type
+          });
+        });
+        callback(results);
+      },
+      execute: function (text) {
+        if (!dataflow.currentGraph) {
+          return;
+        }
+        var results = [];
+        dataflow.currentGraph.nodes.each(function (node) {
+          if (node.get('label').toLowerCase().indexOf(text.toLowerCase()) === -1) {
+            return;
+          }
+          node.remove();
+        });
+      }
+    });
+
     Edit.onSearch = function (text, callback) {
       if (!dataflow.currentGraph) {
         return;
@@ -3425,6 +3459,38 @@ CircularBuffer.IndexError= {};
       callback(results);
     };
 
+    dataflow.plugin('search').addCommand({
+      names: ['add', 'a'],
+      args: ['component'],
+      preview: function (text, callback) {
+        var results = [];
+        _.each(dataflow.nodes, function (node, name) {
+          if (Library.excluded.indexOf(name) !== -1) {
+            return;
+          }
+          if (name.toLowerCase().indexOf(text.toLowerCase()) === -1) {
+            return;
+          }
+          results.push({
+            icon: 'plus',
+            label: name,
+            description: node.description
+          });
+        });
+        callback(results);
+      },
+      execute: function (text) {
+        _.each(dataflow.nodes, function (node, name) {
+          if (Library.excluded.indexOf(name) !== -1) {
+            return;
+          }
+          if (name.toLowerCase().indexOf(text.toLowerCase()) === -1) {
+            return;
+          }
+          addNode(node).call();
+        });
+      }
+    });
   };
 
 }(Dataflow) );
@@ -3850,8 +3916,76 @@ CircularBuffer.IndexError= {};
     };
   };
 
+  Search.addCommand = function (command) {
+    Search.commands.push(command);
+  };
+
+  Search.handleCommands = function (text, dataflow) {
+    var handled = false;
+    _.each(Search.commands, function (command) {
+      if (handled) {
+        return;
+      }
+      _.each(command.names, function (name) {
+        if (handled) {
+          return;
+        }
+        if (text.indexOf(name) === 0) {
+          // Prepare arguments
+          var argumentString = text.substr(name.length).trim();
+          var args = argumentString.split(' ');
+
+          // Validate arguments
+          if (args.length !== command.args.length) {
+            return;
+          }
+
+          // We found the command
+          handled = true;
+
+          args.push(function (results) {
+            _.each(results, function (result) {
+              result.action = function () {
+                command.execute.apply(command, args);
+              };
+            });
+            var Card = Dataflow.prototype.module('card');
+            var resultList = new SearchResults(results, {
+              search: argumentString
+            });
+            var ResultsView = new Backbone.CollectionView({
+              tagName: 'ul',
+              className: 'dataflow-plugin-search-results',
+              collection: resultList,
+              itemView: ResultView
+            });
+            var ResultsCard = new Card.Model({
+              id: 'searchresults',
+              dataflow: dataflow,
+              card: ResultsView,
+              pinned: false
+            });
+            dataflow.addCard(ResultsCard);
+          });
+
+          command.preview.apply(command, args);
+        }
+      });
+    });
+    return handled;
+  };
+
+  Search.commands = [];
+
   Search.search = function (text, dataflow) {
     dataflow.removeCard('searchresults');
+
+    // Check commands for match
+    if (Search.handleCommands(text, dataflow)) {
+      // Handled by the command, ignore
+      return;
+    }
+
     var Card = Dataflow.prototype.module('card');
     var results = new SearchResults([], {
       search: text

@@ -119,6 +119,38 @@
       callback(results);
     };
 
+    dataflow.plugin('search').addCommand({
+      names: ['add', 'a'],
+      args: ['component'],
+      preview: function (text, callback) {
+        var results = [];
+        _.each(dataflow.nodes, function (node, name) {
+          if (Library.excluded.indexOf(name) !== -1) {
+            return;
+          }
+          if (name.toLowerCase().indexOf(text.toLowerCase()) === -1) {
+            return;
+          }
+          results.push({
+            icon: 'plus',
+            label: name,
+            description: node.description
+          });
+        });
+        callback(results);
+      },
+      execute: function (text) {
+        _.each(dataflow.nodes, function (node, name) {
+          if (Library.excluded.indexOf(name) !== -1) {
+            return;
+          }
+          if (name.toLowerCase().indexOf(text.toLowerCase()) === -1) {
+            return;
+          }
+          addNode(node).call();
+        });
+      }
+    });
   };
 
 }(Dataflow) );
