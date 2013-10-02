@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (9:10:40 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (9:20:10 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 // Thanks bobnice http://stackoverflow.com/a/1583281/592125
 
@@ -3899,6 +3899,16 @@ CircularBuffer.IndexError= {};
     });
 
     $input.on('keyup search webkitspeechchange', function (event) {
+      if (event.keyCode === 13 && Search.results && Search.results.length === 1) {
+        var card = dataflow.shownCards.get('searchresults');
+        if (!card) {
+          return;
+        }
+        $('li', card.el).click();
+        dataflow.removeCard('searchresults');
+        $input.val('');
+        return;
+      }
       if (!$input.val()) {
         dataflow.removeCard('searchresults');
         return;
@@ -3966,6 +3976,7 @@ CircularBuffer.IndexError= {};
               pinned: false
             });
             dataflow.addCard(ResultsCard);
+            Search.results = resultList;
           });
 
           command.preview.apply(command, args);
