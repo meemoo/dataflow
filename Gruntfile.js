@@ -12,6 +12,8 @@
         },
         dist: {
           src: [
+            // Libs
+            'libs/CircularBuffer.js',
             // Main
             'src/dataflow.js',
             'src/state.js',

@@ -14,6 +14,9 @@
   <script src="libs/backbone.js"></script>
   <script src="libs/hammer.min.js"></script>
 
+  <!-- Built-in Libraries -->
+  <script src="libs/CircularBuffer.js"></script>
+
   <!-- Dataflow core -->
   <script src="src/dataflow.js"></script>
   <script src="src/state.js"></script>
@@ -97,15 +100,15 @@
 
       // Populate some fake log events
       setInterval(function () {
-        dataflow.graph.get('edges').at(1).get('log').add({
+        dataflow.graph.get('edges').at(1).get('log').push({
           type: 'begingroup',
           data: 'random'
         });
-        dataflow.graph.get('edges').at(1).get('log').add({
+        dataflow.graph.get('edges').at(1).get('log').push({
           type: 'data',
           data: Math.random()
         });
-        dataflow.graph.get('edges').at(1).get('log').add({
+        dataflow.graph.get('edges').at(1).get('log').push({
           type: 'endgroup',
           data: 'random'
         });

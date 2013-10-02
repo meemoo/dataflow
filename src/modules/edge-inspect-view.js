@@ -10,14 +10,11 @@
     '<div class="dataflow-edge-inspector-route-choose"></div>'+
     '<ul class="dataflow-edge-inspector-events"></ul>';
 
-  var logTemplate = '<li class="<%- type %>"><%- group %><%- data %></li>';
-  
   Edge.InspectView = Backbone.View.extend({
     tagName: "div",
     className: "dataflow-edge-inspector",
     positions: null,
     template: _.template(template),
-    showLogs: 20,
     initialize: function() {
       var templateData = this.model.toJSON();
       if (this.model.id) {
@@ -47,10 +44,8 @@
 
       this.listenTo(this.model, "change:route", this.render);
       this.listenTo(this.model, "remove", this.remove);
-      this.listenTo(this.model.get('log'), 'add', function () { 
-        this.logDirty = true; 
-      }.bind(this));
-      this.renderLog();
+      // Check if need to render logs
+      this.animate();
     },
     render: function(){
       var route = this.model.get("route");
@@ -59,38 +54,38 @@
       $choose.children(".route"+route).addClass("active");
       return this;
     },
-    logDirty: false,
+    showLogs: 20,
+    lastLog: 0,
     animate: function (timestamp) {
       // Called from dataflow.shownCards collection (card-view.js)
-      if (this.logDirty) {
-        this.logDirty = false;
-        this.renderLog();
-      }
-    },
-    renderLog: function () {
-      var frag = document.createDocumentFragment();
       var logs = this.model.get('log');
-      var logsToShow;
-      if (logs.length > this.showLogs) {
-        logsToShow = logs.rest(logs.length - this.showLogs);
-      } else {
-        logsToShow = logs.toArray();
+      if (logs.length > this.lastLog) {
+        this.renderLogs(logs);
+        this.lastLog = logs.length;
       }
-      //JANK warning, already taking 14ms with 20 log items
-      _.each(logsToShow, function (item) {
-        this.renderLogItem(item, frag);
-      }, this);
-      this.$log.html(frag);
-      this.$log[0].scrollTop = this.$log[0].scrollHeight;
     },
-    renderLogItem: function (item, fragment) {
-      var html = $(_.template(logTemplate, item.toJSON()));
-      if (fragment && fragment.appendChild) {
-        fragment.appendChild(html[0]);
-      } else {
-        this.$log.append(html);
-        this.$log[0].scrollTop = this.$log[0].scrollHeight;
+    renderLogs: function (logs) {
+      // Add new logs
+      var firstToShow = this.lastLog;
+      if (logs.length - this.lastLog > this.showLogs) {
+        firstToShow = logs.length - this.showLogs;
       }
+      for (var i=firstToShow; i<logs.length; i++){
+        var item = logs.get(i);
+        if (item) {
+          var li = $("<li>")
+            .addClass(item.type)
+            .text( (item.group ? item.group + " " : "")+item.data);
+          this.$log.append(li);
+        }
+      }
+      // Trim list
+      while (this.$log.children().length > this.showLogs) {
+        this.$log.children().first().remove();
+      }
+      console.log( this.$log.children().length );
+      // Scroll list
+      this.$log[0].scrollTop = this.$log[0].scrollHeight;
     }
   });
 
