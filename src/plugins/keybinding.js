@@ -5,9 +5,9 @@
  
   var KeyBinding = Dataflow.prototype.plugin("keybinding");
   var Edit = Dataflow.prototype.plugin("edit");
+  var Search = Dataflow.prototype.plugin("search");
 
   KeyBinding.initialize = function(dataflow){
-
     function zoomIn() {
       if (dataflow && dataflow.currentGraph && dataflow.currentGraph.view) {
         dataflow.currentGraph.view.zoomIn();
@@ -60,6 +60,10 @@
             Edit.paste();
             break;
           case 90: // z
+            break;
+          case 83: // s
+            event.preventDefault();
+            Search.focus();
             break;
           default:
             break;

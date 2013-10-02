@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (7:09:36 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (7:36:38 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 // Thanks bobnice http://stackoverflow.com/a/1583281/592125
 
@@ -3638,9 +3638,9 @@ CircularBuffer.IndexError= {};
  
   var KeyBinding = Dataflow.prototype.plugin("keybinding");
   var Edit = Dataflow.prototype.plugin("edit");
+  var Search = Dataflow.prototype.plugin("search");
 
   KeyBinding.initialize = function(dataflow){
-
     function zoomIn() {
       if (dataflow && dataflow.currentGraph && dataflow.currentGraph.view) {
         dataflow.currentGraph.view.zoomIn();
@@ -3693,6 +3693,10 @@ CircularBuffer.IndexError= {};
             Edit.paste();
             break;
           case 90: // z
+            break;
+          case 83: // s
+            event.preventDefault();
+            Search.focus();
             break;
           default:
             break;
@@ -3829,6 +3833,10 @@ CircularBuffer.IndexError= {};
     $button.on('click', function () {
       dataflow.showPlugin('menu');
     });
+
+    Search.focus = function () {
+      $input.focus();
+    };
   };
 
   Search.search = function (text, dataflow) {

@@ -55,6 +55,10 @@
     $button.on('click', function () {
       dataflow.showPlugin('menu');
     });
+
+    Search.focus = function () {
+      $input.focus();
+    };
   };
 
   Search.search = function (text, dataflow) {
