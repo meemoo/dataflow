@@ -27,6 +27,12 @@
     }
 
     function keyDown(event) {
+
+      // Don't keybind graph actions when could be editing text #10
+      if (event.target.tagName==="TEXTAREA" || 
+          event.target.tagName==="INPUT" || 
+          event.target.contentEditable==="true" ){ return; }
+
       if (event.ctrlKey || event.metaKey) {
         switch (event.which) {
           case 189: // -

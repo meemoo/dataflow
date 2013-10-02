@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-02 (1:46:53 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-02 (1:48:40 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(){
   var App = Backbone.Model.extend({
@@ -3349,11 +3349,6 @@
     );
     var $code = $form.find(".code");
 
-    $code.keydown(function(event){
-      // Don't select / copy / paste nodes in the graph
-      event.stopPropagation();
-    });
-
     dataflow.addPlugin({
       id: "source", 
       name: "", 
@@ -3565,6 +3560,12 @@
     }
 
     function keyDown(event) {
+
+      // Don't keybind graph actions when could be editing text #10
+      if (event.target.tagName==="TEXTAREA" || 
+          event.target.tagName==="INPUT" || 
+          event.target.contentEditable==="true" ){ return; }
+
       if (event.ctrlKey || event.metaKey) {
         switch (event.which) {
           case 189: // -
