@@ -227,11 +227,34 @@
         return;
       }
 
-      var route = 0;
-      if (ui.helper.data("route") !== undefined) {
-        route = ui.helper.data("route");
+      function getRouteForType(type) {
+        switch (type) {
+          case 'int':
+          case 'float':
+          case 'number':
+            return 1;
+          case 'boolean':
+            return 2;
+          case 'object':
+            return 3;
+          case 'string':
+          case 'text':
+            return 4;
+          default:
+            return 0;
+        }
+      }
+      function getDefaultRoute(fromType, toType) {
+        if (fromType === 'all' && toType === 'all') {
+          return 0;
+        }
+        if (fromType === 'all') {
+          return getRouteForType(toType);
+        }
+        return getRouteForType(fromType);
       }
 
+      var route = getDefaultRoute(this.model.get('type'), otherPort.get('type'));
       this.model.parentNode.parentGraph.edges.add({
         id: this.model.parentNode.id+":"+this.model.id+"::"+otherPort.parentNode.id+":"+otherPort.id,
         parentGraph: this.model.parentNode.parentGraph,
