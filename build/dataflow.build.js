@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-/*! dataflow.js - v0.0.7 - 2013-08-10 (4:34:30 PM EDT)
-=======
-/*! dataflow.js - v0.0.7 - 2013-09-30 (7:21:56 PM GMT+0200)
->>>>>>> master
+/*! dataflow.js - v0.0.7 - 2013-10-04 (7:57:14 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 (function(){
   var App = Backbone.Model.extend({
@@ -2308,8 +2304,6 @@
     }
     return svg;
   };
-<<<<<<< HEAD
-=======
 
   var addClass = function (el, name) {
     if (el.classList) {
@@ -2326,7 +2320,6 @@
       el.className = "dataflow-edge"; 
     }
   };
->>>>>>> master
   
   Edge.View = Backbone.View.extend({
     tagName: "div",
@@ -2567,17 +2560,6 @@
       }
       // Fade all and highlight related
       this.model.parentGraph.view.fade();
-<<<<<<< HEAD
-      this.unfade();
-      this.showInspector();
-    },
-    showInspector: function(){
-      this.model.parentGraph.dataflow.showMenu("inspector");
-      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
-      $inspector.children().detach();
-      $inspector.append( this.getInspect() );
-=======
->>>>>>> master
     },
     bringToTop: function(){
       this.model.bringToTop();
@@ -2590,17 +2572,6 @@
       this.model.source.view.bringToTop(this.model);
       this.model.target.view.bringToTop(this.model);
     },
-<<<<<<< HEAD
-    // inspect: null,
-    getInspect: function() {
-      // if (!this.inspect) {
-      //   this.inspect = document.createElement("dataflow-card-edge");
-      //   this.inspect.edge = this.model;
-      // }
-      var inspect = document.createElement("dataflow-card-edge");
-      inspect.edge = this.model;
-      return inspect;
-=======
     inspector: null,
     getInspector: function () {
       if (!this.inspector) {
@@ -2618,16 +2589,12 @@
     },
     hideInspector: function () {
       this.model.parentGraph.dataflow.removeCard( this.getInspector() );
->>>>>>> master
     }
 
   });
 
 }(Dataflow) );
 
-<<<<<<< HEAD
-( function(Dataflow) {
-=======
 (function(Dataflow){
 
   var Card = Dataflow.prototype.module("card");
@@ -2651,7 +2618,6 @@
 }(Dataflow));
 
 (function(Dataflow){
->>>>>>> master
 
   var Card = Dataflow.prototype.module("card");
 

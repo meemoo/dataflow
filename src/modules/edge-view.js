@@ -15,8 +15,6 @@
     }
     return svg;
   };
-<<<<<<< HEAD
-=======
 
   var addClass = function (el, name) {
     if (el.classList) {
@@ -33,7 +31,6 @@
       el.className = "dataflow-edge"; 
     }
   };
->>>>>>> master
   
   Edge.View = Backbone.View.extend({
     tagName: "div",
@@ -274,17 +271,6 @@
       }
       // Fade all and highlight related
       this.model.parentGraph.view.fade();
-<<<<<<< HEAD
-      this.unfade();
-      this.showInspector();
-    },
-    showInspector: function(){
-      this.model.parentGraph.dataflow.showMenu("inspector");
-      var $inspector = this.model.parentGraph.dataflow.$(".dataflow-plugin-inspector");
-      $inspector.children().detach();
-      $inspector.append( this.getInspect() );
-=======
->>>>>>> master
     },
     bringToTop: function(){
       this.model.bringToTop();
@@ -297,17 +283,6 @@
       this.model.source.view.bringToTop(this.model);
       this.model.target.view.bringToTop(this.model);
     },
-<<<<<<< HEAD
-    // inspect: null,
-    getInspect: function() {
-      // if (!this.inspect) {
-      //   this.inspect = document.createElement("dataflow-card-edge");
-      //   this.inspect.edge = this.model;
-      // }
-      var inspect = document.createElement("dataflow-card-edge");
-      inspect.edge = this.model;
-      return inspect;
-=======
     inspector: null,
     getInspector: function () {
       if (!this.inspector) {
@@ -325,7 +300,6 @@
     },
     hideInspector: function () {
       this.model.parentGraph.dataflow.removeCard( this.getInspector() );
->>>>>>> master
     }
 
   });
