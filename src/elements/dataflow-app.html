@@ -3,12 +3,27 @@
 
 <polymer-element name="dataflow-app" attributes="graph src">
   <template>
-    <dataflow-graph id="base" graph="{{graph}}" ></dataflow-graph>
+
+    <style>
+      * {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      dataflow-app {
+        overflow: hidden;
+      }
+    </style>
+
+    <dataflow-graph id="base" graph="{{graph}}" nodewidth="60" nodeheight="60" ></dataflow-graph>
+
   </template>
   <script>
     Polymer("dataflow-app", {
       created: function() {
-        console.log(this);
       },
       graphChanged: function () {
         var parsedGraph = this.graph;

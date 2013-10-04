@@ -2,25 +2,59 @@
 <link rel="import" href="dataflow-edge.html">
 <link rel="import" href="dataflow-node.html">
 
-<polymer-element name="dataflow-graph" attributes="graph">
-  <template>
+<polymer-element name="dataflow-graph" attributes="graph nodewidth nodeheight nodemargin">
 
-    <div id="edges">
+  <style>
+    #connections, #initials { display: none; }
+
+    dataflow-graph {
+      color: white;
+
+      position: absolute;
+      left: 0; top: 0; right: 0; bottom: 0;
+
+      background-color: #333;
+
+      background-image:
+        -moz-linear-gradient(left, #444 1px, transparent 1px),
+        -moz-linear-gradient(top, #444 1px, transparent 1px);
+      background-image:
+        -webkit-linear-gradient(left, #444 1px, transparent 1px),
+        -webkit-linear-gradient(top, #444 1px, transparent 1px);
+      background-image:
+        linear-gradient(left, #444 1px, transparent 1px),
+        linear-gradient(top, #444 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+  </style>
+
+  <template>
+    <div id="connections">
       <template repeat="{{connections}}">
         <dataflow-edge sourcenode="{{src.process}}" sourceport="{{src.port}}" targetnode="{{tgt.process}}" targetport="{{tgt.port}}"></dataflow-edge>
       </template>
     </div>
-    <div id="nodes">
+    <div id="processes">
       <template repeat="{{processes}}">
-        <dataflow-node id="{{id}}" type="{{type}}" label="{{metadata.label}}"></dataflow-node>
+        <dataflow-node nfid="{{id}}" component="{{component}}" label="{{metadata.label}}" x="{{metadata.x}}" y="{{metadata.y}}"></dataflow-node>
+      </template>
+    </div>
+    <div id="initials">
+      <template repeat="{{initials}}">
+        IIP: {{ data }} -> {{tgt.process}} : {{tgt.port}} <br/>
       </template>
     </div>
 
   </template>
+
   <script>
     Polymer("dataflow-graph", {
+      nodemargin: 10,
+      nodewidth: 60,
+      nodeheight: 60,
+      gridW: this.nodewidth+(2*this.nodeMargin),
+      gridH: this.nodeheight+(2*this.nodeMargin),
       created: function() {
-        console.log(this);
         if (this.graph) {
           this.graphChanged();
         }
@@ -31,8 +65,41 @@
         } else {
           this.parsedGraph = this.graph;
         }
-        this.processes = this.parsedGraph.processes;
-        this.connections = this.parsedGraph.connections;
+        this.connections = [];
+        this.initials = [];
+        var length = this.parsedGraph.connections.length;
+        for (var i=0; i<length; i++) {
+          var c = this.parsedGraph.connections[i];
+          if (c.src !== undefined) {
+            this.connections.push(c);
+          } else {
+            this.initials.push(c);
+          }
+        }
+        this.processes = [];
+        for (var index in this.parsedGraph.processes) {
+          var p = this.parsedGraph.processes[index];
+          p.id = index;
+          p.width = this.nodewidth;
+          p.height = this.nodeheight;
+          this.processes.push(p);
+        }
+        this.exports = this.parsedGraph.exports;
+      },
+      nodewidthChanged: function () {
+        this.nodemarginChanged();
+      },
+      nodeheightChanged: function () {
+        this.nodemarginChanged();
+      },
+      nodemarginChanged: function () {
+        this.gridW = this.nodewidth+(2*this.nodemargin);
+        this.gridH = this.nodeheight+(2*this.nodemargin);
+        this.drawGrid();
+      },
+      drawGrid: function () {
+        // CSS grid bg
+        this.style.backgroundSize = this.gridW+"px "+this.gridH+"px";
       }
     });
   </script>
