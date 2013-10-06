@@ -8,10 +8,13 @@
   var Input = Dataflow.prototype.module("input");
   var Output = Dataflow.prototype.module("output");
 
+  DataflowSubgraph.icon = 'sitemap';
+
   DataflowSubgraph.Model = BaseResizable.Model.extend({
     defaults: function(){
       var defaults = BaseResizable.Model.prototype.defaults.call(this);
       defaults.label = "subgraph";
+      defaults.icon = DataflowSubgraph.icon;
       defaults.type = "dataflow-subgraph";
       defaults.graph = {
         nodes:[

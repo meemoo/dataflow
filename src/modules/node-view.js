@@ -9,7 +9,9 @@
   var template = 
     '<div class="outer" />'+
     '<div class="dataflow-node-header">'+
-      '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>"><%- label %></h1>'+
+      '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>">'+
+      '<% if (icon) { %><i class="icon-<%- icon %>"></i> <% } %>'+
+      '<%- label %></h1>'+
     '</div>'+
     '<div class="dataflow-node-ports">'+
       '<div class="dataflow-node-ins"></div>'+
@@ -35,7 +37,9 @@
       };
     },
     initialize: function(options) {
-      this.$el.html(this.template(this.model.toJSON()));
+      var templateData = this.model.toJSON();
+      templateData.icon = this.model.getIcon();
+      this.$el.html(this.template(templateData));
 
       this.graph = options.graph;
 

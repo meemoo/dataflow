@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-03 (4:12:16 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-06 (6:55:52 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 // Thanks bobnice http://stackoverflow.com/a/1583281/592125
 
@@ -554,12 +554,23 @@ CircularBuffer.IndexError= {};
       return {
         label: "",
         description: "",
+        icon: "",
         type: "test",
         x: 200,
         y: 100,
         state: {},
         selected: false
       };
+    },
+    getIcon: function () {
+      if (this.get('icon')) {
+        return this.get('icon');
+      }
+      var node = this.parentGraph.dataflow.node(this.get('type'));
+      if (!node || !node.icon) {
+        return '';
+      }
+      return node.icon;
     },
     initialize: function() {
       this.parentGraph = this.get("parentGraph");
@@ -1288,7 +1299,9 @@ CircularBuffer.IndexError= {};
   var template = 
     '<div class="outer" />'+
     '<div class="dataflow-node-header">'+
-      '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>"><%- label %></h1>'+
+      '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>">'+
+      '<% if (icon) { %><i class="icon-<%- icon %>"></i> <% } %>'+
+      '<%- label %></h1>'+
     '</div>'+
     '<div class="dataflow-node-ports">'+
       '<div class="dataflow-node-ins"></div>'+
@@ -1314,7 +1327,9 @@ CircularBuffer.IndexError= {};
       };
     },
     initialize: function(options) {
-      this.$el.html(this.template(this.model.toJSON()));
+      var templateData = this.model.toJSON();
+      templateData.icon = this.model.getIcon();
+      this.$el.html(this.template(templateData));
 
       this.graph = options.graph;
 
@@ -3427,12 +3442,13 @@ CircularBuffer.IndexError= {};
 
     };
 
-    var itemTemplate = '<li><a class="button add"><i class="icon-plus"></i></a><span class="name"><%- name %></span><span class="description"><%-description %></span></li>';
+    var itemTemplate = '<li><a class="button add"><i class="icon-<%- icon %>"></i></a><span class="name"><%- name %></span><span class="description"><%-description %></span></li>';
 
     var addLibraryItem = function(name, node) {
       var $item = $(_.template(itemTemplate, {
         name: name,
-        description: node.description
+        description: node.description,
+        icon: node.icon ? node.icon : 'sign-blank'
       }));
       var addButton = $('.button', $item)
         .attr("title", "click or drag")
@@ -4180,10 +4196,13 @@ CircularBuffer.IndexError= {};
   var Input = Dataflow.prototype.module("input");
   var Output = Dataflow.prototype.module("output");
 
+  DataflowSubgraph.icon = 'sitemap';
+
   DataflowSubgraph.Model = BaseResizable.Model.extend({
     defaults: function(){
       var defaults = BaseResizable.Model.prototype.defaults.call(this);
       defaults.label = "subgraph";
+      defaults.icon = DataflowSubgraph.icon;
       defaults.type = "dataflow-subgraph";
       defaults.graph = {
         nodes:[

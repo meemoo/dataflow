@@ -46,12 +46,13 @@
 
     };
 
-    var itemTemplate = '<li><a class="button add"><i class="icon-plus"></i></a><span class="name"><%- name %></span><span class="description"><%-description %></span></li>';
+    var itemTemplate = '<li><a class="button add"><i class="icon-<%- icon %>"></i></a><span class="name"><%- name %></span><span class="description"><%-description %></span></li>';
 
     var addLibraryItem = function(name, node) {
       var $item = $(_.template(itemTemplate, {
         name: name,
-        description: node.description
+        description: node.description,
+        icon: node.icon ? node.icon : 'sign-blank'
       }));
       var addButton = $('.button', $item)
         .attr("title", "click or drag")

@@ -15,12 +15,23 @@
       return {
         label: "",
         description: "",
+        icon: "",
         type: "test",
         x: 200,
         y: 100,
         state: {},
         selected: false
       };
+    },
+    getIcon: function () {
+      if (this.get('icon')) {
+        return this.get('icon');
+      }
+      var node = this.parentGraph.dataflow.node(this.get('type'));
+      if (!node || !node.icon) {
+        return '';
+      }
+      return node.icon;
     },
     initialize: function() {
       this.parentGraph = this.get("parentGraph");
