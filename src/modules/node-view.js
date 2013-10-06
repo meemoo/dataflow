@@ -6,12 +6,15 @@
   var Input = Dataflow.prototype.module("input");
   var Output = Dataflow.prototype.module("output");
 
+  var headerTemplate =
+    '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>">'+
+    '<% if (icon) { %><i class="icon-<%- icon %>"></i> <% } %>'+
+    '<%- label %></h1>';
+
   var template = 
     '<div class="outer" />'+
     '<div class="dataflow-node-header">'+
-      '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>">'+
-      '<% if (icon) { %><i class="icon-<%- icon %>"></i> <% } %>'+
-      '<%- label %></h1>'+
+      headerTemplate +
     '</div>'+
     '<div class="dataflow-node-ports">'+
       '<div class="dataflow-node-ins"></div>'+
@@ -86,7 +89,7 @@
       // Selected listener
       this.listenTo(this.model, "change:selected", this.selectedChanged);
 
-      this.listenTo(this.model, "change:label", this.changeLabel);
+      this.listenTo(this.model, "change:label change:icon", this.changeHeader);
 
       this.listenTo(this.model, "remove", this.hideInspector);
 
@@ -146,12 +149,11 @@
       }, this);
 
     },
-    changeLabel: function () {
-      var label = this.model.get("label");
-      var type = this.model.get("type");
-      this.$(".dataflow-node-title")
-        .text( label )
-        .attr("title", label + ": " + type);
+    changeHeader: function () {
+      var templateData = this.model.toJSON();
+      templateData.icon = this.model.getIcon();
+      this.$(".dataflow-node-header")
+        .html(_.template(headerTemplate, templateData));
     },
     drag: function(event, ui){
       if (!ui){ return; }

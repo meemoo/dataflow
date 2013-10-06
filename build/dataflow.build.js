@@ -1,4 +1,4 @@
-/*! dataflow.js - v0.0.7 - 2013-10-06 (6:55:52 PM GMT+0200)
+/*! dataflow.js - v0.0.7 - 2013-10-06 (7:24:40 PM GMT+0200)
 * Copyright (c) 2013 Forrest Oliphant; Licensed MIT, GPL */
 // Thanks bobnice http://stackoverflow.com/a/1583281/592125
 
@@ -1296,12 +1296,15 @@ CircularBuffer.IndexError= {};
   var Input = Dataflow.prototype.module("input");
   var Output = Dataflow.prototype.module("output");
 
+  var headerTemplate =
+    '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>">'+
+    '<% if (icon) { %><i class="icon-<%- icon %>"></i> <% } %>'+
+    '<%- label %></h1>';
+
   var template = 
     '<div class="outer" />'+
     '<div class="dataflow-node-header">'+
-      '<h1 class="dataflow-node-title" title="<%- label %>: <%- type %>">'+
-      '<% if (icon) { %><i class="icon-<%- icon %>"></i> <% } %>'+
-      '<%- label %></h1>'+
+      headerTemplate +
     '</div>'+
     '<div class="dataflow-node-ports">'+
       '<div class="dataflow-node-ins"></div>'+
@@ -1376,7 +1379,7 @@ CircularBuffer.IndexError= {};
       // Selected listener
       this.listenTo(this.model, "change:selected", this.selectedChanged);
 
-      this.listenTo(this.model, "change:label", this.changeLabel);
+      this.listenTo(this.model, "change:label change:icon", this.changeHeader);
 
       this.listenTo(this.model, "remove", this.hideInspector);
 
@@ -1436,12 +1439,11 @@ CircularBuffer.IndexError= {};
       }, this);
 
     },
-    changeLabel: function () {
-      var label = this.model.get("label");
-      var type = this.model.get("type");
-      this.$(".dataflow-node-title")
-        .text( label )
-        .attr("title", label + ": " + type);
+    changeHeader: function () {
+      var templateData = this.model.toJSON();
+      templateData.icon = this.model.getIcon();
+      this.$(".dataflow-node-header")
+        .html(_.template(headerTemplate, templateData));
     },
     drag: function(event, ui){
       if (!ui){ return; }
